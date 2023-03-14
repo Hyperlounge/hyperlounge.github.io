@@ -1,0 +1,50 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font: 12px Tahoma, sans-serif;
+  background: black;
+}
+
+.synth {
+  display: flex;
+  flex-direction: column;
+  background: black;
+}
+
+.header {
+  background: silver;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.panel {
+  flex-basis: content;
+  margin: 5px;
+  background: silver;
+  border: 1px solid gray;
+  padding: 0 10px;
+  border-radius: 10px;
+}
+.panel h2 {
+  text-align: center;
+  font: 12px Verdana;
+  margin-top: 0;
+  text-transform: uppercase;
+}
+
+label {
+  white-space: nowrap;
+}
+
+label span {
+  display: inline-block;
+  width: 90px;
+}
+
+/*# sourceMappingURL=synth.css.map */

@@ -1,0 +1,131 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font: 12px Tahoma, sans-serif;
+  background: black;
+  overflow: hidden;
+}
+
+* {
+  user-select: none !important;
+}
+
+.synth {
+  display: flex;
+  flex-direction: column;
+  background: black;
+}
+
+.header {
+  background: silver;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.panel {
+  flex-basis: content;
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+  background: silver;
+  border: 1px solid gray;
+  padding: 0 10px;
+  border-radius: 10px;
+}
+.panel h2 {
+  text-align: center;
+  font: 12px Verdana;
+  margin-top: 0;
+  text-transform: uppercase;
+}
+.panel div.control-group {
+  display: flex;
+  flex-direction: row;
+}
+.panel span.control {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  vertical-align: top;
+}
+.panel span.control label {
+  display: block;
+  padding-bottom: 10px;
+  text-align: center;
+}
+.panel span.control div.control-body {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 5px;
+}
+.panel span.control select {
+  overflow: hidden;
+  text-align: center;
+}
+.panel span.control input[type=range][orient=vertical] {
+  appearance: slider-vertical;
+  width: 30px;
+  height: 170px;
+  padding: 0;
+  margin: 0;
+}
+.panel span.control .labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 165px;
+  padding: 0;
+  margin: 0;
+}
+.panel span.control .labels .label {
+  font-size: 9px;
+  padding: 0;
+}
+.panel.keyboard {
+  flex-basis: 100%;
+  padding: 10px;
+}
+.panel.keyboard .keys {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  height: 160px;
+}
+.panel.keyboard .key {
+  flex-grow: 2;
+  height: 100%;
+  background: white;
+  border: 1px solid black;
+  border-radius: 0 0 3px 3px;
+  cursor: pointer;
+}
+.panel.keyboard .key.down {
+  background: #DDDDDD;
+}
+.panel.keyboard .key.black {
+  position: relative;
+  flex-grow: 1;
+  z-index: 2;
+  height: 60%;
+  background: #222222;
+  margin: 0 -0.89%;
+}
+.panel.keyboard .key.black.down {
+  background: #444444;
+}
+
+label {
+  display: inline-block;
+  white-space: nowrap;
+  text-align: center;
+  width: 50px;
+}
+
+/*# sourceMappingURL=mono-synth.css.map */

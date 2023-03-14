@@ -235,7 +235,7 @@ export default class MonoSynth extends ModularSynth {
         this._root && (this._root.innerHTML = `
             <div class="synth">
                 <div class="header">
-                    <p>Synth</p>
+                    <p>Synth v0.1</p>
                 </div>
                 <div class="controls">
                     <div class="panel">

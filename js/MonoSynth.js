@@ -172,7 +172,7 @@ export default class MonoSynth extends ModularSynth {
         this._filterEnvelope = this.createEnvelopeModule('filterEnvelope');
 
         this.loadPatch();
-        window.addEventListener('beforeunload', () => {
+        window.addEventListener('unload', () => {
             this.savePatch();
         });
 

@@ -186,10 +186,6 @@ export default class ControllerModule extends AudioModule {
         this._downKeys = this._downKeys.filter(item => (item !== note));
         if (note === this._currentNote) {
             this._currentNote = undefined;
-            if (this._downKeys.length) {
-                const newNote = this._downKeys.shift();
-                this._onKeyDown(newNote, velocity);
-            }
             if (!this.getParam('legato') || this._downKeys.length === 0) {
                 const event = new CustomEvent('noteoff', {
                     detail: {
@@ -197,6 +193,10 @@ export default class ControllerModule extends AudioModule {
                     },
                 });
                 this._eventBus.dispatchEvent(event);
+            }
+            if (this._downKeys.length) {
+                const newNote = this._downKeys.shift();
+                this._onKeyDown(newNote, velocity);
             }
         }
         const key = document.querySelector(`.key[data-note="${note}"]`);

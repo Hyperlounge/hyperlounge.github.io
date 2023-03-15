@@ -5,6 +5,7 @@ import LevelModule from './LevelModule.js';
 import FilterModule from './FilterModule.js';
 import EnvelopeModule from './EnvelopeModule.js';
 import Model from '../Model.js';
+import LFOModule from './LFOModule.js';
 
 export default class ModularSynth {
     constructor() {
@@ -28,6 +29,7 @@ export default class ModularSynth {
     createEnvelopeModule = this._moduleCreator(EnvelopeModule);
     createLevelModule = this._moduleCreator(LevelModule);
     createFilterModule = this._moduleCreator(FilterModule);
+    createLFOModule = this._moduleCreator(LFOModule);
 
     get patch() {
         return this._patch.attributes;

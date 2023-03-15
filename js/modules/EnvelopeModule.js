@@ -41,13 +41,13 @@ export default class EnvelopeModule extends AudioModule {
 
     _onNoteOff(evt) {
         const { MIDINote } = evt.detail;
-        if ( MIDINote === this._currentMIDINote ) {
+        //if ( MIDINote === this._currentMIDINote ) {
             const { offset } = this._envelope;
             const { releaseSeconds } = this._patch.attributes;
             const release = Math.max(this._minimumTimeConstant, releaseSeconds);
             offset.cancelAndHoldAtTime(this._now)
                 .setTargetAtTime(0, this._now, release);
-        }
+        //}
     }
 
     get envelopeOut() {

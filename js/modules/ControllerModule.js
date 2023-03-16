@@ -194,7 +194,7 @@ export default class ControllerModule extends AudioModule {
                 });
                 this._eventBus.dispatchEvent(event);
             }
-            if (this._downKeys.length) {
+            if (!this.getParam('legato') && this._downKeys.length) {
                 const newNote = this._downKeys.shift();
                 this._onKeyDown(newNote, velocity);
             }

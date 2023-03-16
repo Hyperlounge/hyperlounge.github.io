@@ -175,7 +175,7 @@ export default class ControllerModule extends AudioModule {
             });
             this._eventBus.dispatchEvent(event);
         }
-        this._middleCOffetOut.offset.cancelAndHoldAtTime(this._now).setTargetAtTime(middleCOffset, this._now, this._patch.get('glideTime'));
+        this._middleCOffetOut.offset.cancelAndHoldAtTime(this._now).setTargetAtTime(middleCOffset, this._now, Math.max(this._patch.get('glideTime'), this._minimumTimeConstant));
         this._downKeys.unshift(note);
         this._currentNote = note;
         const key = document.querySelector(`.key[data-note="${note}"]`);

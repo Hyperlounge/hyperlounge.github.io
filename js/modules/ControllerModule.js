@@ -165,7 +165,7 @@ export default class ControllerModule extends AudioModule {
     _onKeyDown(note, velocity, reusedNote = false) {
         const middleCOffset = (note - 60) * 100;
         const legato = this.getParam('legato');
-        if (!legato || (this._downKeys.length === 0 && !reusedNote)) {
+        if (!legato || (this._downKeys.length === 0 && !(legato && reusedNote))) {
             const event = new CustomEvent('noteon', {
                 detail: {
                     MIDINote: note,

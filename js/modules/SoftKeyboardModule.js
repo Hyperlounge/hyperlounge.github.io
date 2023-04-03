@@ -61,7 +61,7 @@ export default class SoftKeyboardModule extends AudioModule {
 
     get _initialState() {
         return {
-            velocity: 70,
+            velocity: 70
             bottomNote: 36,
             topNote: 72,
         }

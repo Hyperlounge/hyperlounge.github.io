@@ -251,8 +251,8 @@ export default class PolySynth extends ModularSynth {
         bindControl('filter-type', this._filter, 'type', optionToParam(filterTypes), paramToOption(filterTypes));
         bindControl('filter-frequency', this._filter, 'frequency', linearToLogRange(100, 18, 20000), logRangeToLinear(18, 20000, 100));
         bindControl('filter-resonance', this._filter, 'resonance', a => Number(a)/5, a => String(a*5));
-        bindControl('filter-envelope', this._filter, 'envelopeAmount', a => Number(a)*100, a => String(a/100));
-        bindControl('filter-modulation', this._filter, 'modAmount', a => Number(a)/100, a => String(a*100));
+        bindControl('filter-envelope', this._filter, 'envelopeAmount');
+        bindControl('filter-modulation', this._filter, 'modAmount');
         bindControl('filter-keyboard', this._filter, 'keyboardFollowAmount', a => Number(a)/100, a => String(a*100));
 
         bindControl(`lfo-waveform`, this._lfo, 'waveform', optionToParam(lfoWaveforms), paramToOption(lfoWaveforms));

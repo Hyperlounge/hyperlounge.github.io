@@ -1,12 +1,13 @@
 import AudioModule from './AudioModule.js';
+import PolyGain from './PolyGain.js';
 
-export default class LevelModule extends AudioModule {
+export default class PolyLevelModule extends AudioModule {
 
     _initialise() {
         super._initialise();
 
         const context = this._audioContext;
-        this._gainNode = new GainNode(context, {gain: 1});
+        this._gainNode = new PolyGain(context, {gain: 1});
     }
 
     get _initialPatch() {

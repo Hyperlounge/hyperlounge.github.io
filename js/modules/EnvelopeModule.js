@@ -14,7 +14,7 @@ export default class EnvelopeModule extends AudioModule {
         this._currentMIDINote = undefined;
     }
 
-    get _initialState() {
+    get _initialPatch() {
         return {
             attackSeconds: 0,
             decaySeconds: 0,
@@ -26,7 +26,7 @@ export default class EnvelopeModule extends AudioModule {
 
     _onNoteOn(evt) {
         const { offset } = this._envelope;
-        const { velocity, MIDINote } = evt.detail;
+        const { velocity } = evt.detail;
         const { attackSeconds, decaySeconds, sustainLevel, velocityAmount } = this._patch.attributes;
         const maxGain = velocity * velocityAmount + (1 - velocityAmount);
         const sustain = sustainLevel * maxGain;
@@ -36,18 +36,14 @@ export default class EnvelopeModule extends AudioModule {
         offset.cancelAndHoldAtTime(this._now)
             .linearRampToValueAtTime(maxGain, this._now + attack)
             .setTargetAtTime(sustain, this._now + attack, decay);
-        this._currentMIDINote = MIDINote;
     }
 
     _onNoteOff(evt) {
-        const { MIDINote } = evt.detail;
-        //if ( MIDINote === this._currentMIDINote ) {
-            const { offset } = this._envelope;
-            const { releaseSeconds } = this._patch.attributes;
-            const release = Math.max(this._minimumTimeConstant, releaseSeconds);
-            offset.cancelAndHoldAtTime(this._now)
-                .setTargetAtTime(0, this._now, release);
-        //}
+        const { offset } = this._envelope;
+        const { releaseSeconds } = this._patch.attributes;
+        const release = Math.max(this._minimumTimeConstant, releaseSeconds);
+        offset.cancelAndHoldAtTime(this._now)
+            .setTargetAtTime(0, this._now, release);
     }
 
     get envelopeOut() {

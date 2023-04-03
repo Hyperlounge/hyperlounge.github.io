@@ -1,13 +1,19 @@
-import Model from '../Model.js';
+import Model from '../misc/Model.js';
 
 export default class AudioModule extends EventTarget {
-    constructor(context, eventBus, options) {
+    constructor(context, eventBus, globalPatch, options) {
         super();
         this._audioContext = context;
         this._eventBus = eventBus;
+        this._globalPatch = globalPatch;
+        this._globalPatch.addEventListener('change', evt => this._onGlobalPatchChange(evt));
         this._options = options;
-        this._patch = new Model(this._initialState);
+        this._patch = new Model(this._initialPatch);
         this._patch.addEventListener('change', evt => this._onPatchChange(evt));
+        if (this._initialState) {
+            this._state = new Model(this._initialState);
+        }
+
         this._initialise();
     }
 
@@ -19,7 +25,15 @@ export default class AudioModule extends EventTarget {
 
     }
 
+    _onGlobalPatchChange(evt) {
+
+    }
+
     get _initialState() {
+        return undefined;
+    }
+
+    get _initialPatch() {
         return {
 
         }
@@ -49,5 +63,9 @@ export default class AudioModule extends EventTarget {
 
     set patch(attributes) {
         this._patch.set(attributes);
+    }
+
+    get globalPatch() {
+        return this._globalPatch.attributes;
     }
 }

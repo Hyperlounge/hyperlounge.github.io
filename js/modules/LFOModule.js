@@ -13,7 +13,7 @@ export default class LFOModule extends AudioModule {
         this._update();
     }
 
-    get _initialState() {
+    get _initialPatch() {
         return {
             waveform: 'sine',   // sine, triangle, sawtooth, inverse-sawtooth, square, sample-hold
             frequency: 10,        // hz

@@ -1,4 +1,5 @@
 import AudioModule from './AudioModule.js';
+import PolyOscillator from './PolyOscillator.js';
 
 function midiNoteToHertz(miniNote) {
     return 440 * Math.pow(2, (miniNote - 69)/12);
@@ -6,17 +7,16 @@ function midiNoteToHertz(miniNote) {
 
 const C4 = midiNoteToHertz(60);
 
-export default class OscillatorModule extends AudioModule {
+export default class PolyOscillatorModule extends AudioModule {
     _initialise() {
         const context = this._audioContext;
 
-        this._oscillatorNode = new OscillatorNode(context, {
+        this._oscillatorNode = new PolyOscillator(context, {
             type: this._patch.get('waveform'),
             frequency: this._hertzFromPatch,
         });
-        this._oscillatorNode.start()
         this._modulation = new GainNode(context, {gain: this._patch.get('modAmount')});
-        this._modulation.connect(this._oscillatorNode.detune);
+        this._oscillatorNode.detune.fanOutConnectFrom(this._modulation);
     }
 
     get _initialPatch() {

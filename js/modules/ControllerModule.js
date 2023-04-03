@@ -28,7 +28,7 @@ export default class ControllerModule extends AudioModule {
 
     }
 
-    get _initialState() {
+    get _initialPatch() {
         return {
             glideTime: 0,   // in seconds
             legato: false,
@@ -163,9 +163,10 @@ export default class ControllerModule extends AudioModule {
     }
 
 
-    _onKeyDown(note, velocity) {
+    _onKeyDown(note, velocity, reusedNote = false) {
         const middleCOffset = (note - 60) * 100;
-        if (!this.getParam('legato') || this._downKeys.length === 0) {
+        const legato = this.getParam('legato');
+        if (!legato || (this._downKeys.length === 0 && !reusedNote)) {
             const event = new CustomEvent('noteon', {
                 detail: {
                     MIDINote: note,
@@ -175,7 +176,7 @@ export default class ControllerModule extends AudioModule {
             });
             this._eventBus.dispatchEvent(event);
         }
-        this._middleCOffetOut.offset.cancelAndHoldAtTime(this._now).setTargetAtTime(middleCOffset, this._now, this._patch.get('glideTime'));
+        this._middleCOffetOut.offset.cancelAndHoldAtTime(this._now).setTargetAtTime(middleCOffset, this._now, Math.max(this._patch.get('glideTime'), this._minimumTimeConstant));
         this._downKeys.unshift(note);
         this._currentNote = note;
         const key = document.querySelector(`.key[data-note="${note}"]`);
@@ -186,6 +187,10 @@ export default class ControllerModule extends AudioModule {
         this._downKeys = this._downKeys.filter(item => (item !== note));
         if (note === this._currentNote) {
             this._currentNote = undefined;
+            if (this._downKeys.length) {
+                const newNote = this._downKeys.shift();
+                this._onKeyDown(newNote, velocity, true);
+            }
             if (!this.getParam('legato') || this._downKeys.length === 0) {
                 const event = new CustomEvent('noteoff', {
                     detail: {
@@ -193,10 +198,6 @@ export default class ControllerModule extends AudioModule {
                     },
                 });
                 this._eventBus.dispatchEvent(event);
-            }
-            if (!this.getParam('legato') && this._downKeys.length) {
-                const newNote = this._downKeys.shift();
-                this._onKeyDown(newNote, velocity);
             }
         }
         const key = document.querySelector(`.key[data-note="${note}"]`);

@@ -1,4 +1,6 @@
 import AudioModule from './AudioModule.js';
+import PolyBiquadFilter from './PolyBiquadFilter.js';
+import PolyGain from './PolyGain.js';
 
 function midiNoteToHertz(miniNote) {
     return 440 * Math.pow(2, (miniNote - 69)/12);
@@ -6,11 +8,11 @@ function midiNoteToHertz(miniNote) {
 
 const C4 = midiNoteToHertz(60);
 
-export default class FilterModule extends AudioModule {
+export default class PolyFilterModule extends AudioModule {
     _initialise() {
         const context = this._audioContext;
 
-        this._filterNode = new BiquadFilterNode(context, {
+        this._filterNode = new PolyBiquadFilter(context, {
             type: this._patch.get('type'),
             frequency: this._patch.get('frequency'),
             Q: this._patch.get('resonance'),
@@ -19,15 +21,15 @@ export default class FilterModule extends AudioModule {
         this._modulation = new GainNode(context, {
             gain: this._patch.get('modAmount'),
         });
-        this._modulation.connect(this._filterNode.detune);
-        this._keyboardFollow = new GainNode(context, {
+        this._filterNode.detune.fanOutConnectFrom(this._modulation);
+        this._keyboardFollow = new PolyGain(context, {
             gain: this._patch.get('keyboardFollowAmount'),
         });
-        this._keyboardFollow.connect(this._filterNode.detune);
-        this._envelope = new GainNode(context, {
+        this._keyboardFollow.polyConnectTo(this._filterNode.detune);
+        this._envelope = new PolyGain(context, {
             gain: this._patch.get('envelopeAmount'),
         });
-        this._envelope.connect(this._filterNode.detune);
+        this._filterNode.detune.polyConnectFrom(this._envelope);
     }
 
     get _initialPatch() {

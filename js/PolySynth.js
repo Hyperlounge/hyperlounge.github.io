@@ -50,11 +50,11 @@ const oscTemplate = id => `
 <div class="control-group">
     ${verticalSlider(`${id}-waveform`, 'Wave', 0, 3, waveforms)}
     ${verticalSlider(`${id}-range`, 'Range', -2, 2, [
-        {value: 2, label: '32'},
-        {value: 1, label: '16'},
+        {value: 2, label: '2'},
+        {value: 1, label: '4'},
         {value: 0, label: '8'},
-        {value: -1, label: '4'},
-        {value: -2, label: '2'},
+        {value: -1, label: '16'},
+        {value: -2, label: '32'},
     ])}
     ${verticalSlider(`${id}-tune`, 'Tune', -7, 7, [
         {value: 7, label: '+7'},
@@ -299,13 +299,13 @@ export default class PolySynth extends ModularSynth {
                         <h2>Amp Envelope</h2>
                         <div id="loudness-envelope">${ADSRTemplate('loudness-envelope')}</div>
                     </div>
-                     <div class="panel">
-                        <h2>Filter</h2>
-                        <div id="filter">${filterTemplate}</div>
-                    </div>
                     <div class="panel">
                         <h2>Filter Envelope</h2>
                         <div id="filter-envelope">${ADSRTemplate('filter-envelope')}</div>
+                    </div>
+                    <div class="panel">
+                        <h2>Filter</h2>
+                        <div id="filter">${filterTemplate}</div>
                     </div>
                    <div class="panel keyboard">
                         <div>

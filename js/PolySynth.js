@@ -233,7 +233,7 @@ export default class PolySynth extends ModularSynth {
             bindControl(`oscillator-${number}-range`, osc, 'range');
             bindControl(`oscillator-${number}-tune`, osc, 'tune');
             bindControl(`oscillator-${number}-fine-tune`, osc, 'fineTune');
-            bindControl(`oscillator-${number}-level`, level, 'level', a => Number(a)/100, a => String(a*100));
+            bindControl(`oscillator-${number}-level`, level, 'level', a => Number(a)/1000, a => String(a*1000));
         }
         bindOscillator(1);
         bindOscillator(2);
@@ -243,7 +243,8 @@ export default class PolySynth extends ModularSynth {
             bindControl(`${id}-decay`, module, 'decaySeconds', linearToLog(100, 10), logToLinear(10, 100));
             bindControl(`${id}-sustain`, module, 'sustainLevel', a => Number(a)/100, a => String(a*100));
             bindControl(`${id}-release`, module, 'releaseSeconds', linearToLog(100, 10), logToLinear(10, 100));
-            bindControl(`${id}-velocity`, module, 'velocityAmount', a => Number(a)/1000, a => String(a*1000));
+            const factor = id === 'loudness-envelope' ? 10000 : 100;
+            bindControl(`${id}-velocity`, module, 'velocityAmount', a => Number(a)/factor, a => String(a*factor));
         }
         bindADSR('loudness-envelope', this._loudnessEnvelope);
         bindADSR('filter-envelope', this._filterEnvelope);

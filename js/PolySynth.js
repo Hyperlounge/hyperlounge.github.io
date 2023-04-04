@@ -243,7 +243,7 @@ export default class PolySynth extends ModularSynth {
             bindControl(`${id}-decay`, module, 'decaySeconds', linearToLog(100, 10), logToLinear(10, 100));
             bindControl(`${id}-sustain`, module, 'sustainLevel', a => Number(a)/100, a => String(a*100));
             bindControl(`${id}-release`, module, 'releaseSeconds', linearToLog(100, 10), logToLinear(10, 100));
-            bindControl(`${id}-velocity`, module, 'velocityAmount', a => Number(a)/100, a => String(a*100));
+            bindControl(`${id}-velocity`, module, 'velocityAmount', a => Number(a)/1000, a => String(a*1000));
         }
         bindADSR('loudness-envelope', this._loudnessEnvelope);
         bindADSR('filter-envelope', this._filterEnvelope);

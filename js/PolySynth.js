@@ -81,7 +81,7 @@ const oscTemplate = id => `
 const lfoTemplate = `
 <div class="control-group">
     ${verticalSlider(`lfo-waveform`, 'Wave', 0, 4, lfoWaveforms)}
-    ${verticalSlider(`lfo-frequency`, 'Freq.', 0, 100, ['0.1','0.2','0.4','0.8','1.5','3','6','12','25','50','100'])}
+    ${verticalSlider(`lfo-frequency`, 'Freq.', 0, 100, ['100','50','25','12','6','3','1.5','0.8','0.4','0.2','0.1'])}
     ${verticalSlider(`lfo-fixed-level`, 'Level', 0, 100, labels0to10)}
     ${verticalSlider(`lfo-mod-wheel-level`, 'Mod Wheel', 0, 100, labels0to10)}
 </div>
@@ -291,7 +291,7 @@ export default class PolySynth extends ModularSynth {
         this._root && (this._root.innerHTML = `
             <div class="synth">
                 <div class="header">
-                    <p>Synth <button id="save-patch">Save patch</button></p>
+                    Synth <button id="save-patch">Save patch</button>
                 </div>
                 <div class="controls">
                     <div class="panel">
@@ -331,7 +331,6 @@ export default class PolySynth extends ModularSynth {
                             <button class="keyboard-range" value="fewer-octaves">&minus;</button>
                             octaves
                             <button class="keyboard-range" value="more-octaves">+</button>
-                        
                         </div>
                         <div class="keyboard-keys"></div>
                     </div>

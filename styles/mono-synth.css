@@ -20,6 +20,8 @@ html, body {
 
 .header {
   background: silver;
+  text-align: left;
+  padding: 3px 10px;
 }
 
 .controls {
@@ -32,7 +34,7 @@ html, body {
   flex-basis: content;
   display: flex;
   flex-direction: column;
-  margin: 5px;
+  margin: 2px;
   background: silver;
   border: 1px solid gray;
   padding: 0 10px;
@@ -93,7 +95,7 @@ html, body {
   padding: 10px;
 }
 .panel.keyboard .keyboard-keys {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 .panel.keyboard .keys {
   width: 100%;

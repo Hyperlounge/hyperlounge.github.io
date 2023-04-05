@@ -169,8 +169,10 @@ export default class SoftKeyboardModule extends AudioModule {
         const key = evt.target;
         if (key.classList.contains('key')) {
             const note = Number(key.getAttribute('data-note'));
-            this._eventBus.dispatchEvent(new MidiEvent(NOTE_ON, note, this._state.get('velocity')));
-            this._notesTouched.includes(note) || this._notesTouched.push(note);
+            if (!this._notesTouched.includes(note)) {
+                this._eventBus.dispatchEvent(new MidiEvent(NOTE_ON, note, this._state.get('velocity')));
+                this._notesTouched.push(note);
+            }
             key.addEventListener('touchmove', this._onKeyTouchMove);
             key.addEventListener('touchcancel', this._onKeyTouchCancel);
             key.addEventListener('touchend', this._onKeyTouchEnd);

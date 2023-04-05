@@ -1,5 +1,7 @@
 import ModularSynth from './modules/ModularSynth.js';
 
+const initialPatch = '{"global":{"totalVoices":8,"legato":false},"softKeyboard":{},"voiceAllocator":{"numberOfVoices":8,"glideTime":0},"osc1":{"waveform":"sawtooth","range":0,"tune":0,"fineTune":5,"modAmount":100},"osc2":{"waveform":"sawtooth","range":0,"tune":0,"fineTune":-4,"modAmount":100},"oscLevel1":{"level":0.042},"oscLevel2":{"level":0.036},"amplifier":{},"loudnessEnvelope":{"attackSeconds":0,"decaySeconds":0,"sustainLevel":1,"releaseSeconds":0,"velocityAmount":0.0059},"filter":{"type":"lowpass","frequency":96.88450011898634,"resonance":1,"modAmount":1900,"keyboardFollowAmount":1,"envelopeAmount":295},"filterEnvelope":{"attackSeconds":0.03836341792159985,"decaySeconds":1.0794767556393339,"sustainLevel":0.05,"releaseSeconds":0,"velocityAmount":0.48},"lfo":{"waveform":"sine","frequency":2.9512092266663865,"fixedAmount":0,"modWheelAmount":0}}';
+
 function verticalSlider(id, label, min, max, list) {
     const isValuesList = !!(!!list && !!list.length && typeof list[0] === 'object');
     return `
@@ -269,7 +271,7 @@ export default class PolySynth extends ModularSynth {
     }
 
     loadPatch() {
-        const patch = localStorage.getItem('PolySynth-current-patch');
+        const patch = localStorage.getItem('PolySynth-current-patch') || initialPatch;
         patch && (this.patch = JSON.parse(patch));
     }
 

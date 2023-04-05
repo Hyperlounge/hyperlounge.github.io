@@ -92,7 +92,7 @@ const filterTemplate = `
     ${verticalSlider(`filter-type`, 'Pass', 0, 2, filterTypes)}
     ${verticalSlider(`filter-frequency`, 'Freq.', 0, 100, ['20k','10k','5k','2.5k','1.2k','600','300','150','75','36','18'])}
     ${verticalSlider(`filter-resonance`, 'Res.', 0, 100, labels0to10)}
-    ${verticalSlider(`filter-envelope`, 'Env.', 0, 100, labels0to10)}
+    ${verticalSlider(`filter-envelope-amount`, 'Env.', 0, 100, labels0to10)}
     ${verticalSlider(`filter-modulation`, 'Mod.', 0, 100, labels0to10)}
     ${verticalSlider(`filter-keyboard`, 'Keys', 0, 100, labels0to10)}
 </div>
@@ -191,6 +191,8 @@ export default class PolySynth extends ModularSynth {
 
         this._render();
 
+        document.getElementById('save-patch').addEventListener('click', evt => this.savePatchToFile());
+
         this._softKeyboard = this.createSoftKeyboardModule('softKeyboard');
         this._voiceAllocator = this.createVoiceAllocatorModule('voiceAllocator');
         this._osc1 = this.createPolyOscillatorModule('osc1');
@@ -252,7 +254,7 @@ export default class PolySynth extends ModularSynth {
         bindControl('filter-type', this._filter, 'type', optionToParam(filterTypes), paramToOption(filterTypes));
         bindControl('filter-frequency', this._filter, 'frequency', linearToLogRange(100, 18, 20000), logRangeToLinear(18, 20000, 100));
         bindControl('filter-resonance', this._filter, 'resonance', a => Number(a)/5, a => String(a*5));
-        bindControl('filter-envelope', this._filter, 'envelopeAmount');
+        bindControl('filter-envelope-amount', this._filter, 'envelopeAmount', a => Number(a)*5, a => String(a/5));
         bindControl('filter-modulation', this._filter, 'modAmount', a => Number(a)*100, a => String(a/100));
         bindControl('filter-keyboard', this._filter, 'keyboardFollowAmount', a => Number(a)/100, a => String(a*100));
 
@@ -271,12 +273,25 @@ export default class PolySynth extends ModularSynth {
         patch && (this.patch = JSON.parse(patch));
     }
 
+    savePatchToFile() {
+        const element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.patch)));
+        element.setAttribute('download', 'synth-patch.txt');
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+    }
+
     _render() {
 
         this._root && (this._root.innerHTML = `
             <div class="synth">
                 <div class="header">
-                    <p>Synth</p>
+                    <p>Synth <button id="save-patch">Save patch</button></p>
                 </div>
                 <div class="controls">
                     <div class="panel">
@@ -307,7 +322,7 @@ export default class PolySynth extends ModularSynth {
                         <h2>Filter</h2>
                         <div id="filter">${filterTemplate}</div>
                     </div>
-                   <div class="panel keyboard">
+                    <div class="panel keyboard">
                         <div>
                             <button class="keyboard-range" value="transpose-down">&minus;</button>
                             transpose

@@ -47,9 +47,13 @@ export default class SoftKeyboardModule extends AudioModule {
         this._keyboard = document.querySelector('.keyboard-keys');
         if (this._isTouchDevice) {
             this._notesTouched = [];
-            this._keyboard.addEventListener('touchstart', evt => this._onKeyTouchStart(evt))
+            this._keyboard.addEventListener('touchstart', evt => this._compareNotesTouched(evt));
+            this._keyboard.addEventListener('touchmove', evt => this._compareNotesTouched(evt));
+            this._keyboard.addEventListener('touchcancel', evt => this._compareNotesTouched(evt));
+            this._keyboard.addEventListener('touchend', evt => this._compareNotesTouched(evt));
+
         } else {
-            this._keyboard.addEventListener('mousedown', evt => this._onKeyMouseDown(evt))
+            this._keyboard.addEventListener('mousedown', evt => this._onKeyMouseDown(evt));
         }
 
         Array.from(document.querySelectorAll('button.keyboard-range')).forEach(button => {
@@ -164,22 +168,8 @@ export default class SoftKeyboardModule extends AudioModule {
         }
     }
 
-    _onKeyTouchStart(evt) {
-        evt.preventDefault();
-        const key = evt.target;
-        if (key.classList.contains('key')) {
-            const note = Number(key.getAttribute('data-note'));
-            if (!this._notesTouched.includes(note)) {
-                this._eventBus.dispatchEvent(new MidiEvent(NOTE_ON, note, this._state.get('velocity')));
-                key.addEventListener('touchmove', this._onKeyTouchMove);
-                key.addEventListener('touchcancel', this._onKeyTouchCancel);
-                key.addEventListener('touchend', this._onKeyTouchEnd);
-            }
-            this._notesTouched.push(note);
-        }
-    }
-
     _compareNotesTouched(evt) {
+        evt.preventDefault();
         const notesTouched = [];
         Array.from(evt.touches).forEach(touch => {
             const key = document.elementFromPoint(touch.pageX, touch.pageY);
@@ -189,7 +179,7 @@ export default class SoftKeyboardModule extends AudioModule {
             }
         });
         // any notes newly in the array trigger a keyDown
-        const notesTurnedOn = {};
+        const notesTurnedOn = [];
         notesTouched.filter(note => !this._notesTouched.includes(note)).forEach(note => {
             if (!notesTurnedOn.includes(note)) {
                 this._eventBus.dispatchEvent(new MidiEvent(NOTE_ON, note, this._state.get('velocity')));
@@ -197,7 +187,7 @@ export default class SoftKeyboardModule extends AudioModule {
             }
         });
         // any notes now missing trigger a keyUp
-        const notesTurnedOff = {};
+        const notesTurnedOff = [];
         this._notesTouched.filter(note => !notesTouched.includes(note)).forEach(note => {
             if (!notesTurnedOff.includes(note)) {
                 this._eventBus.dispatchEvent(new MidiEvent(NOTE_OFF, note, this._state.get('velocity')));
@@ -205,24 +195,5 @@ export default class SoftKeyboardModule extends AudioModule {
             }
         });
         this._notesTouched = notesTouched;
-    }
-
-    _onKeyTouchMove = evt => {
-        evt.preventDefault();
-        this._compareNotesTouched(evt);
-    }
-
-    _onKeyTouchCancel = evt => {
-        evt.preventDefault();
-        this._onKeyTouchEnd(evt);
-    }
-
-    _onKeyTouchEnd = evt => {
-        evt.preventDefault();
-        this._compareNotesTouched(evt);
-        const key = evt.target;
-        key.removeEventListener('touchmove', this._onKeyTouchMove);
-        key.removeEventListener('touchcancel', this._onKeyTouchCancel);
-        key.removeEventListener('touchend', this._onKeyTouchEnd);
     }
 }

@@ -175,24 +175,16 @@ export default class SoftKeyboardModule extends AudioModule {
             const key = document.elementFromPoint(touch.pageX, touch.pageY);
             if (key.classList.contains('key')) {
                 const note = Number(key.getAttribute('data-note'));
-                notesTouched.push(note);
+                notesTouched.includes(note) || notesTouched.push(note);
             }
         });
         // any notes newly in the array trigger a keyDown
-        const notesTurnedOn = [];
         notesTouched.filter(note => !this._notesTouched.includes(note)).forEach(note => {
-            if (!notesTurnedOn.includes(note)) {
-                this._eventBus.dispatchEvent(new MidiEvent(NOTE_ON, note, this._state.get('velocity')));
-                notesTurnedOn.push(note);
-            }
+            this._eventBus.dispatchEvent(new MidiEvent(NOTE_ON, note, this._state.get('velocity')));
         });
         // any notes now missing trigger a keyUp
-        const notesTurnedOff = [];
         this._notesTouched.filter(note => !notesTouched.includes(note)).forEach(note => {
-            if (!notesTurnedOff.includes(note)) {
-                this._eventBus.dispatchEvent(new MidiEvent(NOTE_OFF, note, this._state.get('velocity')));
-                notesTurnedOff.push(note);
-            }
+            this._eventBus.dispatchEvent(new MidiEvent(NOTE_OFF, note, this._state.get('velocity')));
         });
         this._notesTouched = notesTouched;
     }

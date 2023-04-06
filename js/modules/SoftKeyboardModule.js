@@ -155,6 +155,8 @@ export default class SoftKeyboardModule extends AudioModule {
         } else {
             this._eventBus.dispatchEvent(new MidiEvent(NOTE_OFF, this._currentNote, this._state.get('velocity')));
             delete this._currentNote;
+            document.body.removeEventListener('mousemove', this._onKeyMouseMove);
+            document.body.removeEventListener('mouseup', this._onKeyMouseUp);
         }
     }
 

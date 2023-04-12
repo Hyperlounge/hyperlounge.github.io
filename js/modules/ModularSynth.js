@@ -13,6 +13,8 @@ import PolyAmpModule from './PolyAmpModule.js';
 import PolyEnvelopeModule from './PolyEnvelopeModule.js';
 import PolyLevelModule from './PolyLevelModule.js';
 import PolyFilterModule from './PolyFilterModule.js';
+import MidiModule from './MidiModule.js';
+import ControllerHelperModule from './ControllerHelperModule.js';
 
 export default class ModularSynth {
     constructor() {
@@ -45,6 +47,8 @@ export default class ModularSynth {
         }
     }
 
+    createMidiModule = this._moduleCreator(MidiModule);
+    createControllerHelperModule = this._moduleCreator(ControllerHelperModule);
     createSoftKeyboardModule = this._moduleCreator(SoftKeyboardModule);
     createVoiceAllocatorModule = this._moduleCreator(VoiceAllocatorModule);
     createControllerModule = this._moduleCreator(ControllerModule);

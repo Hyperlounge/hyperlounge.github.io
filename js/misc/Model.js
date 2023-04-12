@@ -43,7 +43,11 @@ export default class Model extends EventTarget {
     hasChanged(attributeName, handler) {
         const prevValue = this._previousAttributes[attributeName];
         const newValue = this._attributes[attributeName];
-        (newValue !== prevValue) && handler(newValue, prevValue);
+        const hasChanged = newValue !== prevValue;
+        if (handler && hasChanged) {
+            handler(newValue, prevValue);
+        }
+        return hasChanged;
     }
 
     set attributes(value) {

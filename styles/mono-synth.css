@@ -44,6 +44,7 @@ html, body {
   text-align: center;
   font: 12px Verdana;
   margin-top: 0;
+  margin-bottom: 0;
   text-transform: uppercase;
 }
 .panel div.control-group {
@@ -58,7 +59,8 @@ html, body {
 }
 .panel span.control label {
   display: block;
-  padding-bottom: 10px;
+  padding-bottom: 2px;
+  padding-top: 5px;
   text-align: center;
 }
 .panel span.control div.control-body {
@@ -74,7 +76,7 @@ html, body {
 .panel span.control input[type=range][orient=vertical] {
   appearance: slider-vertical;
   width: 30px;
-  height: 170px;
+  height: 172px;
   padding: 0;
   margin: 0;
 }
@@ -82,13 +84,23 @@ html, body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 165px;
+  height: 167px;
   padding: 0;
   margin: 0;
 }
 .panel span.control .labels .label {
   font-size: 9px;
   padding: 0;
+}
+.panel div.vertical-group {
+  display: flex;
+  flex-direction: column;
+}
+.panel div.vertical-group input[type=range][orient=vertical] {
+  height: 70px;
+}
+.panel div.vertical-group .labels {
+  height: 65px;
 }
 .panel.keyboard {
   flex-basis: 100%;

@@ -9,6 +9,9 @@ export default class LFOModule extends AudioModule {
         this._level = new GainNode(context, {gain: -1});
         this._oscillatorNode.start()
         this._oscillatorNode.connect(this._level);
+        this._sampleAndHold = new ConstantSourceNode(context);
+        this._sampleAndHold.start();
+        this._sampleAndHold.connect(this._level);
         this._eventBus.addEventListener('modwheel', evt => this._onModWheelChange(evt));
         this._update();
     }
@@ -33,15 +36,38 @@ export default class LFOModule extends AudioModule {
     }
 
     _update() {
+        const frequency = this._patch.get('frequency');
         let type = this._patch.get('waveform');
         let multiplier = 1;
-        if (type === 'inverse-sawtooth') {
-            type = 'sawtooth'
-            multiplier = -1;
+        if (type === 'sample-hold') {
+            if (this._sampleAndHoldTimer === undefined) {
+                this._oscillatorNode.disconnect(this._level);
+                this._sampleAndHold.connect(this._level);
+            }
+            if (this._patch.hasChanged('frequency') || this._patch.hasChanged('waveform')) {
+                if (this._sampleAndHoldTimer !== undefined) {
+                    clearInterval(this._sampleAndHoldTimer);
+                }
+                this._sampleAndHoldTimer = setInterval(() => {
+                    this._sampleAndHold.offset.setValueAtTime(Math.random()*2 - 1, this._now);
+                }, 1000 / frequency);
+            }
+        } else {
+            if (this._sampleAndHoldTimer !== undefined) {
+                clearInterval(this._sampleAndHoldTimer);
+                delete this._sampleAndHoldTimer;
+                this._oscillatorNode.connect(this._level);
+                this._sampleAndHold.disconnect(this._level);
+            }
+            if (type === 'inverse-sawtooth') {
+                type = 'sawtooth'
+                multiplier = -1;
+            }
+            this._oscillatorNode.type = type;
+            this._oscillatorNode.frequency.setTargetAtTime(frequency, this._now, this._minimumTimeConstant);
+
         }
         const level = (this._patch.get('fixedAmount') + (this._patch.get('modWheelAmount') * this._modWheelValue)) * multiplier;
-        this._oscillatorNode.type = type;
-        this._oscillatorNode.frequency.setTargetAtTime(this._patch.get('frequency'), this._now, this._minimumTimeConstant);
         this._level.gain.setTargetAtTime(level, this._now, this._minimumTimeConstant);
     }
 

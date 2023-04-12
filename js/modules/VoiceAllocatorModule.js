@@ -83,7 +83,7 @@ export default class VoiceAllocatorModule extends AudioModule {
             let voiceNumber = usedVoice.voiceNumber;
             // If we are in monophonic mode, give the voice back to any other down key
             if (this.globalPatch.totalVoices === 1 && this._downNotes.length) {
-                newNote = this._downNotes.shift();
+                newNote = this._downNotes[0];
                 usedVoice.note = newNote;
             } else {
                 this._usedVoices = this._usedVoices.filter(item => item.voiceNumber !== voiceNumber);

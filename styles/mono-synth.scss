@@ -44,6 +44,7 @@ html, body {
     text-align: center;
     font: 12px Verdana;
     margin-top: 0;
+    margin-bottom: 0;
     text-transform: uppercase;
   }
 
@@ -60,7 +61,8 @@ html, body {
 
     label {
       display: block;
-      padding-bottom: 10px;
+      padding-bottom: 2px;
+      padding-top: 5px;
       text-align: center;
     }
 
@@ -81,7 +83,7 @@ html, body {
       &[orient="vertical"] {
         appearance: slider-vertical;
         width: 30px;
-        height: 170px;
+        height: 172px;
         padding: 0;
         margin: 0;
       }
@@ -91,7 +93,7 @@ html, body {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 165px;
+      height: 167px;
       padding: 0;
       margin: 0;
 
@@ -101,6 +103,19 @@ html, body {
       }
     }
 
+  }
+
+  div.vertical-group {
+    display: flex;
+    flex-direction: column;
+
+    input[type="range"][orient="vertical"] {
+      height: 70px;
+    }
+
+    .labels {
+      height: 65px;
+    }
   }
 
   &.keyboard {

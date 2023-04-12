@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <style>
     button.selector {
         padding: 30px;
-        font-size: 72px;
+        font-size: 48px;
         margin: 20px;
     }
     #synth {
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 </style>
 <div id="synth">
-    <button class="selector" id="mono">Mono Synth</button> <button class="selector" id="poly">Poly Synth</button>
+    <button class="selector" id="poly">Take me to the 80's!</button>
 </div>
     `
     document.body.addEventListener('click', startSynth);

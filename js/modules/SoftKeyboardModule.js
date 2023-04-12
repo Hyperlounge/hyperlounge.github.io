@@ -1,12 +1,6 @@
 import AudioModule from './AudioModule.js';
 import MidiEvent from '../events/MidiEvent.js';
 
-const NOTE_OFF = 128;
-const NOTE_ON = 144;
-const PITCH_BEND = 224;
-const CONTROLLER = 176;
-const MOD_WHEEL = 1;
-
 function mapRange(a, b, func) {
     return Array.from(Array(b - a + 1)).map((item, index) => func(index + a));
 }
@@ -135,7 +129,7 @@ export default class SoftKeyboardModule extends AudioModule {
         const key = evt.target;
         if (key.classList.contains('key')) {
             const note = Number(key.getAttribute('data-note'));
-            this._eventBus.dispatchEvent(new MidiEvent(NOTE_ON, note, this._state.get('velocity')));
+            this._eventBus.dispatchEvent(new MidiEvent(MidiEvent.NOTE_ON, note, this._state.get('velocity')));
             this._currentNote = note;
             document.body.addEventListener('mousemove', this._onKeyMouseMove);
             document.body.addEventListener('mouseup', this._onKeyMouseUp);
@@ -148,12 +142,12 @@ export default class SoftKeyboardModule extends AudioModule {
         if (key.classList.contains('key')) {
             const note = Number(key.getAttribute('data-note'));
             if (note !== this._currentNote) {
-                this._eventBus.dispatchEvent(new MidiEvent(NOTE_ON, note, this._state.get('velocity')));
-                this._eventBus.dispatchEvent(new MidiEvent(NOTE_OFF, this._currentNote, this._state.get('velocity')));
+                this._eventBus.dispatchEvent(new MidiEvent(MidiEvent.NOTE_ON, note, this._state.get('velocity')));
+                this._eventBus.dispatchEvent(new MidiEvent(MidiEvent.NOTE_OFF, this._currentNote, this._state.get('velocity')));
                 this._currentNote = note;
             }
         } else {
-            this._eventBus.dispatchEvent(new MidiEvent(NOTE_OFF, this._currentNote, this._state.get('velocity')));
+            this._eventBus.dispatchEvent(new MidiEvent(MidiEvent.NOTE_OFF, this._currentNote, this._state.get('velocity')));
             delete this._currentNote;
             document.body.removeEventListener('mousemove', this._onKeyMouseMove);
             document.body.removeEventListener('mouseup', this._onKeyMouseUp);
@@ -163,7 +157,7 @@ export default class SoftKeyboardModule extends AudioModule {
     _onKeyMouseUp = evt => {
         evt.preventDefault();
         if (this._currentNote) {
-            this._eventBus.dispatchEvent(new MidiEvent(NOTE_OFF, this._currentNote, this._state.get('velocity')));
+            this._eventBus.dispatchEvent(new MidiEvent(MidiEvent.NOTE_OFF, this._currentNote, this._state.get('velocity')));
             delete this._currentNote;
             document.body.removeEventListener('mousemove', this._onKeyMouseMove);
             document.body.removeEventListener('mouseup', this._onKeyMouseUp);
@@ -182,11 +176,11 @@ export default class SoftKeyboardModule extends AudioModule {
         });
         // any notes newly in the array trigger a keyDown
         notesTouched.filter(note => !this._notesTouched.includes(note)).forEach(note => {
-            this._eventBus.dispatchEvent(new MidiEvent(NOTE_ON, note, this._state.get('velocity')));
+            this._eventBus.dispatchEvent(new MidiEvent(MidiEvent.NOTE_ON, note, this._state.get('velocity')));
         });
         // any notes now missing trigger a keyUp
         this._notesTouched.filter(note => !notesTouched.includes(note)).forEach(note => {
-            this._eventBus.dispatchEvent(new MidiEvent(NOTE_OFF, note, this._state.get('velocity')));
+            this._eventBus.dispatchEvent(new MidiEvent(MidiEvent.NOTE_OFF, note, this._state.get('velocity')));
         });
         this._notesTouched = notesTouched;
     }

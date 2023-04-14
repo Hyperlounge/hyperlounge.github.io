@@ -30,6 +30,13 @@ html, body {
   flex-wrap: wrap;
 }
 
+@media (max-height: 690px) {
+  .controls {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+}
+
 .panel {
   flex-basis: content;
   display: flex;
@@ -60,7 +67,9 @@ html, body {
     vertical-align: top;
 
     label {
-      display: block;
+      width: 50px;
+      display: inline-block;
+      white-space: nowrap;
       padding-bottom: 2px;
       padding-top: 5px;
       text-align: center;
@@ -161,10 +170,10 @@ html, body {
          flex-grow: 100;
 
          &.first {
-           flex-grow: 9;
+           flex-grow: 70;
          }
          &.last {
-           flex-grow: 72;
+           flex-grow: 90;
          }
        }
 
@@ -184,11 +193,5 @@ html, body {
  }
 }
 
-label {
-  display: inline-block;
-  white-space: nowrap;
-  text-align: center;
 
-  width: 50px;
-}
 

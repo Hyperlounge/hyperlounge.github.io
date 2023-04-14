@@ -6,7 +6,7 @@ const initialPatch = '{"global":{"totalVoices":8,"legato":false},"softKeyboard":
 function verticalSlider(id, label, min, max, list) {
     const isValuesList = !!(!!list && !!list.length && typeof list[0] === 'object');
     return `
-    <span class="control">
+    <span class="control vertical-slider">
         <label>${label}</label>
         <div class="control-body">
             <input id="${id}" type="range" min="${min}" max="${max}" ${isValuesList ? `list="${id}-values"` : ''} orient="vertical"/>   
@@ -92,7 +92,10 @@ const lfoTemplate = `
     ${verticalSlider(`lfo-waveform`, 'Wave', 0, 5, lfoWaveforms)}
     ${verticalSlider(`lfo-frequency`, 'Freq.', 0, 100, ['100','50','25','12','6','3','1.5','0.8','0.4','0.2','0.1'])}
     ${verticalSlider(`lfo-fixed-level`, 'Level', 0, 100, labels0to10)}
-    ${verticalSlider(`lfo-mod-wheel-level`, 'Mod Wheel', 0, 100, labels0to10)}
+    <div class="vertical-group">
+        ${verticalSlider(`lfo-mod-wheel-level`, 'Mod Wheel', 0, 100, [10,8,6,4,2,0])}
+        ${verticalSlider(`lfo-mod-delay`, 'Delay', 0, 100, [10,5,2.5,1.2,0.4,0])}
+    </div>
 </div>
 `;
 
@@ -201,6 +204,7 @@ export default class PolySynth extends ModularSynth {
         this._render();
 
         document.getElementById('save-patch').addEventListener('click', evt => this.savePatchToFile());
+        document.getElementById('share-patch').addEventListener('click', evt => this.sharePatch());
 
         this.createMidiModule();
         this.createSoftKeyboardModule();
@@ -261,8 +265,7 @@ export default class PolySynth extends ModularSynth {
             bindControl(`${id}-decay`, module, 'decaySeconds', linearToLog(100, 10), logToLinear(10, 100));
             bindControl(`${id}-sustain`, module, 'sustainLevel', a => Number(a)/100, a => String(a*100));
             bindControl(`${id}-release`, module, 'releaseSeconds', linearToLog(100, 10), logToLinear(10, 100));
-            const factor = id === 'loudness-envelope' ? 10000 : 100;
-            bindControl(`${id}-velocity`, module, 'velocityAmount', a => Number(a)/factor, a => String(a*factor));
+            bindControl(`${id}-velocity`, module, 'velocityAmount', a => Number(a)/100, a => String(a*100));
         }
         bindADSR('loudness-envelope', this._loudnessEnvelope);
         bindADSR('filter-envelope', this._filterEnvelope);
@@ -270,7 +273,7 @@ export default class PolySynth extends ModularSynth {
         bindControl('filter-type', this._filter, 'type', optionToParam(filterTypes), paramToOption(filterTypes));
         bindControl('filter-frequency', this._filter, 'frequency', linearToLogRange(100, 4.5, 5000), logRangeToLinear(4.5, 5000, 100));
         bindControl('filter-resonance', this._filter, 'resonance', a => Number(a)/5, a => String(a*5));
-        bindControl('filter-envelope-amount', this._filter, 'envelopeAmount', a => Number(a)*5, a => String(a/5));
+        bindControl('filter-envelope-amount', this._filter, 'envelopeAmount', a => Number(a)*100, a => String(a/100));
         bindControl('filter-modulation', this._filter, 'modAmount', a => Number(a)*100, a => String(a/100));
         bindControl('filter-keyboard', this._filter, 'keyboardFollowAmount', a => Number(a)/100, a => String(a*100));
 
@@ -278,6 +281,16 @@ export default class PolySynth extends ModularSynth {
         bindControl('lfo-frequency', this._lfo, 'frequency', linearToLogRange(100, 0.1, 100), logRangeToLinear(0.1, 100, 100));
         bindControl('lfo-fixed-level', this._lfo, 'fixedAmount', a => Number(a)/100, a => String(a*100));
         bindControl('lfo-mod-wheel-level', this._lfo, 'modWheelAmount', a => Number(a)/50, a => String(a*50));
+        bindControl(`lfo-mod-delay`, this._lfo, 'delay', linearToLog(100, 10), logToLinear(10, 100));
+
+        bindControl('envelope-stretch', this, 'envelopeStretch');
+    }
+
+    get _initialGlobalPatch() {
+        return {
+            ...super._initialGlobalPatch,
+            envelopeStretch: false,
+        }
     }
 
     savePatch() {
@@ -285,17 +298,46 @@ export default class PolySynth extends ModularSynth {
     }
 
     loadPatch() {
-        const patch = localStorage.getItem('PolySynth-current-patch') || initialPatch;
+        let patch;
+        if (/^\?patch=/.test(location.search)) {
+            patch = decodeURIComponent(location.search.replace(/^\?patch=/, ''));
+        } else {
+            patch = localStorage.getItem('PolySynth-current-patch') || initialPatch;
+        }
         patch && (this.patch = JSON.parse(patch));
+    }
+
+    sharePatch() {
+        const url = location.origin + location.pathname + '?patch=' + encodeURIComponent(JSON.stringify(this.patch));
+        new Dialog(`
+        <a href='${url}' target="_blank">Click to open in new tab</a>
+        `, {
+            maxWidth: 300,
+            title: 'Share Patch',
+            optionLabels: ['Copy link to clipboard', 'Cancel']
+        }).then(data => {
+            const { option } = data;
+            if (option === 0) {
+                navigator.clipboard.writeText(url);
+            }
+        })
     }
 
     savePatchToFile() {
         new Dialog(`
         <form>
-            <label for="patch-name">Patch name:</label><input type="text" name="patch-name"/>
-            <label for="patch-bank">Bank:</label><input type="text" name="patch-bank"/>
+            <label for="patch-name">Patch name: </label><input type="text" name="patch-name"/>
+            <label for="patch-bank">&nbsp;&nbsp;&nbsp;&nbsp;Bank: </label><select name="patch-bank">
+                <option>Leads</option>
+                <option>Keys</option>
+                <option>Basses</option>
+                <option>Pads</option>
+                <option>FX</option>
+                <option>Misc</option>
+            </select>
         </form>
         `, {
+            maxWidth: 400,
             title: 'Save Patch',
             optionLabels: ['Save', 'Cancel']
         }).then(data => {
@@ -324,7 +366,7 @@ export default class PolySynth extends ModularSynth {
         this._root && (this._root.innerHTML = `
             <div class="synth">
                 <div class="header">
-                    Synth <button id="save-patch">Save patch</button>
+                    Synth <button id="save-patch">Save patch</button> <button id="share-patch">Share patch</button>
                 </div>
                 <div class="controls">
                     <div class="panel">
@@ -355,18 +397,26 @@ export default class PolySynth extends ModularSynth {
                         <h2>Filter</h2>
                         <div id="filter">${filterTemplate}</div>
                     </div>
-                    <div class="panel keyboard">
-                        <div>
-                            <button class="keyboard-range" value="transpose-down">&minus;</button>
-                            transpose
-                            <button class="keyboard-range" value="transpose-up">+</button>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <button class="keyboard-range" value="fewer-octaves">&minus;</button>
-                            octaves
-                            <button class="keyboard-range" value="more-octaves">+</button>
+                    <div class="panel">
+                        <h2>Global</h2>
+                        <div class="control-group">
+                            <div class="vertical-group">
+                                <label>Envelope Stretch <input type="checkbox" id="envelope-stretch"/></label>
+                            </div>
                         </div>
-                        <div class="keyboard-keys"></div>
                     </div>
+                </div>
+                <div class="panel keyboard">
+                    <div>
+                        <button class="keyboard-range" value="transpose-down">&minus;</button>
+                        transpose
+                        <button class="keyboard-range" value="transpose-up">+</button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button class="keyboard-range" value="fewer-octaves">&minus;</button>
+                        octaves
+                        <button class="keyboard-range" value="more-octaves">+</button>
+                    </div>
+                    <div class="keyboard-keys"></div>
                 </div>
             </div>
         `);

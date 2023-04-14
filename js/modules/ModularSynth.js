@@ -72,6 +72,14 @@ export default class ModularSynth {
         this._patch.set(data);
     }
 
+    setParam(name, value) {
+        this.globalPatch.set({[name]: value});
+    }
+
+    getParam(name) {
+        return this.globalPatch.get(name);
+    }
+
     get globalPatch() {
         return this._patch.get('global');
     }

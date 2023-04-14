@@ -8,7 +8,7 @@ function mapRange(a, b, func) {
 const keyBoardTemplate = data => `
     <div class="ivory keys">
         ${mapRange(data.bottomNote, data.topNote, note => {
-            const octave = Math.floor(note / 12);
+            const octave = Math.floor(note / 12) - 1;
             const noteInOctave = note % 12;
             const addLabel = noteInOctave === 0;
             const isEbony = [1, 3, 6, 8, 10].includes(noteInOctave);
@@ -60,7 +60,7 @@ export default class SoftKeyboardModule extends AudioModule {
     get _initialState() {
         return {
             velocity: 70,
-            bottomNote: 36,
+            bottomNote: 33,
             topNote: 72,
         }
     }
@@ -73,7 +73,7 @@ export default class SoftKeyboardModule extends AudioModule {
         const { bottomNote, topNote } = this._state.attributes;
         switch (evt.target.value) {
             case 'transpose-down':
-                if (bottomNote > 12) {
+                if (bottomNote > 21) {
                     this._state.set({
                         bottomNote: bottomNote - 12,
                         topNote: topNote - 12,
@@ -81,7 +81,7 @@ export default class SoftKeyboardModule extends AudioModule {
                 }
                 break;
             case 'transpose-up':
-                if (topNote < 96) {
+                if (topNote < 108) {
                     this._state.set({
                         bottomNote: bottomNote + 12,
                         topNote: topNote + 12,
@@ -96,10 +96,10 @@ export default class SoftKeyboardModule extends AudioModule {
                 }
                 break;
             case 'more-octaves':
-                if (topNote - bottomNote < 84) {
+                if (topNote - bottomNote < 87) {
                     let newBottom = bottomNote;
                     let newTop = topNote + 12;
-                    if (topNote > 84) {
+                    if (topNote > 96) {
                         newBottom -= 12;
                         newTop -= 12;
                     }

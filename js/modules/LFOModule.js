@@ -1,4 +1,5 @@
 import AudioModule from './AudioModule.js';
+import NoteChangeEvent from '../events/NoteChangeEvent.js';
 
 export default class LFOModule extends AudioModule {
     _initialise() {
@@ -14,6 +15,8 @@ export default class LFOModule extends AudioModule {
         this._sampleAndHold.connect(this._level);
         this._eventBus.addEventListener('modwheel', evt => this._onModWheelChange(evt));
         this._update();
+
+        this._eventBus.addEventListener(NoteChangeEvent.type, evt => this._onNoteChange(evt));
     }
 
     get _initialPatch() {
@@ -22,7 +25,18 @@ export default class LFOModule extends AudioModule {
             frequency: 10,        // hz
             fixedAmount: 0,       // 0 - 1
             modWheelAmount: 0, // 0 - 1
+            delay: 0,   // 0 - 10
         };
+    }
+
+    _onNoteChange(evt) {
+        const { newNoteNumber, oldNoteNumber } = evt.detail;
+        const { delay, fixedAmount, modWheelAmount, waveform } = this._patch.attributes;
+        if (delay !== 0 && newNoteNumber !== undefined) {
+            this._level.gain.setTargetAtTime(0, this._now, 0);
+            const level = (fixedAmount + (modWheelAmount * this._modWheelValue)) * (waveform === 'inverse-sawtooth' ? -1 : 1);
+            this._level.gain.setTargetAtTime(level, this._now, delay);
+        }
     }
 
     _onModWheelChange(evt) {

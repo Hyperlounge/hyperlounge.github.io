@@ -2,6 +2,16 @@ import AudioModule from './AudioModule.js';
 import PolyConstantSource from './PolyConstantSource.js';
 import NoteChangeEvent from '../events/NoteChangeEvent.js';
 
+function midiNoteToHertz(midiNote) {
+    return 440 * Math.pow(2, (midiNote - 69)/12);
+}
+
+const C4 = midiNoteToHertz(60);
+
+function noteToStretchFactor(note) {
+    return 0.3 + 0.7 * C4 / midiNoteToHertz(note);
+}
+
 export default class PolyEnvelopeModule extends AudioModule {
 
     _initialise() {
@@ -27,8 +37,11 @@ export default class PolyEnvelopeModule extends AudioModule {
     }
 
     _onSustainChange(evt) {
+        const { envelopeStretch } = this._globalPatch.attributes;
         if (this._sustain && !evt.detail.isOn) {
-            this._sustainedNotes.forEach(voiceNumber => {
+            this._sustainedNotes.forEach(item => {
+                const { voiceNumber, note } = item;
+                const stretchFactor = envelopeStretch ? noteToStretchFactor(note) : 1;
                 const { offset } = this._envelope.nodes[voiceNumber];
                 const { releaseSeconds } = this._patch.attributes;
                 const release = Math.max(this._minimumTimeConstant, releaseSeconds);
@@ -43,25 +56,28 @@ export default class PolyEnvelopeModule extends AudioModule {
     _onNoteChange(evt) {
         const { newNoteNumber, oldNoteNumber, voiceNumber, velocity } = evt.detail;
         const { offset } = this._envelope.nodes[voiceNumber];
-        const { legato } = this._globalPatch.attributes;
+        const { legato, envelopeStretch } = this._globalPatch.attributes;
         if (newNoteNumber !== undefined) {
             if (!(legato && oldNoteNumber !== undefined)) {
+                const stretchFactor = envelopeStretch ? noteToStretchFactor(newNoteNumber) : 1;
                 const { attackSeconds, decaySeconds, sustainLevel, velocityAmount } = this._patch.attributes;
-                const maxGain = velocity * velocityAmount + (1 - velocityAmount);
+                const maxGain = velocity/64 * velocityAmount + (1 - velocityAmount);
                 const sustain = sustainLevel * maxGain;
                 const attack = Math.max(this._minimumTimeConstant, attackSeconds);
-                const decay = Math.max(this._minimumTimeConstant, decaySeconds);
+                const decay = Math.max(this._minimumTimeConstant, decaySeconds * stretchFactor);
                 if (offset.value === 0) offset.setValueAtTime(0, this._now);
                 offset.cancelScheduledValues(this._now)
                     .linearRampToValueAtTime(maxGain, this._now + attack)
                     .setTargetAtTime(sustain, this._now + attack, decay);
-                this._sustainedNotes = this._sustainedNotes.filter(item => item !== voiceNumber);
+                this._sustainedNotes = this._sustainedNotes.filter(item => item.voiceNumber !== voiceNumber);
             }
         } else if (this._sustain) {
-            this._sustainedNotes.includes(voiceNumber) || this._sustainedNotes.push(voiceNumber);
+            this._sustainedNotes = this._sustainedNotes.filter(item => item.voiceNumber !== voiceNumber);
+            this._sustainedNotes.push({voiceNumber, note: oldNoteNumber})
         } else {
+            const stretchFactor = envelopeStretch ? noteToStretchFactor(oldNoteNumber) : 1;
             const { releaseSeconds } = this._patch.attributes;
-            const release = Math.max(this._minimumTimeConstant, releaseSeconds);
+            const release = Math.max(this._minimumTimeConstant, releaseSeconds * stretchFactor);
             offset.cancelAndHoldAtTime(this._now)
                 .setTargetAtTime(0, this._now, release);
         }

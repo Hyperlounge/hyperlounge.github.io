@@ -28,12 +28,14 @@ export default class Dialog extends Modal {
             }
             .hl-dialog-title {
                 padding: 20px;
+                font-size: larger;
+                font-weight: bold;
             }
             .hl-dialog-content {
                 padding: 20px;
             }
             .hl-dialog-options {
-                padding 20px;
+                padding: 20px;
                 text-align: center;
             }
         </style>
@@ -41,7 +43,7 @@ export default class Dialog extends Modal {
             <div class="hl-dialog-title">${data.title}</div>
             <div class="hl-dialog-content">${data.contentHTML}</div>
             <div class="hl-dialog-options">
-            ${data.optionLabels.map((label, i) => `<button value="${i}">${label}</button>`)}
+            ${data.optionLabels.map((label, i) => `<button value="${i}">${label}</button>`).join(' ')}
             </div>
         </div>`;
     }

@@ -15,6 +15,7 @@ import PolyLevelModule from './PolyLevelModule.js';
 import PolyFilterModule from './PolyFilterModule.js';
 import MidiModule from './MidiModule.js';
 import ControllerHelperModule from './ControllerHelperModule.js';
+import NoiseModule from './NoiseModule.js';
 
 export default class ModularSynth {
     constructor() {
@@ -63,6 +64,7 @@ export default class ModularSynth {
     createPolyLevelModule = this._moduleCreator(PolyLevelModule);
     createPolyFilterModule = this._moduleCreator(PolyFilterModule);
     createLFOModule = this._moduleCreator(LFOModule);
+    createNoiseModule = this._moduleCreator(NoiseModule);
 
     get patch() {
         return this._patch.attributes;

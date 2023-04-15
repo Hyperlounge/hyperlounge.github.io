@@ -29,6 +29,12 @@ const labels0to10 = [10,9,8,7,6,5,4,3,2,1,0];
 const labelsMinus5toPlus5 = [5,4,3,2,1,0,-1,-2,-3,-4,-5];
 const labels0to10log = [10,5,2.5,1.2,600,300,150,70,30,10,0];
 
+const noiseTypes = [
+    {value: '2', label: 'WHITE', param: 'white'},
+    {value: '1', label: 'PINK', param: 'pink'},
+    {value: '0', label: 'BROWN', param: 'brown'},
+]
+
 const waveforms = [
     {value: '3', label: 'SIN', param: 'sine'},
     {value: '2', label: 'TRI', param: 'triangle'},
@@ -37,12 +43,13 @@ const waveforms = [
 ];
 
 const lfoWaveforms = [
-    {value: '5', label: 'SIN', param: 'sine'},
-    {value: '4', label: 'TRI', param: 'triangle'},
-    {value: '3', label: 'SAW', param: 'sawtooth'},
-    {value: '2', label: 'WAS', param: 'inverse-sawtooth'},
-    {value: '1', label: 'SQU', param: 'square'},
-    {value: '0', label: 'S+H', param: 'sample-hold'},
+    {value: '6', label: 'SIN', param: 'sine'},
+    {value: '5', label: 'TRI', param: 'triangle'},
+    {value: '4', label: 'SAW', param: 'sawtooth'},
+    {value: '3', label: 'WAS', param: 'inverse-sawtooth'},
+    {value: '2', label: 'SQU', param: 'square'},
+    {value: '1', label: 'S+H', param: 'sample-hold'},
+    {value: '0', label: 'NSE', param: 'noise'},
 ];
 
 const filterTypes = [
@@ -82,14 +89,14 @@ const oscTemplate = id => `
     ])}
     ${verticalSlider(`${id}-fine-tune`, 'Fine', -50, 50, ['+0.5', '0', '–0.5'])}
     ${verticalSlider(`${id}-modulation`, 'Mod', -50, 50, labelsMinus5toPlus5)}
-    ${id === 'oscillator-2' ? verticalSlider(`${id}-cross-mod`, `O-1 Mod`, 0, 100, labels0to10) : ''}
+    ${id === 'oscillator-2' ? verticalSlider(`${id}-cross-mod`, `O-1 Mod`, 0, 100, labels0to10) : verticalSlider(`${id}-noise-level`, `Noise`, 0, 100, labels0to10)}
     ${verticalSlider(`${id}-level`, 'Level', 0, 100, labels0to10)}
 </div>
 `;
 
 const lfoTemplate = `
 <div class="control-group">
-    ${verticalSlider(`lfo-waveform`, 'Wave', 0, 5, lfoWaveforms)}
+    ${verticalSlider(`lfo-waveform`, 'Wave', 0, 6, lfoWaveforms)}
     ${verticalSlider(`lfo-frequency`, 'Freq.', 0, 100, ['100','50','25','12','6','3','1.5','0.8','0.4','0.2','0.1'])}
     ${verticalSlider(`lfo-fixed-level`, 'Level', 0, 100, labels0to10)}
     <div class="vertical-group">
@@ -156,6 +163,9 @@ function bindControl(controlId, module, parameterName, controlToParam = a => Num
         } else {
             module.setParam(parameterName, controlToParam(control.value));
         }
+        if (location.search) {
+            history.replaceState({}, '', location.origin + location.pathname);
+        }
     }
     control.addEventListener(control.type === 'checkbox' ? 'change' : 'input', updateModule);
 }
@@ -214,11 +224,13 @@ export default class PolySynth extends ModularSynth {
         this._osc2 = this.createPolyOscillatorModule('osc2');
         this._oscLevel1 = this.createPolyLevelModule('oscLevel1');
         this._oscLevel2 = this.createPolyLevelModule('oscLevel2');
+        this._noiseLevel1 = this.createPolyLevelModule('noiseLevel1');
         this._amplifier = this.createPolyAmpModule('amplifier');
         this._loudnessEnvelope = this.createPolyEnvelopeModule('loudnessEnvelope');
         this._filter = this.createPolyFilterModule('filter');
         this._filterEnvelope = this.createPolyEnvelopeModule('filterEnvelope');
         this._lfo = this.createLFOModule('lfo');
+        this._noise = this.createNoiseModule('noise');
 
         this._voiceAllocator.C4Offset.polyConnectTo(this._osc1.offsetCentsIn);
         this._voiceAllocator.C4Offset.polyConnectTo(this._osc2.offsetCentsIn);
@@ -237,6 +249,9 @@ export default class PolySynth extends ModularSynth {
         this._lfo.lfoOut.connect(this._osc2.modulationIn);
         this._lfo.lfoOut.connect(this._filter.modulationIn);
         this._filter.audioOut.fanInConnectTo(this.audioContext.destination);
+        this._amplifier.audioIn.polyConnectFrom(this._noiseLevel1.audioOut);
+        this._noiseLevel1.audioIn.fanOutConnectFrom(this._noise.noiseOut);
+        this._noise.noiseOut.connect(this._lfo.noiseIn);
 
 
         this.loadPatch();
@@ -254,7 +269,11 @@ export default class PolySynth extends ModularSynth {
             bindControl(`oscillator-${number}-tune`, osc, 'tune');
             bindControl(`oscillator-${number}-fine-tune`, osc, 'fineTune');
             bindControl(`oscillator-${number}-modulation`, osc, 'modAmount', a => Number(a)*2, a => String(a/2));
-            number === 2 && bindControl(`oscillator-2-cross-mod`, osc, 'crossModAmount', a => Number(a)*25, a => String(a/25));
+            if (number === 1) {
+                bindControl(`oscillator-1-noise-level`, this._noiseLevel1, 'level', a => Number(a)/1000, a => String(a*1000));
+            } else {
+                bindControl(`oscillator-2-cross-mod`, osc, 'crossModAmount', a => Number(a)*25, a => String(a/25));
+            }
             bindControl(`oscillator-${number}-level`, level, 'level', a => Number(a)/1000, a => String(a*1000));
         }
         bindOscillator(1);
@@ -280,10 +299,11 @@ export default class PolySynth extends ModularSynth {
         bindControl(`lfo-waveform`, this._lfo, 'waveform', optionToParam(lfoWaveforms), paramToOption(lfoWaveforms));
         bindControl('lfo-frequency', this._lfo, 'frequency', linearToLogRange(100, 0.1, 100), logRangeToLinear(0.1, 100, 100));
         bindControl('lfo-fixed-level', this._lfo, 'fixedAmount', a => Number(a)/100, a => String(a*100));
-        bindControl('lfo-mod-wheel-level', this._lfo, 'modWheelAmount', a => Number(a)/50, a => String(a*50));
+        bindControl('lfo-mod-wheel-level', this._lfo, 'modWheelAmount', a => Number(a)/100, a => String(a*100));
         bindControl(`lfo-mod-delay`, this._lfo, 'delay', linearToLog(100, 10), logToLinear(10, 100));
 
         bindControl('envelope-stretch', this, 'envelopeStretch');
+        bindControl('noise-type', this._noise, 'type', optionToParam(noiseTypes), paramToOption(noiseTypes));
     }
 
     get _initialGlobalPatch() {
@@ -402,6 +422,7 @@ export default class PolySynth extends ModularSynth {
                         <div class="control-group">
                             <div class="vertical-group">
                                 <label>Envelope Stretch <input type="checkbox" id="envelope-stretch"/></label>
+                                ${verticalSlider('noise-type', 'Noise', 0, 2, noiseTypes)}
                             </div>
                         </div>
                     </div>

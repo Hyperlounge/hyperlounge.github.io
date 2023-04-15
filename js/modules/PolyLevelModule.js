@@ -12,7 +12,7 @@ export default class PolyLevelModule extends AudioModule {
 
     get _initialPatch() {
         return {
-            level: 1,
+            level: 0,
         };
     }
 

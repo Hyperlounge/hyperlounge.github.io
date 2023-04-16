@@ -47,7 +47,8 @@ export default class LFOModule extends AudioModule {
             this._fixedNode.offset.cancelScheduledValues(this._now);
             this._fixedNode.offset.setTargetAtTime(0, this._now, 0);
             const level = fixedAmount * (waveform === 'inverse-sawtooth' ? -1 : 1);
-            this._fixedNode.offset.setTargetAtTime(level, this._now + delay / 2, delay);
+            this._fixedNode.offset.linearRampToValueAtTime(0, this._now + delay / 2)
+            this._fixedNode.offset.linearRampToValueAtTime(level, this._now + delay * 2);
         }
     }
 

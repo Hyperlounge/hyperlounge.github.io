@@ -7,7 +7,7 @@ export default class PolyLevelModule extends AudioModule {
         super._initialise();
 
         const context = this._audioContext;
-        this._gainNode = new PolyGain(context, {gain: 1});
+        this._gainNode = new PolyGain(context, {gain: 0});
     }
 
     get _initialPatch() {

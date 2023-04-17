@@ -17,15 +17,18 @@ import MidiModule from './MidiModule.js';
 import ControllerHelperModule from './ControllerHelperModule.js';
 import NoiseModule from './NoiseModule.js';
 
-export default class ModularSynth {
+export default class ModularSynth extends EventTarget {
     constructor() {
+        super();
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
         this.eventBus = new EventTarget();
         this._patch = new Model({
             global: new Model(this._initialGlobalPatch),
         });
+        this._patch.addEventListener('change', evt => this.dispatchEvent(new CustomEvent('patch-change')));
         if (this._initialState) {
             this._state = new Model(this._initialState);
+            this._state.addEventListener('change', evt => this.dispatchEvent(new CustomEvent('state-change')));
         }
     }
 
@@ -80,6 +83,10 @@ export default class ModularSynth {
 
     getParam(name) {
         return this.globalPatch.get(name);
+    }
+
+    paramChanged(name, handler) {
+        return this._patch.hasChanged(name, handler);
     }
 
     get globalPatch() {

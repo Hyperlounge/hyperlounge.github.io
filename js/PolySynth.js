@@ -168,6 +168,9 @@ function bindControl(controlId, module, parameterName, controlToParam = a => Num
         }
     }
     control.addEventListener(control.type === 'checkbox' ? 'change' : 'input', updateModule);
+    module.addEventListener('patch-change', evt => {
+        if (module.paramChanged(parameterName)) updateControl();
+    });
 }
 
 function linearToLog(linearMax, logMax, logMin = 0) {
@@ -212,6 +215,9 @@ export default class PolySynth extends ModularSynth {
         this._root = document.getElementById(elementId);
 
         this._render();
+
+        this._root.addEventListener('drop', evt => this.dropHandler(evt));
+        this._root.addEventListener('dragover', evt => this.dragOverHandler(evt));
 
         document.getElementById('save-patch').addEventListener('click', evt => this.savePatchToFile());
         document.getElementById('share-patch').addEventListener('click', evt => this.sharePatch());
@@ -304,6 +310,41 @@ export default class PolySynth extends ModularSynth {
 
         bindControl('envelope-stretch', this, 'envelopeStretch');
         bindControl('noise-type', this._noise, 'type', optionToParam(noiseTypes), paramToOption(noiseTypes));
+    }
+
+    dragOverHandler(ev) {
+        ev.preventDefault();
+    }
+
+    dropHandler(ev) {
+        ev.preventDefault();
+        if (ev.dataTransfer.items) {
+            if (ev.dataTransfer.items.length > 1) {
+                alert('Please drag only one patch file onto the synth.');
+            } else {
+                // Use DataTransferItemList interface to access the file(s)
+                [...ev.dataTransfer.items].forEach((item, i) => {
+                    // If dropped items aren't files, reject them
+                    if (item.kind === "file") {
+                        const file = item.getAsFile();
+                        file.text().then(text => {
+                            let patch;
+                            try {
+                                patch = JSON.parse(text);
+                            } catch(e) {
+                                alert(e);
+                            }
+                            if (patch) {
+                                this.patch = patch;
+                                if (location.search) {
+                                    history.replaceState({}, '', location.origin + location.pathname);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }
     }
 
     get _initialGlobalPatch() {

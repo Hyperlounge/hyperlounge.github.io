@@ -50,16 +50,21 @@ export default class NoiseModule extends AudioModule {
 
     _update() {
         if (this._buffers) {
-            if (this._source) {
-                this._source.disconnect(this._gain);
+            if (!this._source || this._patch.hasChanged('type')) {
+                if (this._source) {
+                    this._source.stop();
+                    delete this._source.buffer;
+                    this._source.disconnect(this._gain);
+                    delete this._source;
+                }
+                this._source = this._audioContext.createBufferSource();
+                this._source.buffer = this._buffers[this._patch.get('type')];
+                this._source.loop = true;
+                this._source.loopStart = 0.2;
+                this._source.loopEnd = this._source.buffer.duration - 0.2;
+                this._source.connect(this._gain);
+                this._source.start();
             }
-            this._source = this._audioContext.createBufferSource();
-            this._source.buffer = this._buffers[this._patch.get('type')];
-            this._source.loop = true;
-            this._source.loopStart = 0.2;
-            this._source.loopEnd = this._source.buffer.duration - 0.2;
-            this._source.connect(this._gain);
-            this._source.start();
         }
     }
 

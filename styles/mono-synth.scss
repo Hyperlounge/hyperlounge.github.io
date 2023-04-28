@@ -15,6 +15,7 @@ html, body {
 .synth {
   display: flex;
   flex-direction: column;
+  justify-items: start;
   background: black;
 }
 
@@ -22,6 +23,83 @@ html, body {
   background: silver;
   text-align: left;
   padding: 3px 10px;
+
+  #preset-name {
+    display: inline-block;
+    border: 1px solid gray;
+    width: 200px;
+    padding: 3px;
+
+    &:empty::before {
+      content: 'Preset name';
+    }
+  }
+
+  .recorder {
+    button#record {
+      color: red;
+      &::before {
+        content: 'record';
+      }
+      &.stop::before {
+        content: 'stop';
+      }
+    }
+
+    button#play {
+      &::before {
+        content: 'play';
+      }
+      &.stop::before {
+        content: 'stop';
+      }
+    }
+  }
+}
+
+.library-root {
+  position: absolute;
+  background: silver;
+  padding: 10px;
+  border: 1px solid gray;
+  border-radius: 0 10px 10px 10px;
+
+  .library {
+    display: flex;
+    flex-direction: row;
+
+    .banks {
+      display: flex;
+      flex-direction: column;
+
+      div {
+        padding: 3px 6px;
+
+        &.selected {
+          background: white;
+        }
+      }
+    }
+
+    .presets {
+      display: flex;
+      flex-direction: column;
+      background: white;
+
+      div {
+        padding: 3px 6px;
+
+        &::before {
+          color: transparent;
+          content: '• '
+        }
+
+        &.selected::before {
+          color: dodgerblue;
+        }
+      }
+    }
+  }
 }
 
 .controls {

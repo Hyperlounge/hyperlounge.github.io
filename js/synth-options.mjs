@@ -11,10 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     #synth {
         position: absolute; 
-        top: 50%;
-        left: 50%;
-        width: 100%; 
-        transform: translate(-50%, -50%);
+        top: 0;
+        left: 0;
+        width: 100%;
         text-align: center;
     }
 </style>

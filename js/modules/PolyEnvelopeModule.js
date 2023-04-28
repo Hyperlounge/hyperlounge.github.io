@@ -42,11 +42,13 @@ export default class PolyEnvelopeModule extends AudioModule {
             this._sustainedNotes.forEach(item => {
                 const { voiceNumber, note } = item;
                 const stretchFactor = envelopeStretch ? noteToStretchFactor(note) : 1;
-                const { offset } = this._envelope.nodes[voiceNumber];
-                const { releaseSeconds } = this._patch.attributes;
-                const release = Math.max(this._minimumTimeConstant, releaseSeconds);
-                offset.cancelScheduledValues(this._now)
-                    .setTargetAtTime(0, this._now, release);
+                if (this._envelope.nodes[voiceNumber]) {
+                    const { offset } = this._envelope.nodes[voiceNumber];
+                    const { releaseSeconds } = this._patch.attributes;
+                    const release = Math.max(this._minimumTimeConstant, releaseSeconds);
+                    offset.cancelScheduledValues(this._now)
+                        .setTargetAtTime(0, this._now, release);
+                }
             });
             this._sustainedNotes = [];
         }

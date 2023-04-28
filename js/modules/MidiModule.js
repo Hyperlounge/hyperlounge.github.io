@@ -35,7 +35,7 @@ export default class MidiModule extends AudioModule {
 
     _onMIDIMessage(evt) {
         const message = evt.data;
-        console.log(message[0], message[1], message[2]);
+        //console.log(message[0], message[1], message[2]);
         let statusByte = message[0];
         if (statusByte >= 128 && statusByte <= 143) {
             statusByte = MidiEvent.NOTE_OFF;

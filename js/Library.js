@@ -36,6 +36,10 @@ export default class Library {
         return this._library.find(item => item.id === id);
     }
 
+    getPresetByNameAndBank(name, bank) {
+        return this._library.find(item => item.name === name && item.bank === bank);
+    }
+
     getPresetPathById(id) {
         return this._pathToFiles + this.getPresetById(id).fileName;
     }

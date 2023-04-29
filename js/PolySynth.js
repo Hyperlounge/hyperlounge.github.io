@@ -249,6 +249,7 @@ export default class PolySynth extends ModularSynth {
         fetch('library/index.json').then(response => {
             response.text().then(text => {
                 this._library.library = JSON.parse(text).library;
+                this.loadPatch();
             });
         });
         document.getElementById('preset-name').addEventListener('click', evt => this.showLibrary(evt));
@@ -291,7 +292,7 @@ export default class PolySynth extends ModularSynth {
         this._noise.noiseOut.connect(this._lfo.noiseIn);
 
 
-        this.loadPatch();
+
         window.addEventListener('unload', () => {
             this.savePatch();
         });
@@ -360,22 +361,29 @@ export default class PolySynth extends ModularSynth {
             const libraryView = new LibraryView(this._libraryRoot.id, this._library, '');
             libraryView.addEventListener('preset-selected', evt => {
                 this._libraryRoot.style.display = 'none';
-                const { name, bank } = this._library.getPresetById(evt.detail);
-                const filePath = this._library.getPresetPathById(evt.detail);
-                const xhr = new XMLHttpRequest();
-                xhr.open('get', filePath);
-                xhr.onload = evt => {
-                    this.patch = JSON.parse(xhr.responseText);
-                    this.globalPatch.set({name, bank});
+                this.loadPatchFromLibrary(evt.detail).then(patch => {
+                    this.patch = patch;
+                    this._presetId = evt.detail;
                     if (location.search) {
                         history.replaceState({}, '', location.origin + location.pathname);
                     }
-                }
-                xhr.send();
+                });
             });
         } else {
             this._libraryRoot.style.display = 'block';
         }
+    }
+
+    loadPatchFromLibrary(id) {
+        return new Promise(resolve => {
+            const filePath = this._library.getPresetPathById(id);
+            const xhr = new XMLHttpRequest();
+            xhr.open('get', filePath);
+            xhr.onload = evt => {
+                resolve(JSON.parse(xhr.responseText));
+            }
+            xhr.send();
+        });
     }
 
     dragOverHandler(ev) {
@@ -437,30 +445,38 @@ export default class PolySynth extends ModularSynth {
                 params[key] = decodeURIComponent(value);
             })
         }
-        let patch;
-        if (params.patch) {
-            patch = params.patch;
+        if (params.preset) {
+            const preset = this._library.getPresetByNameAndBank(params.preset, params.bank);
+            this._presetId = preset.id;
+            this.loadPatchFromLibrary(preset.id).then(patch => {
+                this.patch = patch;
+                if (params.changes) {
+                    this._patch.set(JSON.parse(params.changes));
+                    if (params.ditty) {
+                        this.setDecodedDitty(params.ditty);
+                        this.togglePlay();
+                    }
+                }
+            });
         } else {
-            patch = localStorage.getItem('PolySynth-current-patch') || initialPatch;
-        }
-        if (params.ditty) {
-            this.setDecodedDitty(params.ditty);
-            this.togglePlay();
-        }
-        try {
-            patch && (this.patch = JSON.parse(patch));
-        } catch (e) {
-            alert(e);
+            const patch = localStorage.getItem('PolySynth-current-patch') || initialPatch;
+
+            try {
+                patch && (this.patch = JSON.parse(patch));
+                const preset = this._library.getPresetByNameAndBank(this.globalPatch.get('name'), this.globalPatch.get('bank'));
+                preset && (this._presetId = preset.id);
+            } catch (e) {
+                alert(e);
+            }
         }
     }
 
     setDecodedDitty(encoded) {
-        this._recordingData = encoded.split('|').map(item => {
-            const [ timeString, hexBytes ] = item.split('-');
-            const time = parseFloat(timeString);
-            const statusByte = parseInt(hexBytes.slice(0,2), 16);
-            const dataByte1 = parseInt(hexBytes.slice(2,4), 16);
-            const dataByte2 = parseInt(hexBytes.slice(4), 16);
+        this._recordingData = encoded.match(/.{10}/g).map(item => {
+            const time = parseInt(item.slice(0,4), 16)/100;
+            const statusByte = parseInt(item.slice(4,6), 16);
+            const dataByte1 = parseInt(item.slice(6,8), 16);
+            const dataByte2 = parseInt(item.slice(8,10), 16);
             return {
                 time,
                 detail: { statusByte, dataByte1, dataByte2 },
@@ -469,24 +485,55 @@ export default class PolySynth extends ModularSynth {
     }
 
     getEncodedDitty() {
-        const toHex = val => Number(val).toString(16)
-        return this._recordingData.map(item => `${Math.round(item.time * 1000)/1000}-${toHex(item.detail.statusByte)}${toHex(item.detail.dataByte1)}${toHex(item.detail.dataByte2)}`).join('|');
+        const toHex = (val, digits) => {
+            let hex = Number(val).toString(16);
+            while (hex.length < digits) hex = '0' + hex;
+            return hex;
+        }
+        return this._recordingData.map(item => `${toHex(Math.round(item.time * 100), 4)}${toHex(item.detail.statusByte, 2)}${toHex(item.detail.dataByte1, 2)}${toHex(item.detail.dataByte2, 2)}`).join('');
+    }
+
+    getPatchChanges() {
+        return new Promise(resolve => {
+            this.loadPatchFromLibrary(this._presetId).then(patch => {
+                const preset = patch;
+                const currentPatch = this.patch;
+                const changes = {};
+                Object.keys(preset).forEach(section => {
+                    const presetSection = preset[section];
+                    const currentSection = currentPatch[section];
+                    Object.keys(presetSection).forEach(key => {
+                        const presetValue = presetSection[key];
+                        const currentValue = currentSection[key];
+                        if (currentValue !== presetValue) {
+                            if (!changes[section]) changes[section] = {};
+                            changes[section][key] = currentValue;
+                        }
+                    });
+                });
+                resolve(changes);
+            });
+        });
     }
 
     sharePatch() {
-        const url = location.origin + location.pathname + '?patch=' + encodeURIComponent(JSON.stringify(this.patch)) + '&ditty=' + this.getEncodedDitty();
-        new Dialog(`
-        <a href='${url}' target="_blank">Click to open in new tab</a>
-        `, {
-            maxWidth: 300,
-            title: 'Share Patch',
-            optionLabels: ['Copy link to clipboard', 'Cancel']
-        }).then(data => {
-            const { option } = data;
-            if (option === 0) {
-                navigator.clipboard.writeText(url);
-            }
-        })
+        const ditty = this.getEncodedDitty();
+        this.getPatchChanges().then(changes => {
+            const { name, bank } = this.globalPatch.attributes;
+            const url = location.origin + location.pathname + '?preset=' + encodeURIComponent(name) + '&bank=' + encodeURIComponent(bank) + '&changes=' + encodeURIComponent(JSON.stringify(changes)) + (ditty ? '&ditty=' + ditty : '');
+            new Dialog(`
+                <a href='${url}' target="_blank">Click to open in new tab</a>
+                `, {
+                maxWidth: 300,
+                title: 'Share Patch' + (ditty ? ' and Ditty' : ''),
+                optionLabels: ['Copy link to clipboard', 'Cancel']
+            }).then(data => {
+                const { option } = data;
+                if (option === 0) {
+                    navigator.clipboard.writeText(url);
+                }
+            });
+        });
     }
 
     savePatchToFile() {
@@ -555,23 +602,30 @@ export default class PolySynth extends ModularSynth {
         this._playing = !this._playing && this._recordingData.length > 0;
         document.getElementById('play').classList.toggle('stop', this._playing);
         if (this._playing) {
-            this._recordingData.forEach((item, i) => {
-                item.timeoutId = setTimeout(() => {
-                    const { statusByte, dataByte1, dataByte2 } = item.detail;
+            this._playStartTime = this.audioContext.currentTime;
+            this._playEventIndex = 0;
+
+            const playNextEvent = () => {
+                const event = this._recordingData[this._playEventIndex++];
+                this._playTimeoutId = setTimeout(() => {
+                    delete this._playTimeoutId;
+                    const { statusByte, dataByte1, dataByte2 } = event.detail;
                     this.eventBus.dispatchEvent(new MidiEvent(statusByte, dataByte1, dataByte2));
-                    delete item.timeoutId;
-                    if (i === this._recordingData.length - 1) {
+                    if (this._playEventIndex === this._recordingData.length) {
                         this.togglePlay();
+                    } else {
+                        playNextEvent();
                     }
-                }, item.time * 1000);
-            });
+                }, (this._playStartTime + event.time - this.audioContext.currentTime) * 1000);
+            }
+            playNextEvent();
         } else {
-            this._recordingData.forEach(item => {
-                if (item.timeoutId !== undefined) {
-                    clearTimeout(item.timeoutId);
-                    delete item.timeoutId;
-                }
-            })
+            if (this._playTimeoutId !== undefined) {
+                clearTimeout(this._playTimeoutId);
+                delete this._playTimeoutId;
+            }
+            delete this._playStartTime;
+            delete this._playEventIndex;
         }
     }
 

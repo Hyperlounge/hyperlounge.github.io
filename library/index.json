@@ -1,9 +1,44 @@
 {
   "library": [
     {
+      "name": "Big Bass",
+      "bank": "Basses",
+      "fileName": "patch-Basses-Big Bass.txt"
+    },
+    {
+      "name": "Double Bass",
+      "bank": "Basses",
+      "fileName": "patch-Basses-Double Bass.txt"
+    },
+    {
+      "name": "Full Bass",
+      "bank": "Basses",
+      "fileName": "patch-Basses-Full Bass.txt"
+    },
+    {
+      "name": "Funky Bass",
+      "bank": "Basses",
+      "fileName": "patch-Basses-Funky Bass.txt"
+    },
+    {
+      "name": "Stab Bass",
+      "bank": "Basses",
+      "fileName": "patch-Basses-Stab Bass.txt"
+    },
+    {
       "name": "Too High!",
       "bank": "Basses",
       "fileName": "patch-Basses-Too High!.txt"
+    },
+    {
+      "name": "Coronet",
+      "bank": "Brass",
+      "fileName": "patch-Brass-Coronet.txt"
+    },
+    {
+      "name": "Fanfare",
+      "bank": "Brass",
+      "fileName": "patch-Brass-Fanfare.txt"
     },
     {
       "name": "Ragged Wah",
@@ -19,6 +54,16 @@
       "name": "Trombone",
       "bank": "Brass",
       "fileName": "patch-Brass-Trombone.txt"
+    },
+    {
+      "name": "Trumpet section",
+      "bank": "Brass",
+      "fileName": "patch-Brass-Trumpet section.txt"
+    },
+    {
+      "name": "Bright Piano",
+      "bank": "Keys",
+      "fileName": "patch-Keys-Bright Piano.txt"
     },
     {
       "name": "Drawbars",
@@ -46,14 +91,44 @@
       "fileName": "patch-Keys-Nasal.txt"
     },
     {
+      "name": "Res Piano",
+      "bank": "Keys",
+      "fileName": "patch-Keys-Res Piano.txt"
+    },
+    {
+      "name": "Squeezebox",
+      "bank": "Keys",
+      "fileName": "patch-Keys-Squeezebox.txt"
+    },
+    {
       "name": "Wurly",
       "bank": "Keys",
       "fileName": "patch-Keys-Wurly.txt"
     },
     {
+      "name": "Cat-Fight",
+      "bank": "Leads",
+      "fileName": "patch-Leads-Cat-Fight.txt"
+    },
+    {
       "name": "Genius of Love",
       "bank": "Leads",
       "fileName": "patch-Leads-Genius of Love.txt"
+    },
+    {
+      "name": "Hose Me Down!",
+      "bank": "Leads",
+      "fileName": "patch-Leads-Hose Me Down!.txt"
+    },
+    {
+      "name": "Mod Goblins",
+      "bank": "Leads",
+      "fileName": "patch-Leads-Mod Goblins.txt"
+    },
+    {
+      "name": "Pulsar",
+      "bank": "Leads",
+      "fileName": "patch-Leads-Pulsar.txt"
     },
     {
       "name": "Shine On!",
@@ -69,6 +144,21 @@
       "name": "Cello",
       "bank": "Strings",
       "fileName": "patch-Strings-Cello.txt"
+    },
+    {
+      "name": "String Voice",
+      "bank": "Strings",
+      "fileName": "patch-Strings-String Voice.txt"
+    },
+    {
+      "name": "Stringy Thing",
+      "bank": "Strings",
+      "fileName": "patch-Strings-Stringy Thing.txt"
+    },
+    {
+      "name": "Swell Strings",
+      "bank": "Strings",
+      "fileName": "patch-Strings-Swell Strings.txt"
     },
     {
       "name": "Viola",

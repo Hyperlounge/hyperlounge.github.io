@@ -4,7 +4,7 @@ export default class LibraryView extends EventTarget {
 
         this.rootElement = document.getElementById(rootId);
         this.library = library;
-        this.selectedBank = '';
+        this.selectedBank = this.library.getBanks()[0];
         this.currentPresetId = currentPresetId;
 
         this.render();
@@ -15,7 +15,6 @@ export default class LibraryView extends EventTarget {
         this.rootElement.innerHTML = `
         <div class="library">
             <div class="banks">
-                <div class="bank ${this.selectedBank === '' ? 'selected' : ''}" data-bank="">All</div>
                 ${this.library.getBanks().map(bank => `<div class="bank ${this.selectedBank === bank ? 'selected' : ''}" data-bank="${bank}">${bank}</div>`).join('')}
             </div>
             <div class="presets">

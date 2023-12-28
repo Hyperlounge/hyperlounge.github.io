@@ -26,6 +26,7 @@ export default class ModularSynth extends EventTarget {
             global: new Model(this._initialGlobalPatch),
         });
         this._patch.addEventListener('change', evt => this.dispatchEvent(new CustomEvent('patch-change')));
+        this.globalPatch.addEventListener('change', evt => this.dispatchEvent(new CustomEvent('patch-change')));
         if (this._initialState) {
             this._state = new Model(this._initialState);
             this._state.addEventListener('change', evt => this.dispatchEvent(new CustomEvent('state-change')));
@@ -86,7 +87,7 @@ export default class ModularSynth extends EventTarget {
     }
 
     paramChanged(name, handler) {
-        return this._patch.hasChanged(name, handler);
+        return this.globalPatch.hasChanged(name, handler);
     }
 
     get globalPatch() {

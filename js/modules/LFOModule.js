@@ -122,7 +122,7 @@ export default class LFOModule extends AudioModule {
             }
         }
         const level = this._patch.get('fixedAmount') * multiplier;
-        this._fixedNode.offset.setTargetAtTime(level, this._now, this._minimumTimeConstant);
+        this._fixedNode.offset.cancelScheduledValues(this._now).setTargetAtTime(level, this._now, this._minimumTimeConstant);
         this._setModWheelOffset();
     }
 

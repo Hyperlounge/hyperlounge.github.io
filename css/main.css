@@ -1,0 +1,570 @@
+@charset "UTF-8";
+@import url(http://fonts.googleapis.com/css?family=Trykker);
+@font-face {
+  font-family: mplus1c;
+  src: url("../fonts/mplus-1c-medium-webfont.eot");
+  src: url("../fonts/mplus-1c-medium-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/mplus-1c-medium-webfont.woff") format("woff"), url("../fonts/mplus-1c-medium-webfont.ttf") format("truetype"), url("../fonts/mplus-1c-medium-webfont.#m_1cmedium") format("svg");
+  font-weight: bold;
+  font-style: normal; }
+html {
+  padding: 0;
+  margin: 0; }
+
+ul {
+  list-style-type: none;
+  text-align: center;
+  margin: 0;
+  padding: 0; }
+  ul li {
+    font-family: mplus1c;
+    font-weight: bold; }
+
+body {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  font-family: Trykker;
+  font-size: 28px;
+  color: #544743;
+  background-color: #EEE2CE;
+  background-image: url("../images/ricepaper.png"); }
+
+article, footer {
+  clear: left;
+  padding: 30px 0; }
+
+header, article, footer {
+  max-width: 800px;
+  margin: 0 auto; }
+
+header {
+  position: relative;
+  height: 400px;
+  text-align: right; }
+
+header h1 {
+  font-family: mplus1c;
+  text-align: right;
+  font-size: 66px;
+  margin-bottom: 0; }
+
+.mainPoints {
+  text-align: right;
+  list-style-type: none;
+  margin-bottom: 0; }
+  .mainPoints li {
+    font-family: Trykker;
+    font-weight: normal; }
+
+.contact {
+  font-family: mplus1c;
+  font-weight: bold;
+  text-align: right;
+  text-decoration: none;
+  font-size: 24px;
+  color: #ab2c1c;
+  display: block;
+  margin-top: 20px; }
+
+.divider {
+  position: relative;
+  height: 400px;
+  top: 0;
+  left: 0;
+  overflow: hidden; }
+
+.artwork {
+  position: absolute;
+  height: 800px;
+  width: 100%;
+  top: -200px;
+  left: 0;
+  z-index: 1;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: center; }
+
+.shadow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  /***  CSS Gradient  ***/
+  /*  Chrome 1-9 and Safari 4-5.0  */
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgba(0, 0, 0, 0.3)), color-stop(0.16, transparent), color-stop(0.9, transparent), color-stop(1, rgba(0, 0, 0, 0.1)));
+  /*  Chrome 10+ Safari 5.1+ Mobile Safari  */
+  background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.3), transparent 16%, transparent 90%, rgba(0, 0, 0, 0.1));
+  /*  Firefox 3.6+  */
+  background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0.3), transparent 16%, transparent 90%, rgba(0, 0, 0, 0.1));
+  /*  IE 10+  */
+  background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0.3), transparent 16%, transparent 90%, rgba(0, 0, 0, 0.1));
+  /*  Opera 11.10+  */
+  background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0.3), transparent 16%, transparent 90%, rgba(0, 0, 0, 0.1));
+  /*  W3C  */
+  background-image: linear-gradient(top, rgba(0, 0, 0, 0.3), transparent 16%, transparent 90%, rgba(0, 0, 0, 0.1)); }
+
+#divider1 .artwork {
+  background-image: url("../images/web-dev.jpg"); }
+
+#divider2 .artwork {
+  background-image: url("../images/brighton-street.jpg"); }
+
+#divider3 .artwork {
+  background-image: url("../images/brighton-steps.jpg"); }
+
+#divider4 .artwork {
+  background-image: url("../images/newhaven-lighthouse.jpg"); }
+
+#divider5 .artwork {
+  background-image: url("../images/lewes-torches.jpg"); }
+
+#divider6 .artwork {
+  background-image: url("../images/brighton-graffiti.jpg"); }
+
+#mainLogo {
+  position: absolute;
+  height: 65px;
+  width: 235px;
+  top: 45px;
+  -webkit-border-radius: 120px;
+  -moz-border-radius: 120px;
+  -ms-border-radius: 120px;
+  -o-border-radius: 120px;
+  border-radius: 120px;
+  background-color: white;
+  background-image: url("../images/hyperlounge-logo-hd.jpg");
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: center -20px;
+  padding-top: 175px;
+  padding-left: 5px;
+  text-align: center;
+  font-family: mplus1c;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0.4em;
+  color: #ab2c1c;
+  -webkit-user-select: none;
+  /* Chrome/Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+ */
+  /* Rules below not implemented in browsers yet */
+  -o-user-select: none;
+  user-select: none;
+  cursor: default;
+  /***  CSS Box Shadow  ***/
+  box-shadow: 0 0 10px 10px white;
+  -webkit-box-shadow: 0 0 10px 10px white;
+  -moz-box-shadow: 0 0 10px 10px white; }
+
+.socialMedia {
+  position: absolute;
+  z-index: 3; }
+  .socialMedia a {
+    -webkit-user-select: none;
+    /* Chrome/Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE10+ */
+    /* Rules below not implemented in browsers yet */
+    -o-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    position: absolute;
+    background-color: white;
+    color: transparent;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: center;
+    /***  CSS Box Shadow  ***/
+    box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.7);
+    -webkit-box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.7);
+    -moz-box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.7); }
+
+#wiredSussex {
+  width: 120px;
+  height: 120px;
+  left: 163px;
+  top: 274px;
+  -webkit-border-radius: 60px;
+  -moz-border-radius: 60px;
+  -ms-border-radius: 60px;
+  -o-border-radius: 60px;
+  border-radius: 60px;
+  background-image: url("../images/member-square-weblarge.png"); }
+
+#linkedIn {
+  width: 106px;
+  height: 106px;
+  left: 285px;
+  top: 339px;
+  -webkit-border-radius: 53px;
+  -moz-border-radius: 53px;
+  -ms-border-radius: 53px;
+  -o-border-radius: 53px;
+  border-radius: 53px;
+  background-image: url("../images/LinkedIn-InBug-2CRev.png");
+  background-size: 60%;
+  background-position: 60% center; }
+
+#twitter {
+  width: 92px;
+  height: 92px;
+  left: 405px;
+  top: 362px;
+  -webkit-border-radius: 46px;
+  -moz-border-radius: 46px;
+  -ms-border-radius: 46px;
+  -o-border-radius: 46px;
+  border-radius: 46px;
+  background-image: url("../images/twitter-bird-light-bgs.png");
+  background-size: 100%; }
+
+#flickr {
+  width: 84px;
+  height: 84px;
+  left: 510px;
+  top: 362px;
+  -webkit-border-radius: 42px;
+  -moz-border-radius: 42px;
+  -ms-border-radius: 42px;
+  -o-border-radius: 42px;
+  border-radius: 42px;
+  background-image: url("../images/flickr.png");
+  background-size: 70%; }
+
+#blog {
+  width: 74px;
+  height: 74px;
+  left: 604px;
+  top: 344px;
+  -webkit-border-radius: 37px;
+  -moz-border-radius: 37px;
+  -ms-border-radius: 37px;
+  -o-border-radius: 37px;
+  border-radius: 37px;
+  background-image: url("../images/hyperlounge-logo-small.jpg"); }
+
+@media (max-width: 720px) {
+  header {
+    height: 320px; }
+
+  #mainLogo {
+    top: 0;
+    z-index: 0; }
+
+  .socialMedia {
+    text-size: 1px;
+    text-align: center;
+    top: 270px;
+    left: auto;
+    width: 100%;
+    background-color: white;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -o-border-radius: 20px;
+    border-radius: 20px;
+    padding: 0;
+    margin: auto;
+    /***  CSS Box Shadow  ***/
+    box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.7);
+    -webkit-box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.7);
+    -moz-box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.7); }
+    .socialMedia #wiredSussex, .socialMedia #linkedIn, .socialMedia #twitter, .socialMedia #flickr, .socialMedia #blog {
+      margin: 10px 5px;
+      position: static;
+      display: inline-block;
+      width: 60px;
+      height: 60px;
+      background-repeat: no-repeat;
+      background-size: 100%;
+      background-position: center;
+      /***  CSS Box Shadow  ***/
+      box-shadow: 0 0 0 0 transparent;
+      -webkit-box-shadow: 0 0 0 0 transparent;
+      -moz-box-shadow: 0 0 0 0 transparent;
+      -webkit-border-radius: 0px;
+      -moz-border-radius: 0px;
+      -ms-border-radius: 0px;
+      -o-border-radius: 0px;
+      border-radius: 0px; } }
+@media (max-width: 550px) {
+  header {
+    height: 570px; }
+    header h1, header ul, header a {
+      margin-right: 5%; }
+
+  #mainLogo {
+    position: static; }
+
+  .socialMedia {
+    text-size: 1px;
+    text-align: center;
+    top: 490px;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    -ms-border-radius: 0px;
+    -o-border-radius: 0px;
+    border-radius: 0px;
+    padding: 0;
+    margin: 0;
+    /***  CSS Box Shadow  ***/
+    box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.7);
+    -webkit-box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.7);
+    -moz-box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.7); }
+    .socialMedia #wiredSussex, .socialMedia #linkedIn, .socialMedia #twitter, .socialMedia #flickr, .socialMedia #blog {
+      margin: 8px 4px;
+      position: static;
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      background-repeat: no-repeat;
+      background-size: 100%;
+      background-position: center;
+      /***  CSS Box Shadow  ***/
+      box-shadow: 0 0 0 0 transparent;
+      -webkit-box-shadow: 0 0 0 0 transparent;
+      -moz-box-shadow: 0 0 0 0 transparent;
+      -webkit-border-radius: 0px;
+      -moz-border-radius: 0px;
+      -ms-border-radius: 0px;
+      -o-border-radius: 0px;
+      border-radius: 0px; } }
+ul.skills {
+  background-color: rgba(255, 255, 255, 0.6);
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -ms-border-radius: 20px;
+  -o-border-radius: 20px;
+  border-radius: 20px;
+  padding: 20px;
+  max-width: 600px;
+  margin: 50px 80px;
+  text-align: center; }
+  ul.skills li {
+    list-style-type: none;
+    display: inline;
+    font-weight: bold;
+    margin: 0 10px;
+    white-space: nowrap; }
+  ul.skills .score1, ul.skills .score2 {
+    font-size: 70%; }
+  ul.skills .score3, ul.skills .score4 {
+    font-size: 85%; }
+  ul.skills .score5, ul.skills .score6 {
+    font-size: 100%; }
+  ul.skills .score7, ul.skills .score8 {
+    font-size: 120%; }
+  ul.skills .score9, ul.skills .score10 {
+    font-size: 140%; }
+
+ul.clients {
+  background-color: rgba(255, 255, 255, 0.6);
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -ms-border-radius: 20px;
+  -o-border-radius: 20px;
+  border-radius: 20px;
+  padding: 20px;
+  max-width: 600px;
+  margin: 50px 80px;
+  text-align: center; }
+
+.quote {
+  max-width: 650px;
+  margin: 0 auto;
+  font-size: 70%;
+  font-family: Trykker; }
+
+.quote:before {
+  height: 120%;
+  font-family: Georgia, serif;
+  display: block;
+  float: left;
+  font-size: 800%;
+  font-style: normal;
+  content: "“";
+  position: relative;
+  top: -50px;
+  left: -70px;
+  width: 0; }
+
+.attribution {
+  font-size: 60%;
+  text-align: right;
+  color: #796d63; }
+
+p.attribution:before {
+  content: "— "; }
+
+.subscript {
+  font-size: 70%;
+  position: relative;
+  top: 7px; }
+
+footer {
+  text-align: center; }
+  footer .links {
+    font-family: mplus1c;
+    font-weight: bold;
+    text-align: center; }
+    footer .links a {
+      color: #ab2c1c;
+      font-size: 18px;
+      text-decoration: none;
+      white-space: nowrap; }
+    footer .links a:before {
+      content: "| "; }
+    footer .links :first-child:before {
+      content: ""; }
+
+@media (max-width: 900px) {
+  body {
+    font-size: 22px; }
+
+  article, footer {
+    padding: 20px 0; }
+
+  header, article, footer {
+    width: 90%;
+    margin: 0 5%; }
+
+  header h1 {
+    font-size: 52px; }
+
+  .divider {
+    height: 300px; }
+
+  .artwork {
+    height: 600px;
+    top: -150px; }
+
+  .quote:before {
+    top: -40px;
+    left: -56px;
+    width: 0; }
+
+  .subscript {
+    top: 5.6px; } }
+@media (max-width: 720px) {
+  body {
+    font-size: 20px; }
+
+  article, footer {
+    padding: 18px 0; }
+
+  header, article, footer {
+    width: 90%;
+    margin: 0 5%; }
+
+  header h1 {
+    font-size: 47px; }
+
+  .contact {
+    display: inline-block;
+    font-size: 20px;
+    margin-top: 15px;
+    margin-left: 20px; }
+
+  .divider {
+    height: 250px; }
+
+  .artwork {
+    height: 500px;
+    top: -125px; }
+
+  .quote {
+    margin-left: 50px;
+    font-size: 80%; }
+
+  .quote:before {
+    top: -40px;
+    left: -56px;
+    width: 0; }
+
+  .subscript {
+    top: 5px; } }
+@media (max-width: 550px) {
+  body {
+    font-size: 16px; }
+
+  article, footer {
+    padding: 10px 0; }
+
+  header, article, footer {
+    width: 100%;
+    margin: 0;
+    padding: 0; }
+    header p, article p, footer p {
+      margin: 10px 5%; }
+
+  ul.skills, ul.clients, .socialMedia {
+    width: 100%;
+    margin: 0;
+    padding: 10px 0;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    -ms-border-radius: 0px;
+    -o-border-radius: 0px;
+    border-radius: 0px; }
+
+  header h1 {
+    font-size: 47px; }
+
+  .contact {
+    font-size: 15px; }
+
+  .divider {
+    height: 250px; }
+
+  .artwork {
+    height: 500px;
+    top: -125px; }
+
+  .quote {
+    margin-left: 30px;
+    font-size: 100%; }
+
+  .quote:before {
+    font-size: 500%;
+    top: -26px;
+    left: -24px;
+    width: 0; }
+
+  .subscript {
+    top: 5px; }
+
+  footer .links a {
+    display: block;
+    margin-bottom: 10px; }
+  footer .links a:before {
+    content: ""; }
+
+  #divider1 .artwork {
+    background-image: url("../images/web-dev-mobile.jpg"); }
+
+  #divider2 .artwork {
+    background-image: url("../images/brighton-street-mobile.jpg"); }
+
+  #divider3 .artwork {
+    background-image: url("../images/brighton-steps-mobile.jpg"); }
+
+  #divider4 .artwork {
+    background-image: url("../images/newhaven-lighthouse-mobile.jpg"); }
+
+  #divider5 .artwork {
+    background-image: url("../images/lewes-torches-mobile.jpg"); }
+
+  #divider6 .artwork {
+    background-image: url("../images/brighton-graffiti-mobile.jpg"); } }
+
+/*# sourceMappingURL=main.css.map */

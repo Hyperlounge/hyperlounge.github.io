@@ -1,13 +1,130 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!-- Consider adding a manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-    <meta charset="UTF-8">
-    <title>Synth</title>
-    <link rel="manifest" href="manifest.json"/>
-    <link rel="stylesheet" href="styles/mono-synth.css"/>
-    <script type="module" src="js/synth-options.mjs"></script>
+    <meta charset="utf-8">
+
+    <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+More info: h5bp.com/i/378 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>Hyperlounge - Derek King, Web Developer</title>
+    <meta name="description" content="Experienced web developer working in JavaScript, Backbone and jQuery">
+
+    <!-- Mobile viewport optimized: h5bp.com/viewport -->
+    <meta name="viewport" content="width=device-width, maximum-scale=1">
+
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
+
+    <!-- All JavaScript at the bottom, except this Modernizr build.
+Modernizr enables HTML5 elements & feature detects for optimal performance.
+Create your own custom Modernizr build: www.modernizr.com/download/ -->
+    <script src="src/lib/3rd-party/modernizr-2.5.3.min.js"></script>
+
 </head>
 <body>
-<div id="synth"></div>
+<header>
+    <div id="mainLogo">HYPERLOUNGE</div>
+    <h1>Derek King</h1>
+    <ul class="mainPoints">
+        <li>web development</li>
+    </ul>
+    <a class="contact" href="mailto:info@hyperlounge.com">info@hyperlounge.com</a>
+</header>
+<div id="divider1" class="divider">
+    <div class="shadow"></div>
+    <div class="parallax">
+        <div class="artwork layer" data-depth="1"></div>
+    </div>
+</div>
+<article>
+    <p>With 35 years of programming experience, from bespoke commercial software, via e-learning, interactive multimedia CD-ROMs and Flash, to web application development in modern JavaScript frameworks for desktop and mobile.</p>
+</article>
+<div id="divider2" class="divider">
+    <div class="shadow"></div>
+    <div class="artwork layer" data-depth="1"></div>
+</div>
+<article>
+    <p>Ten years experience in the e-learning sector, creating interactive CD-ROMs, SCORM learning objects and mobile apps for major educational publishers.</p>
+    <ul class="clients">
+        <li>Nelson Thorne</li>
+        <li>Macmillan</li>
+        <li>Scholastic</li>
+        <li>Rising Stars</li>
+        <li>World Class Arena</li>
+        <li>Qualifications and Curriculum Authority</li>
+    </ul>
+</article>
+<div id="divider3" class="divider">
+    <div class="shadow"></div>
+    <div class="artwork layer" data-depth="1"></div>
+</div>
+<article>
+    <p>Has worked with many corporate clients, a safe pair of hands with attention to detail and good client facing skills.</p>
+    <ul class="clients">
+        <li>Taylor Woodrow</li>
+        <li>Alfred Mc Alpine</li>
+        <li>O<span class="subscript">2</span></li>
+        <li>Camel</li>
+        <li>International Olympics Committee</li>
+        <li>BOC Edwards</li>
+        <li>Ricochet Television</li>
+        <li>Lambs Bricks</li>
+    </ul>
+</article>
+<div id="divider4" class="divider">
+    <div class="shadow"></div>
+    <div class="artwork layer" data-depth="1"></div>
+</div>
+<article>
+    <p>Located in Seaford in the heart of the South Downs National Park, ideally placed to work with companies in London, Brighton and throughout Sussex.</p>
+</article>
+<div id="divider5" class="divider">
+    <div class="shadow"></div>
+    <div class="artwork layer" data-depth="1"></div>
+</div>
+<article>
+    <p>Keenly interested in art, ceramics and photography. With a good eye for layout, typography and semantic mark-up. Speaking the same language as graphic designers, can work with them to help them understand what&rsquo;s possible and to make their ideas work.</p>
+</article>
+<div id="divider6" class="divider">
+    <div class="shadow"></div>
+    <div class="artwork layer" data-depth="1"></div>
+</div>
+<article>
+    <!--div class="quote">
+        <p>Over my long career, I&rsquo;ve seen the web evolve from its text based origins, into the immersive multimedia experience it is today. I remember the bad old days of the browser wars in the noughties, when cross-browser development was a nightmare. When I created a product catalog website for a brick company, each browser needed its own stylesheet and getting the JavaScript to work on all browsers was no mean feat. Rich web applications and interactivity were not really very viable then in HTML and JavaScript.</p>
+
+        <p>Enter Macromedia &mdash; the ubiquity of the Shockwave Flash plugin provided developers with the holy grail of being able to lay out and code for a single target environment. With Flex and as3, we finally had an enterprise strength environment in which to develop. During this time I was using Flash almost exclusively, to develop interactive e-learning resources, and sophisticated frameworks in which to organise them. A great advantage of Flash was that one could publish to the web or as a desktop application with minimal changes, using tools like Zinc.</p>
+
+        <p>When Apple banned the flash player from iOS devices, arguing that it was too resource hungry and not an open standard, the landscape changed. While Flash definitely still has its place, HTML5 has really won the argument as the cross-platform technology of choice. Fortunately for developers, both browsers and JavaScript have really come of age, with mature open-source frameworks making enterprise use of JavaScript commonplace.</p>
+
+        <p>Since 2010 I have been developing mostly in JavaScript. I like the way CSS3, with responsive layout and media queries, allows sophisticated platform adaptation without resorting to JavaScript. I&rsquo;m used to keeping content, presentation and business logic separated, and responsibility for these falls neatly to HTML, CSS and JavaScript. I love the way require.js allows me to develop highly modular OO code and manage dependencies. I love the simplicity of backbone.js and the way it stands back and allows me to implement design patterns the way I want to. And, of course, I love the way jQuery/Zepto gives me control over the DOM.</p>
+   </div-->
+</article>
+<footer>
+
+   <div class="links">
+        <a href="mailto:info@hyperlounge.com">info@hyperlounge.com</a>
+        <a href="http://www.flickr.com/photos/derek-king/" target="_blank">Flickr photostream</a>
+    </div>
+
+</footer>
+
+<script src="src/lib/3rd-party/jquery-1.7.1.min.js"></script>
+<script src="src/main.js"></script>
+
 </body>
 </html>

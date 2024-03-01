@@ -1,0 +1,85 @@
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  -ms-border-radius: $radius;
+  -o-border-radius: $radius;
+  border-radius: $radius;
+}
+
+@mixin web-font($name, $weight, $style, $basename, $variant) {
+  @font-face {
+    font-family: $name;
+    src: url('../fonts/#{$basename}.eot');
+    src: url('../fonts/#{$basename}.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/#{$basename}.woff') format('woff'),
+    url('../fonts/#{$basename}.ttf') format('truetype'),
+    url('../fonts/#{$basename}.##{$variant}') format('svg');
+    font-weight: $weight;
+    font-style: $style;
+  }
+}
+
+@mixin box-shadow($offsetX, $offsetY, $blur, $spread, $color) {
+/***  CSS Box Shadow  ***/
+  box-shadow: $offsetX $offsetY $blur $spread $color ;
+
+  -webkit-box-shadow: $offsetX $offsetY $blur $spread $color ;
+
+  -moz-box-shadow: $offsetX $offsetY $blur $spread $color ;
+}
+
+@mixin user-select($value) {
+  -webkit-user-select: $value; /* Chrome/Safari */
+  -moz-user-select: $value; /* Firefox */
+  -ms-user-select: $value; /* IE10+ */
+
+/* Rules below not implemented in browsers yet */
+  -o-user-select: $value;
+  user-select: $value;
+}
+
+@mixin divider-gradient($topAlpha, $topWidth, $topPcnt, $bottomAlpha, $bottomWidth, $bottomPcnt) {
+/***  CSS Gradient  ***/
+/*  Chrome 1-9 and Safari 4-5.0  */
+  background-image: -webkit-gradient(linear, left top, left bottom,
+    color-stop( 0.0, rgba(0, 0, 0, $topAlpha ) ),
+    color-stop( $topWidth, rgba(0, 0, 0, 0.000) ),
+    color-stop( 1-$bottomWidth, rgba(0, 0, 0, 0.000) ),
+    color-stop( 1.0, rgba(0, 0, 0, $bottomAlpha ) ));
+
+/*  Chrome 10+ Safari 5.1+ Mobile Safari  */
+  background-image: -webkit-linear-gradient(top,
+    rgba(0, 0, 0, $topAlpha),
+    rgba(0, 0, 0, 0.000) $topPcnt,
+    rgba(0, 0, 0, 0.000) 100-$bottomPcnt,
+    rgba(0, 0, 0, $bottomAlpha) );
+
+/*  Firefox 3.6+  */
+  background-image: -moz-linear-gradient(top,
+    rgba(0, 0, 0, $topAlpha),
+    rgba(0, 0, 0, 0.000) $topPcnt,
+    rgba(0, 0, 0, 0.000) 100-$bottomPcnt,
+    rgba(0, 0, 0, $bottomAlpha) );
+
+/*  IE 10+  */
+  background-image: -ms-linear-gradient(top,
+    rgba(0, 0, 0, $topAlpha),
+    rgba(0, 0, 0, 0.000) $topPcnt,
+    rgba(0, 0, 0, 0.000) 100-$bottomPcnt,
+    rgba(0, 0, 0, $bottomAlpha) );
+
+/*  Opera 11.10+  */
+  background-image: -o-linear-gradient(top,
+    rgba(0, 0, 0, $topAlpha),
+    rgba(0, 0, 0, 0.000) $topPcnt,
+    rgba(0, 0, 0, 0.000) 100-$bottomPcnt,
+    rgba(0, 0, 0, $bottomAlpha) );
+
+/*  W3C  */
+  background-image: linear-gradient(top,
+    rgba(0, 0, 0, $topAlpha),
+    rgba(0, 0, 0, 0.000) $topPcnt,
+    rgba(0, 0, 0, 0.000) 100-$bottomPcnt,
+    rgba(0, 0, 0, $bottomAlpha) );
+
+}

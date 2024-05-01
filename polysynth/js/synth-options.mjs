@@ -1,5 +1,8 @@
 import MonoSynth from './MonoSynth.js';
 import PolySynth from './PolySynth.js';
+import './components/RotaryKnob.js';
+import './components/RotarySwitch.js';
+import './components/VerticalSlider.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     document.body.innerHTML = `

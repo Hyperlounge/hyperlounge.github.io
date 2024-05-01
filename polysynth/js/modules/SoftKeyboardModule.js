@@ -137,7 +137,6 @@ export default class SoftKeyboardModule extends AudioModule {
     }
 
     _onKeyMouseMove = evt => {
-        evt.preventDefault();
         const key = document.elementFromPoint(evt.pageX, evt.pageY);
         if (key.classList.contains('key')) {
             const note = Number(key.getAttribute('data-note'));
@@ -155,7 +154,6 @@ export default class SoftKeyboardModule extends AudioModule {
     }
 
     _onKeyMouseUp = evt => {
-        evt.preventDefault();
         if (this._currentNote) {
             this._eventBus.dispatchEvent(new MidiEvent(MidiEvent.NOTE_OFF, this._currentNote, this._state.get('velocity')));
             delete this._currentNote;

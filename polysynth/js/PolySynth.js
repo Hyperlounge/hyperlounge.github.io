@@ -3,6 +3,9 @@ import Dialog from './components/Dialog.js';
 import Library from './Library.js';
 import LibraryView from './LibraryView.js';
 import MidiEvent from './events/MidiEvent.js';
+import './components/RotaryKnob.js';
+import './components/RotarySwitch.js';
+import './components/VerticalSlider.js';
 
 const initialPatch = '{"global":{"totalVoices":1,"legato":true,"envelopeStretch":false,"name":"Too High!","bank":"Basses"},"controllerHelper":{"pitchBendMax":200,"modulationMax":100},"voiceAllocator":{"numberOfVoices":0,"glideTime":0.019857606383389993},"osc1":{"waveform":"sawtooth","range":-1,"tune":0,"fineTune":2,"modAmount":100,"crossModAmount":0},"osc2":{"waveform":"triangle","range":-2,"tune":0,"fineTune":-1,"modAmount":100,"crossModAmount":0},"oscLevel1":{"level":0.066},"oscLevel2":{"level":0.048},"noiseLevel1":{"level":0},"amplifier":{},"loudnessEnvelope":{"attackSeconds":0,"decaySeconds":0,"sustainLevel":1,"releaseSeconds":0,"velocityAmount":0.5},"filter":{"type":"lowpass","frequency":69.35183155248555,"resonance":6.2,"modAmount":0,"keyboardFollowAmount":1,"envelopeAmount":4900},"filterEnvelope":{"attackSeconds":0.05830307435355809,"decaySeconds":0.5348507922869201,"sustainLevel":0.51,"releaseSeconds":0,"velocityAmount":0.56},"lfo":{"waveform":"triangle","frequency":5.495408738576245,"fixedAmount":0,"modWheelAmount":1,"delay":0},"noise":{"type":"white"},"softKeyboard":{}}';
 
@@ -69,94 +72,114 @@ const lfoWaveforms = [
 ];
 
 const filterTypes = [
-    {value: '2', label: 'HIGH', param: 'highpass'},
-    {value: '1', label: 'BAND', param: 'bandpass'},
-    {value: '0', label: 'LOW', param: 'lowpass'},
+    {value: '2', label: 'HI', param: 'highpass'},
+    {value: '1', label: 'BA', param: 'bandpass'},
+    {value: '0', label: 'LO', param: 'lowpass'},
 ];
 
 const oscTemplate = id => `
 <div class="control-group">
     <div class="vertical-group">
-    ${verticalSlider(`${id}-waveform`, 'Wave', 0, 3, waveforms)}
-    ${verticalSlider(`${id}-range`, 'Range', -2, 2, [
-        {value: 2, label: '2'},
-        {value: 1, label: '4'},
-        {value: 0, label: '8'},
-        {value: -1, label: '16'},
-        {value: -2, label: '32'},
-    ])}
+    <rotary-switch id="${id}-waveform" title="Waveform" labels="right">
+        ${waveforms.map(item => `<option value="${item.value}">${item.label}</option>`).join('')}
+    </rotary-switch>
+    <rotary-switch id="${id}-range" title="Range" labels="right">
+        <option value="2">2</option>
+        <option value="1">4</option>
+        <option value="0">8</option>
+        <option value="-1">16</option>
+        <option value="-2">32</option>
+    </rotary-switch>
     </div>
-    ${verticalSlider(`${id}-tune`, 'Tune', -7, 7, [
-        {value: 7, label: '+7'},
-        {value: 6},
-        {value: 5},
-        {value: 4},
-        {value: 3},
-        {value: 2},
-        {value: 1},
-        {value: 0, label: '0'},
-        {value: -1},
-        {value: -2},
-        {value: -3},
-        {value: -4},
-        {value: -5},
-        {value: -6},
-        {value: -7, label: '-7'},
-    ])}
-    ${verticalSlider(`${id}-fine-tune`, 'Fine', -50, 50, ['+0.5', '0', '–0.5'])}
-    ${verticalSlider(`${id}-modulation`, 'Mod', -50, 50, labelsMinus5toPlus5)}
-    ${id === 'oscillator-2' ? verticalSlider(`${id}-cross-mod`, `O-1 Mod`, 0, 100, labels0to10) : verticalSlider(`${id}-noise-level`, `Noise`, 0, 100, labels0to10)}
-    ${verticalSlider(`${id}-level`, 'Level', 0, 100, labels0to10)}
+    <div class="vertical-group">
+    <rotary-switch id="${id}-tune" title="Semitones">
+        <option value="-7">&minus;7</option>
+        <option value="-6"></option>
+        <option value="-5"></option>
+        <option value="-4"></option>
+        <option value="-3"></option>
+        <option value="-2"></option>
+        <option value="-1"></option>
+        <option value="0">0</option>
+        <option value="1"></option>
+        <option value="2"></option>
+        <option value="3"></option>
+        <option value="4"></option>
+        <option value="5"></option>
+        <option value="6"></option>
+        <option value="7">+7</option>
+    </rotary-switch>
+    <rotary-knob id="${id}-fine-tune" min-value="-50" max-value="50" scale-min="-0.5" scale-max="0.5" scale-step="0.1" minimal>Fine Tune</rotary-knob>
+    </div>
+    <div class="vertical-group">
+    <rotary-knob id="${id}-modulation" min-value="-50" max-value="50" scale-min="-5" scale-max="5" scale-step="1" minimal>Modulation</rotary-knob>
+    ${id === 'oscillator-2' ? `<rotary-knob id="${id}-cross-mod" min-value="0" max-value="100" scale-min="0" scale-max="10" scale-step="1">Cross-Mod</rotary-knob>` : `<rotary-knob id="${id}-noise-level" min-value="0" max-value="100" scale-min="0" scale-max="10" scale-step="1">Noise</rotary-knob>`}
+    </div>
+    <vertical-slider id="${id}-level" min-value="0" max-value="100" scale-min="0" scale-max="10" scale-step="1">Level</vertical-slider>
 </div>
 `;
 
 const lfoTemplate = `
 <div class="control-group">
-    ${verticalSlider(`lfo-waveform`, 'Wave', 0, 6, lfoWaveforms)}
-    ${verticalSlider(`lfo-frequency`, 'Freq.', 0, 100, ['100','50','25','12','6','3','1.5','0.8','0.4','0.2','0.1'])}
-    ${verticalSlider(`lfo-fixed-level`, 'Level', 0, 100, labels0to10)}
     <div class="vertical-group">
-        ${verticalSlider(`lfo-mod-wheel-level`, 'Mod Wheel', 0, 100, [10,8,6,4,2,0])}
-        ${verticalSlider(`lfo-mod-delay`, 'Delay', 0, 100, [10,5,2.5,1.2,0.4,0])}
+        <rotary-switch id="lfo-waveform" title="Waveform">
+            ${lfoWaveforms.map(item => `<option value="${item.value}">${item.label}</option>`).join('')}
+        </rotary-switch>
+        <rotary-knob id="lfo-frequency" max-value="100">Rate</rotary-knob>
     </div>
+    <div class="vertical-group">
+        <rotary-knob id="lfo-mod-wheel-level" max-value="100">Mod Wheel</rotary-knob>
+        <rotary-knob id="lfo-mod-delay" max-value="100">Delay</rotary-knob>
+    </div>
+    <vertical-slider id="lfo-fixed-level" max-value="100">Level</vertical-slider>
 </div>
 `;
 
 const filterTemplate = `
 <div class="control-group">
-    ${verticalSlider(`filter-type`, 'Pass', 0, 2, filterTypes)}
-    ${verticalSlider(`filter-frequency`, 'Freq.', 0, 100, ['5k','2.5k','1.2k','600','300','150','75','36','18','9','4.5'])}
-    ${verticalSlider(`filter-resonance`, 'Res.', 0, 100, labels0to10)}
-    ${verticalSlider(`filter-envelope-amount`, 'Env.', 0, 100, labels0to10)}
-    ${verticalSlider(`filter-modulation`, 'Mod.', 0, 100, labels0to10)}
-    ${verticalSlider(`filter-keyboard`, 'Keys', 0, 100, labels0to10)}
+    <div class="vertical-group">
+    <rotary-switch id="filter-type" title="Pass" labels="right">
+        ${filterTypes.map(item => `<option value="${item.value}">${item.label}</option>`).join('')}    
+    </rotary-switch>
+    <rotary-knob id="filter-frequency" max-value="100">Cut-off</rotary-knob>
+    </div>
+    <div class="vertical-group">
+    <rotary-knob id="filter-resonance" max-value="100">Resonance</rotary-knob>
+    <rotary-knob id="filter-envelope-amount" max-value="100">Envelope</rotary-knob>
+    </div>
+    <div class="vertical-group">
+    <rotary-knob id="filter-modulation" max-value="100">Modulation</rotary-knob>
+    <rotary-knob id="filter-keyboard" max-value="100">Follow Keys</rotary-knob>
+    </div>
 </div>
 `;
 
 const ADSRTemplate = id => `
 <div class="control-group">
-    ${verticalSlider(`${id}-attack`, 'Attack', 0, 100, labels0to10log)}
-    ${verticalSlider(`${id}-decay`, 'Decay', 0, 100, labels0to10log)}
-    ${verticalSlider(`${id}-sustain`, 'Sustain', 0, 100, labels0to10)}
-    ${verticalSlider(`${id}-release`, 'Release', 0, 100, labels0to10log)}
-    ${verticalSlider(`${id}-velocity`, 'Velocity', 0, 100, labels0to10)}
+    <vertical-slider id="${id}-attack" max-value="100">Attack</vertical-slider>
+    <vertical-slider id="${id}-decay" max-value="100">Decay</vertical-slider>
+    <vertical-slider id="${id}-sustain" max-value="100">Sustain</vertical-slider>
+    <vertical-slider id="${id}-release" max-value="100">Release</vertical-slider>
+    <vertical-slider id="${id}-velocity" max-value="100">Velocity</vertical-slider>
 </div>
 `;
 
 const controllersTemplate = `
 <div class="control-group">
-    ${verticalSlider(`voices`, 'Voices', 0, 8, [
-        {value: 8, label: '8'},
-        {value: 7, label: '7'},
-        {value: 6, label: '6'},
-        {value: 5, label: '5'},
-        {value: 4, label: '4'},
-        {value: 3, label: '3'},
-        {value: 2, label: '2'},
-        {value: 1, label: '1'},
-        {value: 0, label: 'legato'},
-    ])}
-    ${verticalSlider(`glide-time`, 'Glide', 0, 100, labels0to10log)}
+    <div class="vertical-group">
+        <rotary-switch id="voices" title="Voices">
+            <option value="8">8</option>
+            <option value="7">7</option>
+            <option value="6">6</option>
+            <option value="5">5</option>
+            <option value="4">4</option>
+            <option value="3">3</option>
+            <option value="2">2</option>
+            <option value="1">1</option>
+            <option value="0">LEG.</option>
+        </rotary-switch>
+        <rotary-knob id="glide-time" max-value="100">Glide</rotary-knob>
+    </div>
 </div>
 `;
 
@@ -671,8 +694,10 @@ export default class PolySynth extends ModularSynth {
                         <h2>Global</h2>
                         <div class="control-group">
                             <div class="vertical-group">
+                                <rotary-switch id="noise-type" title="Noise" labels="right">
+                                    ${noiseTypes.map(item => `<option value="${item.value}">${item.label}</option>`).join('')}
+                                </rotary-switch>
                                 <label>Envelope Stretch <input type="checkbox" id="envelope-stretch"/></label>
-                                ${verticalSlider('noise-type', 'Noise', 0, 2, noiseTypes)}
                             </div>
                         </div>
                     </div>

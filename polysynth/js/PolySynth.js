@@ -6,6 +6,7 @@ import MidiEvent from './events/MidiEvent.js';
 import './components/RotaryKnob.js';
 import './components/RotarySwitch.js';
 import './components/VerticalSlider.js';
+import './components/ModWheel.js';
 
 const initialPatch = '{"global":{"totalVoices":1,"legato":true,"envelopeStretch":false,"name":"Too High!","bank":"Basses"},"controllerHelper":{"pitchBendMax":200,"modulationMax":100},"voiceAllocator":{"numberOfVoices":0,"glideTime":0.019857606383389993},"osc1":{"waveform":"sawtooth","range":-1,"tune":0,"fineTune":2,"modAmount":100,"crossModAmount":0},"osc2":{"waveform":"triangle","range":-2,"tune":0,"fineTune":-1,"modAmount":100,"crossModAmount":0},"oscLevel1":{"level":0.066},"oscLevel2":{"level":0.048},"noiseLevel1":{"level":0},"amplifier":{},"loudnessEnvelope":{"attackSeconds":0,"decaySeconds":0,"sustainLevel":1,"releaseSeconds":0,"velocityAmount":0.5},"filter":{"type":"lowpass","frequency":69.35183155248555,"resonance":6.2,"modAmount":0,"keyboardFollowAmount":1,"envelopeAmount":4900},"filterEnvelope":{"attackSeconds":0.05830307435355809,"decaySeconds":0.5348507922869201,"sustainLevel":0.51,"releaseSeconds":0,"velocityAmount":0.56},"lfo":{"waveform":"triangle","frequency":5.495408738576245,"fixedAmount":0,"modWheelAmount":1,"delay":0},"noise":{"type":"white"},"softKeyboard":{}}';
 
@@ -166,6 +167,8 @@ const ADSRTemplate = id => `
 
 const controllersTemplate = `
 <div class="control-group">
+    <mod-wheel id="pitch-bend" min-value="-64" max-value="64" snap-back>Bend</mod-wheel>
+    <mod-wheel id="mod-wheel" max-value="127">Mod</mod-wheel>
     <div class="vertical-group">
         <rotary-switch id="voices" title="Voices">
             <option value="8">8</option>
@@ -321,6 +324,14 @@ export default class PolySynth extends ModularSynth {
         });
 
         document.getElementById('preset-name').innerHTML = this.globalPatch.get('name');
+
+        document.getElementById('pitch-bend').addEventListener('input', evt => {
+            this._controllerHelper._onPitchBend(evt.target.value + 64);
+        });
+        document.getElementById('mod-wheel').addEventListener('input', evt => {
+            this._controllerHelper._onModWheel(evt.target.value);
+        });
+
         bindControl('glide-time', this._voiceAllocator, 'glideTime', linearToLog(100, 10), logToLinear(10, 100));
         bindControl('voices', this._voiceAllocator, 'numberOfVoices');
         const bindOscillator = number => {
@@ -667,8 +678,15 @@ export default class PolySynth extends ModularSynth {
                         <div id="controllers">${controllersTemplate}</div>
                     </div>
                     <div class="panel">
-                        <h2>LFO</h2>
-                        <div id="lfo">${lfoTemplate}</div>
+                        <h2>Global</h2>
+                        <div class="control-group">
+                            <div class="vertical-group">
+                                <rotary-switch id="noise-type" title="Noise" labels="right">
+                                    ${noiseTypes.map(item => `<option value="${item.value}">${item.label}</option>`).join('')}
+                                </rotary-switch>
+                                <label>Envelope Stretch <input type="checkbox" id="envelope-stretch"/></label>
+                            </div>
+                        </div>
                     </div>
                     <div class="panel">
                         <h2>Oscillator 1</h2>
@@ -691,15 +709,8 @@ export default class PolySynth extends ModularSynth {
                         <div id="filter">${filterTemplate}</div>
                     </div>
                     <div class="panel">
-                        <h2>Global</h2>
-                        <div class="control-group">
-                            <div class="vertical-group">
-                                <rotary-switch id="noise-type" title="Noise" labels="right">
-                                    ${noiseTypes.map(item => `<option value="${item.value}">${item.label}</option>`).join('')}
-                                </rotary-switch>
-                                <label>Envelope Stretch <input type="checkbox" id="envelope-stretch"/></label>
-                            </div>
-                        </div>
+                        <h2>LFO</h2>
+                        <div id="lfo">${lfoTemplate}</div>
                     </div>
                 </div>
                 <div class="panel keyboard">

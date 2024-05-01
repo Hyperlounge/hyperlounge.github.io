@@ -1,13 +1,11 @@
 @charset "UTF-8";
-html,
-body {
+html, body {
   width: 100%;
   height: 100%;
   padding: 0;
   margin: 0;
-  font:
-    12px Tahoma,
-    sans-serif;
+  font: 12px Tahoma, sans-serif;
+  background: black;
   overflow: hidden;
 }
 
@@ -35,22 +33,22 @@ body {
   padding: 3px;
 }
 .header #preset-name:empty::before {
-  content: 'Preset name';
+  content: "Preset name";
 }
 .header .recorder button#record {
   color: red;
 }
 .header .recorder button#record::before {
-  content: 'record';
+  content: "record";
 }
 .header .recorder button#record.stop::before {
-  content: 'stop';
+  content: "stop";
 }
 .header .recorder button#play::before {
-  content: 'play';
+  content: "play";
 }
 .header .recorder button#play.stop::before {
-  content: 'stop';
+  content: "stop";
 }
 
 .library-root {
@@ -85,7 +83,7 @@ body {
 }
 .library-root .library .presets div::before {
   color: transparent;
-  content: '• ';
+  content: "• ";
 }
 .library-root .library .presets div.selected::before {
   color: dodgerblue;
@@ -148,7 +146,7 @@ body {
   overflow: hidden;
   text-align: center;
 }
-.panel span.control input[type='range'][orient='vertical'] {
+.panel span.control input[type=range][orient=vertical] {
   appearance: slider-vertical;
   width: 30px;
   height: 172px;
@@ -171,7 +169,7 @@ body {
   display: flex;
   flex-direction: column;
 }
-.panel div.vertical-group input[type='range'][orient='vertical'] {
+.panel div.vertical-group input[type=range][orient=vertical] {
   height: 70px;
 }
 .panel div.vertical-group .labels {
@@ -188,7 +186,7 @@ body {
   width: 100%;
   display: flex;
   flex-direction: row;
-  height: 160px;
+  height: 240px;
 }
 .panel.keyboard .keys .key {
   box-sizing: border-box;
@@ -206,10 +204,10 @@ body {
   color: #222222;
 }
 .panel.keyboard .keys .key.down {
-  background: #dddddd;
+  background: #DDDDDD;
 }
 .panel.keyboard .keys.ebony {
-  margin-top: -160px;
+  margin-top: -240px;
   justify-content: space-between;
   pointer-events: none;
 }
@@ -225,7 +223,7 @@ body {
 .panel.keyboard .keys.ebony .key {
   pointer-events: all;
   flex-grow: 100;
-  height: 65%;
+  height: 60%;
   background: #222222;
 }
 .panel.keyboard .keys.ebony .key.down {

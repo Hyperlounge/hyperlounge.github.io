@@ -56,20 +56,20 @@ const noiseTypes = [
 ]
 
 const waveforms = [
-    {label: '<img src="/media/svg/sine-wave.svg"/>', value: 'sine'},
-    {label: '<img src="/media/svg/triangle.svg"/>', value: 'triangle', default: true},
-    {label: '<img src="/media/svg/saw-tooth.svg"/>', value: 'sawtooth'},
-    {label: '<img src="/media/svg/square-wave.svg"/>', value: 'square'},
+    {label: '<img src="media/svg/sine-wave.svg"/>', value: 'sine'},
+    {label: '<img src="media/svg/triangle.svg"/>', value: 'triangle', default: true},
+    {label: '<img src="media/svg/saw-tooth.svg"/>', value: 'sawtooth'},
+    {label: '<img src="media/svg/square-wave.svg"/>', value: 'square'},
 ];
 
 const lfoWaveforms = [
-    {label: '<img src="/media/svg/sine-wave.svg"/>', value: 'sine'},
-    {label: '<img src="/media/svg/triangle.svg"/>', value: 'triangle', default: true},
-    {label: '<img src="/media/svg/saw-tooth.svg"/>', value: 'sawtooth'},
-    {label: '<img src="/media/svg/reverse-saw.svg"/>', value: 'inverse-sawtooth'},
-    {label: '<img src="/media/svg/square-wave.svg"/>', value: 'square'},
-    {label: '<img src="/media/svg/sample-and-hold.svg"/>', value: 'sample-hold'},
-    {label: '<img src="/media/svg/noise.svg"/>', value: 'noise'},
+    {label: '<img src="media/svg/sine-wave.svg"/>', value: 'sine'},
+    {label: '<img src="media/svg/triangle.svg"/>', value: 'triangle', default: true},
+    {label: '<img src="media/svg/saw-tooth.svg"/>', value: 'sawtooth'},
+    {label: '<img src="media/svg/reverse-saw.svg"/>', value: 'inverse-sawtooth'},
+    {label: '<img src="media/svg/square-wave.svg"/>', value: 'square'},
+    {label: '<img src="media/svg/sample-and-hold.svg"/>', value: 'sample-hold'},
+    {label: '<img src="media/svg/noise.svg"/>', value: 'noise'},
 ];
 
 const filterTypes = [

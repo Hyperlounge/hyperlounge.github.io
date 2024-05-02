@@ -50,44 +50,48 @@ const labelsMinus5toPlus5 = [5,4,3,2,1,0,-1,-2,-3,-4,-5];
 const labels0to10log = [10,5,2.5,1.2,600,300,150,70,30,10,0];
 
 const noiseTypes = [
-    {value: '2', label: 'WHITE', param: 'white'},
-    {value: '1', label: 'PINK', param: 'pink'},
-    {value: '0', label: 'BROWN', param: 'brown'},
+    {label: 'WHITE', value: 'white', default: true},
+    {label: 'PINK', value: 'pink'},
+    {label: 'BROWN', value: 'brown'},
 ]
 
 const waveforms = [
-    {value: '3', label: 'SIN', param: 'sine'},
-    {value: '2', label: 'TRI', param: 'triangle'},
-    {value: '1', label: 'SAW', param: 'sawtooth'},
-    {value: '0', label: 'SQU', param: 'square'},
+    {label: '<img src="/media/svg/sine-wave.svg"/>', value: 'sine'},
+    {label: '<img src="/media/svg/triangle.svg"/>', value: 'triangle', default: true},
+    {label: '<img src="/media/svg/saw-tooth.svg"/>', value: 'sawtooth'},
+    {label: '<img src="/media/svg/square-wave.svg"/>', value: 'square'},
 ];
 
 const lfoWaveforms = [
-    {value: '6', label: 'SIN', param: 'sine'},
-    {value: '5', label: 'TRI', param: 'triangle'},
-    {value: '4', label: 'SAW', param: 'sawtooth'},
-    {value: '3', label: 'WAS', param: 'inverse-sawtooth'},
-    {value: '2', label: 'SQU', param: 'square'},
-    {value: '1', label: 'S+H', param: 'sample-hold'},
-    {value: '0', label: 'NSE', param: 'noise'},
+    {label: '<img src="/media/svg/sine-wave.svg"/>', value: 'sine'},
+    {label: '<img src="/media/svg/triangle.svg"/>', value: 'triangle', default: true},
+    {label: '<img src="/media/svg/saw-tooth.svg"/>', value: 'sawtooth'},
+    {label: '<img src="/media/svg/reverse-saw.svg"/>', value: 'inverse-sawtooth'},
+    {label: '<img src="/media/svg/square-wave.svg"/>', value: 'square'},
+    {label: '<img src="/media/svg/sample-and-hold.svg"/>', value: 'sample-hold'},
+    {label: '<img src="/media/svg/noise.svg"/>', value: 'noise'},
 ];
 
 const filterTypes = [
-    {value: '2', label: 'HI', param: 'highpass'},
-    {value: '1', label: 'BA', param: 'bandpass'},
-    {value: '0', label: 'LO', param: 'lowpass'},
+    {label: 'HI', value: 'highpass'},
+    {label: 'BA', value: 'bandpass'},
+    {label: 'LO', value: 'lowpass', default: true},
 ];
+
+function renderOptions(optionsList) {
+    return optionsList.map(item => `<option value="${item.value}"${!!item.default ? ' selected' : ''}>${item.label}</option>`).join('');
+}
 
 const oscTemplate = id => `
 <div class="control-group">
     <div class="vertical-group">
     <rotary-switch id="${id}-waveform" title="Waveform" labels="right">
-        ${waveforms.map(item => `<option value="${item.value}">${item.label}</option>`).join('')}
+        ${renderOptions(waveforms)}
     </rotary-switch>
     <rotary-switch id="${id}-range" title="Range" labels="right">
         <option value="2">2</option>
         <option value="1">4</option>
-        <option value="0">8</option>
+        <option value="0" selected>8</option>
         <option value="-1">16</option>
         <option value="-2">32</option>
     </rotary-switch>
@@ -101,7 +105,7 @@ const oscTemplate = id => `
         <option value="-3"></option>
         <option value="-2"></option>
         <option value="-1"></option>
-        <option value="0">0</option>
+        <option value="0" selected>0</option>
         <option value="1"></option>
         <option value="2"></option>
         <option value="3"></option>
@@ -116,7 +120,7 @@ const oscTemplate = id => `
     <rotary-knob id="${id}-modulation" min-value="-50" max-value="50" scale-min="-5" scale-max="5" scale-step="1" minimal>Modulation</rotary-knob>
     ${id === 'oscillator-2' ? `<rotary-knob id="${id}-cross-mod" min-value="0" max-value="100" scale-min="0" scale-max="10" scale-step="1">Cross-Mod</rotary-knob>` : `<rotary-knob id="${id}-noise-level" min-value="0" max-value="100" scale-min="0" scale-max="10" scale-step="1">Noise</rotary-knob>`}
     </div>
-    <vertical-slider id="${id}-level" min-value="0" max-value="100" scale-min="0" scale-max="10" scale-step="1">Level</vertical-slider>
+    <vertical-slider id="${id}-level" value="50" min-value="0" max-value="100" scale-min="0" scale-max="10" scale-step="1">Level</vertical-slider>
 </div>
 `;
 
@@ -124,15 +128,15 @@ const lfoTemplate = `
 <div class="control-group">
     <div class="vertical-group">
         <rotary-switch id="lfo-waveform" title="Waveform">
-            ${lfoWaveforms.map(item => `<option value="${item.value}">${item.label}</option>`).join('')}
+            ${renderOptions(lfoWaveforms)}
         </rotary-switch>
-        <rotary-knob id="lfo-frequency" max-value="100">Rate</rotary-knob>
+        <rotary-knob id="lfo-frequency" value="60" max-value="100">Rate</rotary-knob>
     </div>
     <div class="vertical-group">
-        <rotary-knob id="lfo-mod-wheel-level" max-value="100">Mod Wheel</rotary-knob>
-        <rotary-knob id="lfo-mod-delay" max-value="100">Delay</rotary-knob>
+        <rotary-knob id="lfo-mod-wheel-level" value="10" max-value="100">Mod Wheel</rotary-knob>
+        <rotary-knob id="lfo-mod-delay" value="70" max-value="100">Delay</rotary-knob>
     </div>
-    <vertical-slider id="lfo-fixed-level" max-value="100">Level</vertical-slider>
+    <vertical-slider id="lfo-fixed-level" value="10" max-value="100">Level</vertical-slider>
 </div>
 `;
 
@@ -140,17 +144,17 @@ const filterTemplate = `
 <div class="control-group">
     <div class="vertical-group">
     <rotary-switch id="filter-type" title="Pass" labels="right">
-        ${filterTypes.map(item => `<option value="${item.value}">${item.label}</option>`).join('')}    
+        ${renderOptions(filterTypes)}    
     </rotary-switch>
-    <rotary-knob id="filter-frequency" max-value="100">Cut-off</rotary-knob>
+    <rotary-knob id="filter-frequency" value="50" max-value="100">Cut-off</rotary-knob>
     </div>
     <div class="vertical-group">
     <rotary-knob id="filter-resonance" max-value="100">Resonance</rotary-knob>
-    <rotary-knob id="filter-envelope-amount" max-value="100">Envelope</rotary-knob>
+    <rotary-knob id="filter-envelope-amount" value="50" max-value="100">Envelope</rotary-knob>
     </div>
     <div class="vertical-group">
     <rotary-knob id="filter-modulation" max-value="100">Modulation</rotary-knob>
-    <rotary-knob id="filter-keyboard" max-value="100">Follow Keys</rotary-knob>
+    <rotary-knob id="filter-keyboard" value="100" max-value="100">Follow Keys</rotary-knob>
     </div>
 </div>
 `;
@@ -159,9 +163,9 @@ const ADSRTemplate = id => `
 <div class="control-group">
     <vertical-slider id="${id}-attack" max-value="100">Attack</vertical-slider>
     <vertical-slider id="${id}-decay" max-value="100">Decay</vertical-slider>
-    <vertical-slider id="${id}-sustain" max-value="100">Sustain</vertical-slider>
+    <vertical-slider id="${id}-sustain" value="100" max-value="100">Sustain</vertical-slider>
     <vertical-slider id="${id}-release" max-value="100">Release</vertical-slider>
-    <vertical-slider id="${id}-velocity" max-value="100">Velocity</vertical-slider>
+    <vertical-slider id="${id}-velocity" value="50" max-value="100">Velocity</vertical-slider>
 </div>
 `;
 
@@ -171,15 +175,15 @@ const controllersTemplate = `
     <mod-wheel id="mod-wheel" max-value="127">Mod</mod-wheel>
     <div class="vertical-group">
         <rotary-switch id="voices" title="Voices">
-            <option value="8">8</option>
-            <option value="7">7</option>
-            <option value="6">6</option>
-            <option value="5">5</option>
-            <option value="4">4</option>
-            <option value="3">3</option>
-            <option value="2">2</option>
-            <option value="1">1</option>
             <option value="0">LEG.</option>
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
         </rotary-switch>
         <rotary-knob id="glide-time" max-value="100">Glide</rotary-knob>
     </div>
@@ -241,14 +245,6 @@ function logRangeToLinear(logMin, logMax, linearMax) {
         const value = Math.log2(Number(log));
         return linearMax * (value-minValue)/(maxValue-minValue);
     }
-}
-
-function optionToParam(list) {
-    return a => list.find(item => item.value === a).param;
-}
-
-function paramToOption(list) {
-    return a => list.find(item => item.param === a).value;
 }
 
 export default class PolySynth extends ModularSynth {
@@ -337,7 +333,7 @@ export default class PolySynth extends ModularSynth {
         const bindOscillator = number => {
             const osc = this[`_osc${number}`];
             const level = this[`_oscLevel${number}`];
-            bindControl(`oscillator-${number}-waveform`, osc, 'waveform', optionToParam(waveforms), paramToOption(waveforms));
+            bindControl(`oscillator-${number}-waveform`, osc, 'waveform', a => a);
             bindControl(`oscillator-${number}-range`, osc, 'range');
             bindControl(`oscillator-${number}-tune`, osc, 'tune');
             bindControl(`oscillator-${number}-fine-tune`, osc, 'fineTune');
@@ -362,21 +358,21 @@ export default class PolySynth extends ModularSynth {
         bindADSR('loudness-envelope', this._loudnessEnvelope);
         bindADSR('filter-envelope', this._filterEnvelope);
 
-        bindControl('filter-type', this._filter, 'type', optionToParam(filterTypes), paramToOption(filterTypes));
+        bindControl('filter-type', this._filter, 'type', a => a);
         bindControl('filter-frequency', this._filter, 'frequency', linearToLogRange(100, 4.5, 5000), logRangeToLinear(4.5, 5000, 100));
         bindControl('filter-resonance', this._filter, 'resonance', a => Number(a)/5, a => String(a*5));
         bindControl('filter-envelope-amount', this._filter, 'envelopeAmount', a => Number(a)*100, a => String(a/100));
         bindControl('filter-modulation', this._filter, 'modAmount', a => Number(a)*100, a => String(a/100));
         bindControl('filter-keyboard', this._filter, 'keyboardFollowAmount', a => Number(a)/100, a => String(a*100));
 
-        bindControl(`lfo-waveform`, this._lfo, 'waveform', optionToParam(lfoWaveforms), paramToOption(lfoWaveforms));
+        bindControl(`lfo-waveform`, this._lfo, 'waveform', a => a);
         bindControl('lfo-frequency', this._lfo, 'frequency', linearToLogRange(100, 0.1, 100), logRangeToLinear(0.1, 100, 100));
         bindControl('lfo-fixed-level', this._lfo, 'fixedAmount', a => Number(a)/100, a => String(a*100));
         bindControl('lfo-mod-wheel-level', this._lfo, 'modWheelAmount', a => Number(a)/100, a => String(a*100));
         bindControl(`lfo-mod-delay`, this._lfo, 'delay', linearToLog(100, 10), logToLinear(10, 100));
 
         bindControl('envelope-stretch', this, 'envelopeStretch');
-        bindControl('noise-type', this._noise, 'type', optionToParam(noiseTypes), paramToOption(noiseTypes));
+        bindControl('noise-type', this._noise, 'type', a => a);
 
         this.globalPatch.addEventListener('change', evt => {
             document.getElementById('preset-name').innerHTML = this.globalPatch.get('name');
@@ -678,15 +674,8 @@ export default class PolySynth extends ModularSynth {
                         <div id="controllers">${controllersTemplate}</div>
                     </div>
                     <div class="panel">
-                        <h2>Global</h2>
-                        <div class="control-group">
-                            <div class="vertical-group">
-                                <rotary-switch id="noise-type" title="Noise" labels="right">
-                                    ${noiseTypes.map(item => `<option value="${item.value}">${item.label}</option>`).join('')}
-                                </rotary-switch>
-                                <label>Envelope Stretch <input type="checkbox" id="envelope-stretch"/></label>
-                            </div>
-                        </div>
+                        <h2>LFO</h2>
+                        <div id="lfo">${lfoTemplate}</div>
                     </div>
                     <div class="panel">
                         <h2>Oscillator 1</h2>
@@ -709,8 +698,15 @@ export default class PolySynth extends ModularSynth {
                         <div id="filter">${filterTemplate}</div>
                     </div>
                     <div class="panel">
-                        <h2>LFO</h2>
-                        <div id="lfo">${lfoTemplate}</div>
+                        <h2>Global</h2>
+                        <div class="control-group">
+                            <div class="vertical-group">
+                                <rotary-switch id="noise-type" title="Noise" labels="right">
+                                    ${renderOptions(noiseTypes)}
+                                </rotary-switch>
+                                <label>Envelope Stretch <input type="checkbox" id="envelope-stretch"/></label>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="panel keyboard">

@@ -3,6 +3,12 @@ export default function addTwiddling(element) {
     let _startCallback = () => {};
     let _twiddleCallback = (deltaX, deltaY) => {};
     let _endCallback = () => {};
+    let _doubleTapCallback = () => {};
+    let _firstTap = false;
+
+    element.addEventListener('dblclick', evt => {
+        _doubleTapCallback();
+    });
 
     element.addEventListener('mousedown', evt => {
         const startX = evt.pageX;
@@ -29,6 +35,18 @@ export default function addTwiddling(element) {
 
     element.addEventListener('touchstart', evt => {
         evt.preventDefault();
+
+        if (_firstTap) {
+            _firstTap = false;
+            _doubleTapCallback();
+            return;
+        }
+
+        _firstTap = true;
+        setTimeout(() => {
+            _firstTap = false;
+        }, 500);
+
         const touch = evt.targetTouches[0];
         const touchId = touch.identifier;
         const startX = touch.pageX;
@@ -70,5 +88,9 @@ export default function addTwiddling(element) {
             _endCallback = callback;
             return this;
         },
+        onDoubleTap(callback) {
+            _doubleTapCallback = callback;
+            return this;
+        }
     }
 }

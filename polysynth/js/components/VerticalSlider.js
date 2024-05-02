@@ -105,6 +105,8 @@ export default class VerticalSlider extends HTMLElement {
             ...this._props,
             title: this._title,
         }
+
+        this._initialValue = data.value;
         this._root.innerHTML = VerticalSlider.template(data);
         this._minY = 20;
         this._maxY = 150;
@@ -168,9 +170,12 @@ export default class VerticalSlider extends HTMLElement {
                 startValue = this._props.value;
             })
             .onTwiddle((deltaX, deltaY) => {
-                let newValue = startValue + (deltaX - deltaY) * (maxValue - minValue) / (this._maxY - this._minY);
-                this._props.value = Math.max(Math.min(newValue, maxValue), minValue);
-                this._updateView();
+                let newValue = startValue - deltaY * (maxValue - minValue) / (this._maxY - this._minY);
+                this.value = Math.max(Math.min(newValue, maxValue), minValue);
+                this._dispatchChangeEvent();
+            })
+            .onDoubleTap(() => {
+                this.value = this._initialValue;
                 this._dispatchChangeEvent();
             });
     }

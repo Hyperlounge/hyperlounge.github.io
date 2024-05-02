@@ -80,6 +80,8 @@ export default class RotaryKnob extends HTMLElement {
             ...this._props,
             title: this._title,
         }
+
+        this._initialValue = data.value;
         this._root.innerHTML = RotaryKnob.template(data);
         this._drawScale();
         this._updateView();
@@ -153,9 +155,12 @@ export default class RotaryKnob extends HTMLElement {
                 startValue = this._props.value;
             })
             .onTwiddle((deltaX, deltaY) => {
-                let newValue = startValue + (deltaX - deltaY) * (maxValue - minValue) / 100;
-                this._props.value = Math.max(Math.min(newValue, maxValue), minValue);
-                this._updateView();
+                let newValue = startValue + (deltaX - deltaY) * (maxValue - minValue) / 150;
+                this.value = Math.max(Math.min(newValue, maxValue), minValue);
+                this._dispatchChangeEvent();
+            })
+            .onDoubleTap(() => {
+                this.value = this._initialValue;
                 this._dispatchChangeEvent();
             });
     }

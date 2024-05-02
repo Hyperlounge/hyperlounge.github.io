@@ -104,7 +104,7 @@ export default class ModWheel extends HTMLElement {
                 startValue = this._props.value;
             })
             .onTwiddle((deltaX, deltaY) => {
-                let newValue = startValue + (deltaX - deltaY) * (maxValue - minValue) / (this._maxY - this._minY);
+                let newValue = startValue - deltaY * (maxValue - minValue) / (this._maxY - this._minY);
                 this._props.value = Math.max(Math.min(newValue, maxValue), minValue);
                 this._updateView();
                 this._dispatchChangeEvent();

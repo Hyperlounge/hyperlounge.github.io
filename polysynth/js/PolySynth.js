@@ -10,27 +10,7 @@ import './components/ModWheel.js';
 
 const initialPatch = '{"global":{"totalVoices":1,"legato":true,"envelopeStretch":false,"name":"Too High!","bank":"Basses"},"controllerHelper":{"pitchBendMax":200,"modulationMax":100},"voiceAllocator":{"numberOfVoices":0,"glideTime":0.019857606383389993},"osc1":{"waveform":"sawtooth","range":-1,"tune":0,"fineTune":2,"modAmount":100,"crossModAmount":0},"osc2":{"waveform":"triangle","range":-2,"tune":0,"fineTune":-1,"modAmount":100,"crossModAmount":0},"oscLevel1":{"level":0.066},"oscLevel2":{"level":0.048},"noiseLevel1":{"level":0},"amplifier":{},"loudnessEnvelope":{"attackSeconds":0,"decaySeconds":0,"sustainLevel":1,"releaseSeconds":0,"velocityAmount":0.5},"filter":{"type":"lowpass","frequency":69.35183155248555,"resonance":6.2,"modAmount":0,"keyboardFollowAmount":1,"envelopeAmount":4900},"filterEnvelope":{"attackSeconds":0.05830307435355809,"decaySeconds":0.5348507922869201,"sustainLevel":0.51,"releaseSeconds":0,"velocityAmount":0.56},"lfo":{"waveform":"triangle","frequency":5.495408738576245,"fixedAmount":0,"modWheelAmount":1,"delay":0},"noise":{"type":"white"},"softKeyboard":{}}';
 
-function verticalSlider(id, label, min, max, list) {
-    const isValuesList = !!(!!list && !!list.length && typeof list[0] === 'object');
-    return `
-    <span class="control vertical-slider">
-        <label>${label}</label>
-        <div class="control-body">
-            <input id="${id}" type="range" min="${min}" max="${max}" ${isValuesList ? `list="${id}-values"` : ''} orient="vertical"/>   
-            ${isValuesList ? `
-            <datalist id="${id}-values">
-                ${list.map(item => `<option value="${item.value}"></option>`).join('')}
-            </datalist>
-            ` : ''}
-            ${!!list && !!list.length ? `
-            <div class="labels">
-                ${list.map(item => `<div class="label">${isValuesList ? item.label || '' : item}</div>`).join('')}
-            </div>
-            ` : ''}
-        </div>
-    </span>
-    `
-}
+const SVG = 'media/svg'
 
 const banks = [
     'Leads',
@@ -45,10 +25,6 @@ const banks = [
     'Misc',
 ];
 
-const labels0to10 = [10,9,8,7,6,5,4,3,2,1,0];
-const labelsMinus5toPlus5 = [5,4,3,2,1,0,-1,-2,-3,-4,-5];
-const labels0to10log = [10,5,2.5,1.2,600,300,150,70,30,10,0];
-
 const noiseTypes = [
     {label: 'WHITE', value: 'white', default: true},
     {label: 'PINK', value: 'pink'},
@@ -56,20 +32,20 @@ const noiseTypes = [
 ]
 
 const waveforms = [
-    {label: '<img src="media/svg/sine-wave.svg"/>', value: 'sine'},
-    {label: '<img src="media/svg/triangle.svg"/>', value: 'triangle', default: true},
-    {label: '<img src="media/svg/saw-tooth.svg"/>', value: 'sawtooth'},
-    {label: '<img src="media/svg/square-wave.svg"/>', value: 'square'},
+    {label: `<img alt="sine" src="${SVG}/sine-wave.svg"/>`, value: 'sine'},
+    {label: `<img alt="triangle" src="${SVG}/triangle.svg"/>`, value: 'triangle', default: true},
+    {label: `<img alt="sawtooth" src="${SVG}/saw-tooth.svg"/>`, value: 'sawtooth'},
+    {label: `<img alt="square" src="${SVG}/square-wave.svg"/>`, value: 'square'},
 ];
 
 const lfoWaveforms = [
-    {label: '<img src="media/svg/sine-wave.svg"/>', value: 'sine'},
-    {label: '<img src="media/svg/triangle.svg"/>', value: 'triangle', default: true},
-    {label: '<img src="media/svg/saw-tooth.svg"/>', value: 'sawtooth'},
-    {label: '<img src="media/svg/reverse-saw.svg"/>', value: 'inverse-sawtooth'},
-    {label: '<img src="media/svg/square-wave.svg"/>', value: 'square'},
-    {label: '<img src="media/svg/sample-and-hold.svg"/>', value: 'sample-hold'},
-    {label: '<img src="media/svg/noise.svg"/>', value: 'noise'},
+    {label: `<img alt="sine" src="${SVG}/sine-wave.svg"/>`, value: 'sine'},
+    {label: `<img alt="triangle" src="${SVG}/triangle.svg"/>`, value: 'triangle', default: true},
+    {label: `<img alt="sawtooth" src="${SVG}/saw-tooth.svg"/>`, value: 'sawtooth'},
+    {label: `<img alt="reverse sawtooth" src="${SVG}/reverse-saw.svg"/>`, value: 'inverse-sawtooth'},
+    {label: `<img alt="square" src="${SVG}/square-wave.svg"/>`, value: 'square'},
+    {label: `<img alt="sample and hold" src="${SVG}/sample-and-hold.svg"/>`, value: 'sample-hold'},
+    {label: `<img alt="noise" src="${SVG}/noise.svg"/>`, value: 'noise'},
 ];
 
 const filterTypes = [
@@ -173,20 +149,6 @@ const controllersTemplate = `
 <div class="control-group">
     <mod-wheel id="pitch-bend" min-value="-64" max-value="64" snap-back>Bend</mod-wheel>
     <mod-wheel id="mod-wheel" max-value="127">Mod</mod-wheel>
-    <div class="vertical-group">
-        <rotary-switch id="voices" title="Voices">
-            <option value="0">LEG.</option>
-            <option value="1" selected>1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-        </rotary-switch>
-        <rotary-knob id="glide-time" max-value="100">Glide</rotary-knob>
-    </div>
 </div>
 `;
 
@@ -195,7 +157,7 @@ function bindControl(controlId, module, parameterName, controlToParam = a => Num
     if (!control) {
         throw new Error(`control #${controlId} does not exist.`)
     }
-    const updateControl = evt => {
+    const updateControl = () => {
         if (control.type === 'checkbox') {
             control.checked = module.getParam(parameterName);
         } else {
@@ -203,7 +165,7 @@ function bindControl(controlId, module, parameterName, controlToParam = a => Num
         }
     }
     updateControl();
-    const updateModule = evt => {
+    const updateModule = () => {
         if (control.type === 'checkbox') {
             module.setParam(parameterName, control.checked);
         } else {
@@ -214,16 +176,16 @@ function bindControl(controlId, module, parameterName, controlToParam = a => Num
         }
     }
     control.addEventListener(control.type === 'checkbox' ? 'change' : 'input', updateModule);
-    module.addEventListener('patch-change', evt => {
+    module.addEventListener('patch-change', () => {
         if (module.paramChanged(parameterName)) updateControl();
     });
 }
 
-function linearToLog(linearMax, logMax, logMin = 0) {
+function linearToLog(linearMax, logMax) {
     return linear => (Math.pow(2, 10*Number(linear)/linearMax) - 1) * logMax / 1023;
 }
 
-function logToLinear(logMax, linearMax, logMin = 0) {
+function logToLinear(logMax, linearMax) {
     return log => Math.log2(1023 * Number(log)/logMax + 1) * linearMax/10;
 }
 
@@ -257,14 +219,14 @@ export default class PolySynth extends ModularSynth {
         this._root.addEventListener('drop', evt => this.dropHandler(evt));
         this._root.addEventListener('dragover', evt => this.dragOverHandler(evt));
 
-        document.getElementById('save-patch').addEventListener('click', evt => this.savePatchToFile());
-        document.getElementById('share-patch').addEventListener('click', evt => this.sharePatch());
+        document.getElementById('save-patch').addEventListener('click', () => this.savePatchToFile());
+        document.getElementById('share-patch').addEventListener('click', () => this.sharePatch());
 
         this._recordingData = [];
         this._recording = false;
         this._playing = false;
-        document.getElementById('record').addEventListener('click', evt => this.toggleRecord());
-        document.getElementById('play').addEventListener('click', evt => this.togglePlay());
+        //document.getElementById('record').addEventListener('click', evt => this.toggleRecord());
+        //document.getElementById('play').addEventListener('click', evt => this.togglePlay());
 
 
         this._library = new Library();
@@ -374,7 +336,7 @@ export default class PolySynth extends ModularSynth {
         bindControl('envelope-stretch', this, 'envelopeStretch');
         bindControl('noise-type', this._noise, 'type', a => a);
 
-        this.globalPatch.addEventListener('change', evt => {
+        this.globalPatch.addEventListener('change', () => {
             document.getElementById('preset-name').innerHTML = this.globalPatch.get('name');
         })
     }
@@ -411,7 +373,7 @@ export default class PolySynth extends ModularSynth {
             const filePath = this._library.getPresetPathById(id);
             const xhr = new XMLHttpRequest();
             xhr.open('get', filePath);
-            xhr.onload = evt => {
+            xhr.onload = () => {
                 resolve(JSON.parse(xhr.responseText));
             }
             xhr.send();
@@ -429,7 +391,7 @@ export default class PolySynth extends ModularSynth {
                 alert('Please drag only one patch file onto the synth.');
             } else {
                 // Use DataTransferItemList interface to access the file(s)
-                [...ev.dataTransfer.items].forEach((item, i) => {
+                [...ev.dataTransfer.items].forEach(item => {
                     // If dropped items aren't files, reject them
                     if (item.kind === "file") {
                         const file = item.getAsFile();
@@ -666,51 +628,69 @@ export default class PolySynth extends ModularSynth {
             <div class="synth">
                 <div class="header">
                     <span id="preset-name"></span> <button id="save-patch">Save patch</button> <button id="share-patch">Share patch</button>
-                    <span class="recorder"><button id="record"></button><button id="play"></button></span>
+                    <!--span class="recorder"><button id="record"></button><button id="play"></button></span-->
                 </div>
                 <div class="controls">
-                    <div class="panel">
-                        <h2>Controllers</h2>
-                        <div id="controllers">${controllersTemplate}</div>
+                    <div class="expression-controls">
+                        <div class="panel">
+                            <h2>&nbsp;</h2>
+                            <div id="controllers">${controllersTemplate}</div>
+                        </div>
                     </div>
-                    <div class="panel">
-                        <h2>LFO</h2>
-                        <div id="lfo">${lfoTemplate}</div>
-                    </div>
-                    <div class="panel">
-                        <h2>Oscillator 1</h2>
-                        <div id="oscillator-1">${oscTemplate('oscillator-1')}</div>
-                    </div>
-                    <div class="panel">
-                        <h2>Oscillator 2</h2>
-                        <div id="oscillator-2">${oscTemplate('oscillator-2')}</div>
-                    </div>
-                    <div class="panel">
-                        <h2>Amp Envelope</h2>
-                        <div id="loudness-envelope">${ADSRTemplate('loudness-envelope')}</div>
-                    </div>
-                    <div class="panel">
-                        <h2>Filter Envelope</h2>
-                        <div id="filter-envelope">${ADSRTemplate('filter-envelope')}</div>
-                    </div>
-                    <div class="panel">
-                        <h2>Filter</h2>
-                        <div id="filter">${filterTemplate}</div>
-                    </div>
-                    <div class="panel">
-                        <h2>Global</h2>
-                        <div class="control-group">
-                            <div class="vertical-group">
-                                <rotary-switch id="noise-type" title="Noise" labels="right">
-                                    ${renderOptions(noiseTypes)}
-                                </rotary-switch>
-                                <label>Envelope Stretch <input type="checkbox" id="envelope-stretch"/></label>
+                    <div class="settings">
+                        <div class="panel">
+                            <h2>LFO</h2>
+                            <div id="lfo">${lfoTemplate}</div>
+                        </div>
+                        <div class="panel">
+                            <h2>Oscillator 1</h2>
+                            <div id="oscillator-1">${oscTemplate('oscillator-1')}</div>
+                        </div>
+                        <div class="panel">
+                            <h2>Oscillator 2</h2>
+                            <div id="oscillator-2">${oscTemplate('oscillator-2')}</div>
+                        </div>
+                        <div class="panel">
+                            <h2>Amp Envelope</h2>
+                            <div id="loudness-envelope">${ADSRTemplate('loudness-envelope')}</div>
+                        </div>
+                        <div class="panel">
+                            <h2>Filter Envelope</h2>
+                            <div id="filter-envelope">${ADSRTemplate('filter-envelope')}</div>
+                        </div>
+                        <div class="panel">
+                            <h2>Filter</h2>
+                            <div id="filter">${filterTemplate}</div>
+                        </div>
+                        <div class="panel">
+                            <h2>Global</h2>
+                            <div class="control-group">
+                                <div class="vertical-group">
+                                    <rotary-switch id="voices" title="Voices">
+                                        <option value="0">LEG.</option>
+                                        <option value="1" selected>1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                    </rotary-switch>
+                                    <rotary-knob id="glide-time" max-value="100">Glide</rotary-knob>
+                                </div>
+                                <div class="vertical-group">
+                                    <rotary-switch id="noise-type" title="Noise" labels="right">
+                                        ${renderOptions(noiseTypes)}
+                                    </rotary-switch>
+                                    <label>Envelope<br/>Stretch<br/><input type="checkbox" id="envelope-stretch"/></label>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="panel keyboard">
-                    <div>
+                    <div class="keyboard-controls">
                         <button class="keyboard-range" value="transpose-down">&minus;</button>
                         transpose
                         <button class="keyboard-range" value="transpose-up">+</button>

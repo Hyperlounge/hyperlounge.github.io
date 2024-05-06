@@ -7,6 +7,7 @@ html, body {
   font: 12px Tahoma, sans-serif;
   background: black;
   overflow: hidden;
+  --spacing: 10px;
 }
 
 * {
@@ -14,8 +15,17 @@ html, body {
   user-select: none !important;
 }
 
+.modal {
+  z-index: 999999;
+}
+
+#synth {
+  height: 100%;
+}
+
 .synth {
   display: flex;
+  height: 100%;
   flex-direction: column;
   justify-items: start;
   background: black;
@@ -91,7 +101,25 @@ html, body {
 
 .controls {
   display: flex;
+  flex-basis: content;
+  flex-grow: 0;
+  flex-shrink: 0;
   flex-direction: row;
+  flex-wrap: nowrap;
+}
+.controls .expression-controls {
+  display: flex;
+  flex-grow: 0;
+}
+.controls .expression-controls .panel .control-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.controls .settings {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 1;
   flex-wrap: wrap;
 }
 
@@ -110,6 +138,7 @@ html, body {
   border: 1px solid gray;
   padding: 0 10px;
   border-radius: 10px;
+  flex-grow: 1;
 }
 .panel h2 {
   text-align: center;
@@ -121,6 +150,7 @@ html, body {
 .panel div.control-group {
   display: flex;
   flex-direction: row;
+  justify-content: space-evenly;
 }
 .panel span.control {
   display: flex;
@@ -141,17 +171,6 @@ html, body {
   flex-direction: row;
   align-items: center;
   padding: 5px;
-}
-.panel span.control select {
-  overflow: hidden;
-  text-align: center;
-}
-.panel span.control input[type=range][orient=vertical] {
-  appearance: slider-vertical;
-  width: 30px;
-  height: 172px;
-  padding: 0;
-  margin: 0;
 }
 .panel span.control .labels {
   display: flex;
@@ -176,17 +195,25 @@ html, body {
   height: 65px;
 }
 .panel.keyboard {
-  flex-basis: 100%;
+  flex-grow: 1;
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.panel.keyboard .keyboard-controls {
+  flex-basis: content;
+  flex-grow: 0;
 }
 .panel.keyboard .keyboard-keys {
+  flex-grow: 1;
   margin-top: 10px;
+  position: relative;
 }
 .panel.keyboard .keys {
   width: 100%;
   display: flex;
   flex-direction: row;
-  height: 240px;
+  height: 100%;
 }
 .panel.keyboard .keys .key {
   box-sizing: border-box;
@@ -207,7 +234,11 @@ html, body {
   background: #DDDDDD;
 }
 .panel.keyboard .keys.ebony {
-  margin-top: -240px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
   justify-content: space-between;
   pointer-events: none;
 }
@@ -223,7 +254,6 @@ html, body {
 .panel.keyboard .keys.ebony .key {
   pointer-events: all;
   flex-grow: 100;
-  height: 60%;
   background: #222222;
 }
 .panel.keyboard .keys.ebony .key.down {

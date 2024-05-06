@@ -123,7 +123,7 @@ html, body {
   flex-wrap: wrap;
 }
 
-@media (max-height: 800px) {
+@media (max-height: 600px) {
   .expression-controls .panel .control-group {
     flex-wrap: nowrap !important;
   }

@@ -141,10 +141,15 @@ html, body {
   }
 }
 
-@media (max-height: 690px) {
-  .controls {
-    flex-wrap: nowrap;
-    overflow-x: auto;
+@media (max-height: 800px) {
+  .expression-controls {
+    .panel .control-group {
+      flex-wrap: nowrap !important;
+    }
+  }
+  .settings {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
   }
 }
 

@@ -5,6 +5,7 @@ import LibraryView from './LibraryView.js';
 import MidiEvent from './events/MidiEvent.js';
 import './components/RotaryKnob.js';
 import './components/RotarySwitch.js';
+import './components/ToggleSwitch.js';
 import './components/VerticalSlider.js';
 import './components/ModWheel.js';
 
@@ -346,7 +347,7 @@ export default class PolySynth extends ModularSynth {
         if (! this._libraryRoot) {
             this._libraryRoot = document.createElement('div');
             this._libraryRoot.id = 'library-root';
-            this._libraryRoot.className = 'library-root';
+            this._libraryRoot.className = 'library-root show';
             this._libraryRoot.style.left = target.offsetLeft + 'px';
             const top = (target.offsetTop + target.offsetHeight);
             this._libraryRoot.style.top = top + 'px';
@@ -354,7 +355,7 @@ export default class PolySynth extends ModularSynth {
             document.body.appendChild(this._libraryRoot);
             const libraryView = new LibraryView(this._libraryRoot.id, this._library, '');
             libraryView.addEventListener('preset-selected', evt => {
-                this._libraryRoot.style.display = 'none';
+                this._libraryRoot.classList.toggle('show', false);
                 this.loadPresetFromLibrary(evt.detail).then(patch => {
                     this.patch = patch;
                     this._presetId = evt.detail;
@@ -364,7 +365,7 @@ export default class PolySynth extends ModularSynth {
                 });
             });
         } else {
-            this._libraryRoot.style.display = 'block';
+            this._libraryRoot.classList.toggle('show');
         }
     }
 
@@ -683,7 +684,7 @@ export default class PolySynth extends ModularSynth {
                                     <rotary-switch id="noise-type" title="Noise" labels="right">
                                         ${renderOptions(noiseTypes)}
                                     </rotary-switch>
-                                    <label>Envelope<br/>Stretch<br/><input type="checkbox" id="envelope-stretch"/></label>
+                                    <toggle-switch id="envelope-stretch">Envelope<br/>Stretch</toggle-switch>
                                 </div>
                             </div>
                         </div>

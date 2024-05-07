@@ -3,7 +3,7 @@ export default function addTwiddling(element) {
     let _startCallback = () => {};
     let _twiddleCallback = (deltaX, deltaY) => {};
     let _endCallback = () => {};
-    let _doubleTapCallback = () => {};
+    let _doubleTapCallback;
     let _firstTap = false;
 
     element.addEventListener('dblclick', evt => {
@@ -36,16 +36,17 @@ export default function addTwiddling(element) {
     element.addEventListener('touchstart', evt => {
         evt.preventDefault();
 
-        if (_firstTap) {
-            _firstTap = false;
-            _doubleTapCallback();
-            return;
+        if (_doubleTapCallback) {
+            if (_firstTap) {
+                _firstTap = false;
+                _doubleTapCallback();
+                return;
+            }
+            _firstTap = true;
+            setTimeout(() => {
+                _firstTap = false;
+            }, 500);
         }
-
-        _firstTap = true;
-        setTimeout(() => {
-            _firstTap = false;
-        }, 500);
 
         const touch = evt.targetTouches[0];
         const touchId = touch.identifier;

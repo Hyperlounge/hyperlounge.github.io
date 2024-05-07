@@ -70,11 +70,17 @@ html, body {
 }
 
 .library-root {
+  display: none;
   position: absolute;
   background: silver;
   padding: 10px;
   border: 1px solid gray;
   border-radius: 0 10px 10px 10px;
+  font-size: 150%;
+
+  &.show {
+    display: block;
+  }
 
   .library {
     display: flex;

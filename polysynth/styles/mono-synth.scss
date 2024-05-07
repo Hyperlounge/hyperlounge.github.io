@@ -12,6 +12,7 @@ html, body {
 * {
   box-sizing: border-box;
   user-select: none !important;
+  -webkit-user-select: none !important;
 }
 
 .modal {

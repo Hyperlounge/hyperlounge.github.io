@@ -3,227 +3,227 @@
     {
       "name": "Big Bass",
       "bank": "Basses",
-      "fileName": "Basses- Big Bass.hspatch"
+      "fileName": "Basses- Big Bass.hspatch.json"
     },
     {
       "name": "Breezy Bass",
       "bank": "Basses",
-      "fileName": "Basses- Breezy Bass.hspatch"
+      "fileName": "Basses- Breezy Bass.hspatch.json"
     },
     {
       "name": "Double Bass",
       "bank": "Basses",
-      "fileName": "Basses- Double Bass.hspatch"
+      "fileName": "Basses- Double Bass.hspatch.json"
     },
     {
       "name": "Full Bass",
       "bank": "Basses",
-      "fileName": "Basses- Full Bass.hspatch"
+      "fileName": "Basses- Full Bass.hspatch.json"
     },
     {
       "name": "Funky Bass",
       "bank": "Basses",
-      "fileName": "Basses- Funky Bass.hspatch"
+      "fileName": "Basses- Funky Bass.hspatch.json"
     },
     {
       "name": "Ice Crawl 2",
       "bank": "Basses",
-      "fileName": "Basses- Ice Crawl 2.hspatch"
+      "fileName": "Basses- Ice Crawl 2.hspatch.json"
     },
     {
       "name": "Stab Bass",
       "bank": "Basses",
-      "fileName": "Basses- Stab Bass.hspatch"
+      "fileName": "Basses- Stab Bass.hspatch.json"
     },
     {
       "name": "Too High!",
       "bank": "Basses",
-      "fileName": "Basses- Too High!.hspatch"
+      "fileName": "Basses- Too High!.hspatch.json"
     },
     {
       "name": "Coronet",
       "bank": "Brass",
-      "fileName": "Brass- Coronet.hspatch"
+      "fileName": "Brass- Coronet.hspatch.json"
     },
     {
       "name": "Fanfare",
       "bank": "Brass",
-      "fileName": "Brass- Fanfare.hspatch"
+      "fileName": "Brass- Fanfare.hspatch.json"
     },
     {
       "name": "Ragged Wah",
       "bank": "Brass",
-      "fileName": "Brass- Ragged Wah.hspatch"
+      "fileName": "Brass- Ragged Wah.hspatch.json"
     },
     {
       "name": "Soft Brass",
       "bank": "Brass",
-      "fileName": "Brass- Soft Brass.hspatch"
+      "fileName": "Brass- Soft Brass.hspatch.json"
     },
     {
       "name": "Trombone",
       "bank": "Brass",
-      "fileName": "Brass- Trombone.hspatch"
+      "fileName": "Brass- Trombone.hspatch.json"
     },
     {
       "name": "Trumpet section",
       "bank": "Brass",
-      "fileName": "Brass- Trumpet section.hspatch"
+      "fileName": "Brass- Trumpet section.hspatch.json"
     },
     {
       "name": "Bell piano",
       "bank": "Keys",
-      "fileName": "Keys- Bell piano.hspatch"
+      "fileName": "Keys- Bell piano.hspatch.json"
     },
     {
       "name": "Bright Piano",
       "bank": "Keys",
-      "fileName": "Keys- Bright Piano.hspatch"
+      "fileName": "Keys- Bright Piano.hspatch.json"
     },
     {
       "name": "Drawbars",
       "bank": "Keys",
-      "fileName": "Keys- Drawbars.hspatch"
+      "fileName": "Keys- Drawbars.hspatch.json"
     },
     {
       "name": "Grand",
       "bank": "Keys",
-      "fileName": "Keys- Grand.hspatch"
+      "fileName": "Keys- Grand.hspatch.json"
     },
     {
       "name": "Harmonium",
       "bank": "Keys",
-      "fileName": "Keys- Harmonium.hspatch"
+      "fileName": "Keys- Harmonium.hspatch.json"
     },
     {
       "name": "Harpsichord",
       "bank": "Keys",
-      "fileName": "Keys- Harpsichord.hspatch"
+      "fileName": "Keys- Harpsichord.hspatch.json"
     },
     {
       "name": "Jazz Organ",
       "bank": "Keys",
-      "fileName": "Keys- Jazz Organ.hspatch"
+      "fileName": "Keys- Jazz Organ.hspatch.json"
     },
     {
       "name": "Mellow Piano",
       "bank": "Keys",
-      "fileName": "Keys- Mellow Piano.hspatch"
+      "fileName": "Keys- Mellow Piano.hspatch.json"
     },
     {
       "name": "Nasal",
       "bank": "Keys",
-      "fileName": "Keys- Nasal.hspatch"
+      "fileName": "Keys- Nasal.hspatch.json"
     },
     {
       "name": "Res Piano",
       "bank": "Keys",
-      "fileName": "Keys- Res Piano.hspatch"
+      "fileName": "Keys- Res Piano.hspatch.json"
     },
     {
       "name": "Squeezebox",
       "bank": "Keys",
-      "fileName": "Keys- Squeezebox.hspatch"
+      "fileName": "Keys- Squeezebox.hspatch.json"
     },
     {
       "name": "Wurly",
       "bank": "Keys",
-      "fileName": "Keys- Wurly.hspatch"
+      "fileName": "Keys- Wurly.hspatch.json"
     },
     {
       "name": "Cat- Fight",
       "bank": "Leads",
-      "fileName": "Leads- Cat- Fight.hspatch"
+      "fileName": "Leads- Cat- Fight.hspatch.json"
     },
     {
       "name": "Genius of Love",
       "bank": "Leads",
-      "fileName": "Leads- Genius of Love.hspatch"
+      "fileName": "Leads- Genius of Love.hspatch.json"
     },
     {
       "name": "Hose Me Down!",
       "bank": "Leads",
-      "fileName": "Leads- Hose Me Down!.hspatch"
+      "fileName": "Leads- Hose Me Down!.hspatch.json"
     },
     {
       "name": "Mod Goblins",
       "bank": "Leads",
-      "fileName": "Leads- Mod Goblins.hspatch"
+      "fileName": "Leads- Mod Goblins.hspatch.json"
     },
     {
       "name": "Pulsar",
       "bank": "Leads",
-      "fileName": "Leads- Pulsar.hspatch"
+      "fileName": "Leads- Pulsar.hspatch.json"
     },
     {
       "name": "Shine On!",
       "bank": "Leads",
-      "fileName": "Leads- Shine On!.hspatch"
+      "fileName": "Leads- Shine On!.hspatch.json"
     },
     {
       "name": "Welcome to the Machine",
       "bank": "Leads",
-      "fileName": "Leads- Welcome to the Machine.hspatch"
+      "fileName": "Leads- Welcome to the Machine.hspatch.json"
     },
     {
       "name": "Big sweep",
       "bank": "Pads",
-      "fileName": "Pads- Big sweep.hspatch"
+      "fileName": "Pads- Big sweep.hspatch.json"
     },
     {
       "name": "FM Pad",
       "bank": "Pads",
-      "fileName": "Pads- FM Pad.hspatch"
+      "fileName": "Pads- FM Pad.hspatch.json"
     },
     {
       "name": "Phase Strings",
       "bank": "Pads",
-      "fileName": "Pads- Phase Strings.hspatch"
+      "fileName": "Pads- Phase Strings.hspatch.json"
     },
     {
       "name": "S and H pad",
       "bank": "Pads",
-      "fileName": "Pads- S and H pad.hspatch"
+      "fileName": "Pads- S and H pad.hspatch.json"
     },
     {
       "name": "bendy pad",
       "bank": "Pads",
-      "fileName": "Pads- bendy pad.hspatch"
+      "fileName": "Pads- bendy pad.hspatch.json"
     },
     {
       "name": "The Bells!",
       "bank": "Percussion",
-      "fileName": "Percussion- The Bells!.hspatch"
+      "fileName": "Percussion- The Bells!.hspatch.json"
     },
     {
       "name": "Cello",
       "bank": "Strings",
-      "fileName": "Strings- Cello.hspatch"
+      "fileName": "Strings- Cello.hspatch.json"
     },
     {
       "name": "String Voice",
       "bank": "Strings",
-      "fileName": "Strings- String Voice.hspatch"
+      "fileName": "Strings- String Voice.hspatch.json"
     },
     {
       "name": "Stringy Thing",
       "bank": "Strings",
-      "fileName": "Strings- Stringy Thing.hspatch"
+      "fileName": "Strings- Stringy Thing.hspatch.json"
     },
     {
       "name": "Swell Strings",
       "bank": "Strings",
-      "fileName": "Strings- Swell Strings.hspatch"
+      "fileName": "Strings- Swell Strings.hspatch.json"
     },
     {
       "name": "Viola",
       "bank": "Strings",
-      "fileName": "Strings- Viola.hspatch"
+      "fileName": "Strings- Viola.hspatch.json"
     },
     {
       "name": "Violin",
       "bank": "Strings",
-      "fileName": "Strings- Violin.hspatch"
+      "fileName": "Strings- Violin.hspatch.json"
     }
   ]
 }

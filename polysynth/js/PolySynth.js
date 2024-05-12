@@ -339,7 +339,26 @@ export default class PolySynth extends ModularSynth {
 
         this.globalPatch.addEventListener('change', () => {
             document.getElementById('preset-name').innerHTML = this.globalPatch.get('name');
-        })
+        });
+
+        this.eventBus.addEventListener('modwheel', evt => {
+            document.getElementById('mod-wheel').value = evt.detail.midiValue;
+        });
+
+        this.eventBus.addEventListener('pitchbend', evt => {
+            document.getElementById('pitch-bend').value = evt.detail.midiValue - 64;
+        });
+    }
+
+    _onMidiEvent(evt) {
+        const { statusByte, dataByte1 } = evt.detail;
+        if (statusByte >= 128 && statusByte <= 143) {
+            const key = this._keyboard.querySelector(`.key[data-note="${dataByte1}"]`);
+            key && key.classList.toggle('down', false);
+        } else if (statusByte >= 144 && statusByte <= 159) {
+            const key = this._keyboard.querySelector(`.key[data-note="${dataByte1}"]`);
+            key && key.classList.toggle('down', true);
+        }
     }
 
     showLibrary(evt) {

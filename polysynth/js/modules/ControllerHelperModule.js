@@ -37,6 +37,7 @@ export default class ControllerHelperModule extends AudioModule {
     _onPitchBend(value) {
         // convert to a cents value +- pitchBendMax
         this._pitchBendOut.offset.setTargetAtTime(this._patch.get('pitchBendMax') * (value - 64)/64, this._now, this._minimumTimeConstant);
+        this._triggerPitchBendEvent(value);
     }
 
     _onModWheel(value) {
@@ -48,7 +49,17 @@ export default class ControllerHelperModule extends AudioModule {
     _triggerModWheelEvent(value) {
         const event = new CustomEvent('modwheel', {
             detail: {
+                midiValue: value,
                 value: this._patch.get('modulationMax') * value / 127,
+            },
+        });
+        this._eventBus.dispatchEvent(event);
+    }
+
+    _triggerPitchBendEvent(value) {
+        const event = new CustomEvent('pitchbend', {
+            detail: {
+                midiValue: value,
             },
         });
         this._eventBus.dispatchEvent(event);

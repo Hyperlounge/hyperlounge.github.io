@@ -70,6 +70,7 @@ html, body {
   border: 1px solid gray;
   border-radius: 0 10px 10px 10px;
   font-size: 150%;
+  z-index: 1000;
 }
 .library-root.show {
   display: block;

@@ -397,7 +397,7 @@ export default class PolySynth extends ModularSynth {
                     if (item.kind === "file") {
                         const file = item.getAsFile();
                         const fileName = file.name;
-                        const [name, bank] = fileName.replace(/^.*patch-([^-]+)-([^./]+)\.txt$/, '$2/$1').split('/');
+                        const [name, bank] = fileName.replace(/^([^-]+)- ([^./]+)\.hspatch$/, '$2/$1').split('/');
                         file.text().then(text => {
                             let patch;
                             try {
@@ -551,7 +551,7 @@ export default class PolySynth extends ModularSynth {
                 this.globalPatch.set({name, bank});
                 const element = document.createElement('a');
                 element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.patch)));
-                element.setAttribute('download', `patch-${bank}-${name}.txt`);
+                element.setAttribute('download', `${bank}- ${name}.hspatch`);
 
                 element.style.display = 'none';
                 document.body.appendChild(element);

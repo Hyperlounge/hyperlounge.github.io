@@ -22,7 +22,7 @@ export default class ToggleSwitch extends HTMLElement {
     }
     .title {
         text-align: center;
-        margin-bottom: 0.5em;
+        margin-bottom: 0.2em;
     }
     .switch {
         position: relative;
@@ -35,6 +35,7 @@ export default class ToggleSwitch extends HTMLElement {
         letter-spacing: 1px;
         padding: 1px;
         background: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), ${data.capColor};
+        margin-bottom: 0.3em;
     }
     .switch::before {
         content: 'OFF';
@@ -73,7 +74,7 @@ export default class ToggleSwitch extends HTMLElement {
         this._addControlListeners();
     }
 
-    attributeChangedCallback(name, oldValue, newValue) {
+    attributeChangedCallback(name) {
         if (this._root) {
             this._props[name] = PropTypes.attributesToProps(this, name);
         }

@@ -23,19 +23,38 @@ export default class Dialog extends Modal {
         return `
         <style>
             .hl-dialog {
-                background: white;
+                background-color: #cccccc;
                 padding: 0;
+                overflow: hidden;
+                border-radius: 1em;
+                font-size: 120%;
             }
             .hl-dialog-title {
                 padding: 20px;
-                font-size: larger;
+                font-size: 150%;
                 font-weight: bold;
+                background: white;
             }
             .hl-dialog-content {
                 padding: 20px;
             }
             .hl-dialog-options {
                 padding: 20px;
+                text-align: center;
+            }
+            .hl-dialog-options button {
+                border: 0;
+                border-radius: 0.5em;
+                padding: 0.5em 2em;
+                margin: 0 0.5em;
+            }
+            .hl-dialog-content label {
+                display: inline-block;
+                width: 100px;
+                margin-right: 0.5em;
+                text-align: right;
+            }
+            .hl-dialog-content p.centered {
                 text-align: center;
             }
         </style>

@@ -29,18 +29,27 @@ html, body {
   flex-direction: column;
   justify-items: start;
   background: black;
+
+  button {
+    border: 1px solid black;
+    border-radius: 0.5em;
+    padding: 0.2em 1em;
+  }
 }
 
 .header {
   background: silver;
   text-align: left;
   padding: 3px 10px;
+  display: flex;
+  gap: 0.5em;
 
   #preset-name {
     display: inline-block;
     border: 1px solid gray;
     width: 200px;
     padding: 3px;
+    font-size: 130%;
 
     &:empty::before {
       content: 'Preset name';

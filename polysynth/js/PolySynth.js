@@ -24,6 +24,7 @@ const banks = [
     'FX',
     'Percussion',
     'Misc',
+    'Prototypes'
 ];
 
 const noiseTypes = [
@@ -276,8 +277,6 @@ export default class PolySynth extends ModularSynth {
         this._noiseLevel1.audioIn.fanOutConnectFrom(this._noise.noiseOut);
         this._noise.noiseOut.connect(this._lfo.noiseIn);
 
-
-
         window.addEventListener('unload', () => {
             this.savePatch();
         });
@@ -348,17 +347,8 @@ export default class PolySynth extends ModularSynth {
         this.eventBus.addEventListener('pitchbend', evt => {
             document.getElementById('pitch-bend').value = evt.detail.midiValue - 64;
         });
-    }
 
-    _onMidiEvent(evt) {
-        const { statusByte, dataByte1 } = evt.detail;
-        if (statusByte >= 128 && statusByte <= 143) {
-            const key = this._keyboard.querySelector(`.key[data-note="${dataByte1}"]`);
-            key && key.classList.toggle('down', false);
-        } else if (statusByte >= 144 && statusByte <= 159) {
-            const key = this._keyboard.querySelector(`.key[data-note="${dataByte1}"]`);
-            key && key.classList.toggle('down', true);
-        }
+        document.getElementById('reference-tone').addEventListener('change', this.onReferenceToneChange);
     }
 
     showLibrary(evt) {
@@ -536,9 +526,9 @@ export default class PolySynth extends ModularSynth {
             const { name, bank } = this.globalPatch.attributes;
             const url = location.origin + location.pathname + '?preset=' + encodeURIComponent(name) + '&bank=' + encodeURIComponent(bank) + '&changes=' + encodeURIComponent(JSON.stringify(changes)) + (ditty ? '&ditty=' + ditty : '');
             new Dialog(`
-                <a href='${url}' target="_blank">Click to open in new tab</a>
+                <p class="centered"><a href='${url}' target="_blank">Click to open in new tab</a></p>
                 `, {
-                maxWidth: 300,
+                maxWidth: 500,
                 title: 'Share Patch' + (ditty ? ' and Ditty' : ''),
                 optionLabels: ['Copy link to clipboard', 'Cancel']
             }).then(data => {
@@ -553,10 +543,10 @@ export default class PolySynth extends ModularSynth {
     savePatchToFile() {
         new Dialog(`
         <form>
-            <label for="preset-name">Patch name: </label><input type="text" name="preset-name" value="${this.globalPatch.get('name')}"/>
-            <label for="patch-bank">&nbsp;&nbsp;&nbsp;&nbsp;Bank: </label><select name="patch-bank">
+            <p><label for="preset-name">Patch name:</label><input type="text" name="preset-name" value="${this.globalPatch.get('name')}"/></p>
+            <p><label for="patch-bank">Bank:</label><select name="patch-bank">
                 ${banks.map(bank => `<option ${this.globalPatch.get('bank') === bank ? 'selected' : ''}>${bank}</option>`).join('')}
-            </select>
+            </select></p>
         </form>
         `, {
             maxWidth: 400,
@@ -581,6 +571,27 @@ export default class PolySynth extends ModularSynth {
             }
         })
 
+
+    }
+
+    onReferenceToneChange = evt => {
+        const ctx = this.audioContext;
+        if (evt.target.checked) {
+            this._refToneNode = ctx.createOscillator();
+            this._refToneNode.type = 'sine';
+            this._refToneNode.frequency.setValueAtTime(261.63, ctx.currentTime);
+            this._refToneLevel = ctx.createGain();
+            this._refToneLevel.gain.setValueAtTime(0.02, ctx.currentTime);
+            this._refToneNode.connect(this._refToneLevel);
+            this._refToneLevel.connect(ctx.destination);
+            this._refToneNode.start();
+        } else if (this._refToneNode) {
+            this._refToneNode.stop();
+            this._refToneNode.disconnect();
+            this._refToneLevel.disconnect();
+            delete this._refToneNode;
+            delete this._refToneLevel;
+        }
 
     }
 
@@ -703,7 +714,8 @@ export default class PolySynth extends ModularSynth {
                                     <rotary-switch id="noise-type" title="Noise" labels="right">
                                         ${renderOptions(noiseTypes)}
                                     </rotary-switch>
-                                    <toggle-switch id="envelope-stretch">Envelope<br/>Stretch</toggle-switch>
+                                    <toggle-switch id="envelope-stretch">Env. Stretch</toggle-switch>
+                                    <toggle-switch id="reference-tone">C4 Tone</toggle-switch>
                                 </div>
                             </div>
                         </div>

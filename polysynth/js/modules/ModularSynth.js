@@ -75,6 +75,7 @@ export default class ModularSynth extends EventTarget {
     }
 
     set patch(data) {
+        delete data.metadata;
         this._patch.set(data);
     }
 

@@ -137,6 +137,32 @@ const filterTemplate = `
 </div>
 `;
 
+const globalTemplate = `
+<div class="control-group">
+    <div class="vertical-group">
+        <rotary-switch id="voices" title="Voices">
+            <option value="0">LEG.</option>
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+        </rotary-switch>
+        <rotary-knob id="glide-time" max-value="100">Glide</rotary-knob>
+    </div>
+    <div class="vertical-group">
+        <rotary-switch id="noise-type" title="Noise" labels="right">
+            ${renderOptions(noiseTypes)}
+        </rotary-switch>
+        <toggle-switch id="envelope-stretch">Env. Stretch</toggle-switch>
+        <toggle-switch id="reference-tone">C4 Tone</toggle-switch>
+    </div>
+</div>
+`
+
 const ADSRTemplate = id => `
 <div class="control-group">
     <vertical-slider id="${id}-attack" max-value="100">Attack</vertical-slider>
@@ -349,6 +375,22 @@ export default class PolySynth extends ModularSynth {
         });
 
         document.getElementById('reference-tone').addEventListener('change', this.onReferenceToneChange);
+
+        document.getElementById('power').addEventListener('change', evt => {
+            if (this._powerFirstTouch) {
+                clearTimeout(this._powerFirstTouch);
+                window.location.reload();
+            } else {
+                this._powerFirstTouch = setTimeout(() => {
+                    delete this._powerFirstTouch;
+                }, 500);
+            }
+            if (evt.target.checked) {
+                this.audioContext.resume();
+            } else {
+                this.audioContext.suspend();
+            }
+        });
     }
 
     showLibrary(evt) {
@@ -660,6 +702,7 @@ export default class PolySynth extends ModularSynth {
                 <div class="header">
                     <span id="preset-name"></span> <button id="save-patch">Save patch</button> <button id="share-patch">Share patch</button>
                     <!--span class="recorder"><button id="record"></button><button id="play"></button></span-->
+                    <toggle-switch id="power" format="horizontal" cap-color="orangered">Power: </toggle-switch>
                 </div>
                 <div class="controls">
                     <div class="expression-controls">
@@ -695,29 +738,7 @@ export default class PolySynth extends ModularSynth {
                         </div>
                         <div class="panel">
                             <h2>Global</h2>
-                            <div class="control-group">
-                                <div class="vertical-group">
-                                    <rotary-switch id="voices" title="Voices">
-                                        <option value="0">LEG.</option>
-                                        <option value="1" selected>1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                        <option value="7">7</option>
-                                        <option value="8">8</option>
-                                    </rotary-switch>
-                                    <rotary-knob id="glide-time" max-value="100">Glide</rotary-knob>
-                                </div>
-                                <div class="vertical-group">
-                                    <rotary-switch id="noise-type" title="Noise" labels="right">
-                                        ${renderOptions(noiseTypes)}
-                                    </rotary-switch>
-                                    <toggle-switch id="envelope-stretch">Env. Stretch</toggle-switch>
-                                    <toggle-switch id="reference-tone">C4 Tone</toggle-switch>
-                                </div>
-                            </div>
+                            <div id="global">${globalTemplate}</div>
                         </div>
                     </div>
                 </div>

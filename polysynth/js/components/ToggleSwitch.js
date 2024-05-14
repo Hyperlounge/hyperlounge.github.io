@@ -9,6 +9,7 @@ export default class ToggleSwitch extends HTMLElement {
         style: PropTypes.string,
         checked: PropTypes.bool.default(false).observed,
         capColor: PropTypes.string.default('yellow').observed,
+        format: PropTypes.string.lookup(['vertical', 'horizontal']).default('vertical'),
     }
 
     static template = data => `
@@ -19,6 +20,10 @@ export default class ToggleSwitch extends HTMLElement {
         align-items: center;
         justify-items: center;
         position: relative;
+    }
+    .toggle-switch.horizontal {
+        flex-direction: row;
+        gap: 0.5em;
     }
     .title {
         text-align: center;
@@ -37,6 +42,13 @@ export default class ToggleSwitch extends HTMLElement {
         background: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), ${data.capColor};
         margin-bottom: 0.3em;
     }
+    .toggle-switch.horizontal .title {
+        margin: 0;
+    }
+    .toggle-switch.horizontal .switch {
+        margin: 0;
+    }
+    
     .switch::before {
         content: 'OFF';
     }
@@ -48,7 +60,7 @@ export default class ToggleSwitch extends HTMLElement {
     }
     
 </style>
-<div class="toggle-switch">
+<div class="toggle-switch ${data.format}">
     <div class="title">${data.title}</div>
     <div class="switch"></div>
 </div>

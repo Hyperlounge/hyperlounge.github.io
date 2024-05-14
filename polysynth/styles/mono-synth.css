@@ -31,10 +31,11 @@ html, body {
   justify-items: start;
   background: black;
 }
-.synth button {
+.synth button, .synth select {
   border: 1px solid black;
   border-radius: 0.5em;
   padding: 0.2em 1em;
+  color: black;
 }
 
 .header {
@@ -42,7 +43,11 @@ html, body {
   text-align: left;
   padding: 3px 10px;
   display: flex;
+  align-items: center;
   gap: 0.5em;
+}
+.header #power {
+  margin-left: auto;
 }
 .header #preset-name {
   display: inline-block;
@@ -262,18 +267,38 @@ html, body {
   pointer-events: none;
 }
 .panel.keyboard .keys.ebony .spacer {
-  flex-grow: 100;
+  flex-grow: 2;
+}
+.panel.keyboard .keys.ebony .spacer + .spacer {
+  flex-grow: 5;
 }
 .panel.keyboard .keys.ebony .spacer.first {
-  flex-grow: 70;
+  flex-grow: 0;
 }
 .panel.keyboard .keys.ebony .spacer.last {
-  flex-grow: 90;
+  flex-grow: 0;
 }
 .panel.keyboard .keys.ebony .key {
   pointer-events: all;
-  flex-grow: 100;
+  flex-grow: 3;
   background: #222222;
+  padding: 0;
+  border: 0;
+}
+.panel.keyboard .keys.ebony .key.note-1 {
+  transform: translateX(-65%);
+}
+.panel.keyboard .keys.ebony .key.note-3 {
+  transform: translateX(-35%);
+}
+.panel.keyboard .keys.ebony .key.note-6 {
+  transform: translateX(-65%);
+}
+.panel.keyboard .keys.ebony .key.note-8 {
+  transform: translateX(-50%);
+}
+.panel.keyboard .keys.ebony .key.note-10 {
+  transform: translateX(-35%);
 }
 .panel.keyboard .keys.ebony .key.down {
   background: #444444;

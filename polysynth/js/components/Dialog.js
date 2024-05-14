@@ -43,11 +43,18 @@ export default class Dialog extends Modal {
                 text-align: center;
             }
             .hl-dialog-options button {
-                border: 0;
+                border: 1px solid black;
                 border-radius: 0.5em;
                 padding: 0.5em 2em;
                 margin: 0 0.5em;
+                color: black;
             }
+            .hl-dialog-content select {
+                border: 1px solid black;
+                border-radius: 0.5em;
+                color: black;
+            }
+
             .hl-dialog-content label {
                 display: inline-block;
                 width: 100px;

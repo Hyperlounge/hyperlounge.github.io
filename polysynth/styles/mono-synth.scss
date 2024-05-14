@@ -30,10 +30,11 @@ html, body {
   justify-items: start;
   background: black;
 
-  button {
+  button, select {
     border: 1px solid black;
     border-radius: 0.5em;
     padding: 0.2em 1em;
+    color: black;
   }
 }
 
@@ -42,7 +43,12 @@ html, body {
   text-align: left;
   padding: 3px 10px;
   display: flex;
+  align-items: center;
   gap: 0.5em;
+
+  #power {
+    margin-left: auto;
+  }
 
   #preset-name {
     display: inline-block;
@@ -299,20 +305,42 @@ html, body {
        pointer-events: none;
 
        .spacer {
-         flex-grow: 100;
+         flex-grow: 2;
+
+         +.spacer {
+           flex-grow: 5;
+         }
 
          &.first {
-           flex-grow: 70;
+           flex-grow: 0;
          }
          &.last {
-           flex-grow: 90;
+           flex-grow: 0;
          }
        }
 
        .key {
          pointer-events: all;
-         flex-grow: 100;
+         flex-grow: 3;
          background: #222222;
+         padding: 0;
+         border: 0;
+
+         &.note-1 {
+           transform: translateX(-65%);
+         }
+         &.note-3 {
+           transform: translateX(-35%);
+         }
+         &.note-6 {
+           transform: translateX(-65%);
+         }
+         &.note-8 {
+           transform: translateX(-50%);
+         }
+         &.note-10 {
+           transform: translateX(-35%);
+         }
 
          &.down {
            background: #444444;

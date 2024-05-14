@@ -12,7 +12,7 @@ const keyBoardTemplate = data => `
             const noteInOctave = note % 12;
             const addLabel = noteInOctave === 0;
             const isEbony = [1, 3, 6, 8, 10].includes(noteInOctave);
-            return isEbony ? '' : `<div class="key ${addLabel ? 'with-label' : ''}" data-note="${note}">${addLabel ? 'C' + octave : 'C0'}</div>`;
+            return isEbony ? '' : `<div class="key ${addLabel ? 'with-label' : ''}" data-note="${note}">${addLabel ? octave : '0'}</div>`;
         }).join('')}
     </div>
     <div class="ebony keys">
@@ -20,7 +20,7 @@ const keyBoardTemplate = data => `
         ${mapRange(data.bottomNote, data.topNote, note => {
             const noteInOctave = note % 12;
             const isEbony = [1, 3, 6, 8, 10].includes(noteInOctave);
-            return `${isEbony ? `<div class="key" data-note="${note}"> </div>` : `<div class="spacer"> </div>`}`;
+            return `${isEbony ? `<div class="key note-${noteInOctave}" data-note="${note}"> </div>` : `<div class="spacer"> </div>`}`;
         }).join('')}
         <div class="last spacer"> </div>
     </div>

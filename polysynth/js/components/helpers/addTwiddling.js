@@ -13,7 +13,10 @@ export default function addTwiddling(element) {
     element.addEventListener('mousedown', evt => {
         const startX = evt.pageX;
         const startY = evt.pageY;
-        _startCallback();
+        const targetRect = element.getBoundingClientRect();
+        const targetX = evt.clientX - targetRect.left;
+        const targetY = evt.clientY - targetRect.top;
+        _startCallback(targetX, targetY);
 
         const moveHandler = evt => {
             const deltaX = evt.pageX - startX;
@@ -52,7 +55,10 @@ export default function addTwiddling(element) {
         const touchId = touch.identifier;
         const startX = touch.pageX;
         const startY = touch.pageY;
-        _startCallback();
+        const targetRect = element.getBoundingClientRect();
+        const targetX = touch.clientX - targetRect.left;
+        const targetY = touch.clientY - targetRect.top;
+        _startCallback(targetX, targetY);
 
         const moveHandler = evt => {
             const touch = Array.from(evt.touches).find(item => item.identifier === touchId);

@@ -5,25 +5,41 @@ function mapRange(a, b, func) {
     return Array.from(Array(b - a + 1)).map((item, index) => func(index + a));
 }
 
+const template = data => `
+<div class="keyboard-controls">
+    <keyboard-adjuster 
+        id="keyboard-adjuster"
+        bottom-note="${data.bottomNote}"
+        top-note="${data.topNote}"
+    > </keyboard-adjuster>
+    <span>Keys:</span>
+    <button class="keyboard-range" value="88">88</button>
+    <button class="keyboard-range" value="61">61</button>
+    <button class="keyboard-range" value="49">49</button>
+    <button class="keyboard-range" value="default">Reset</button>
+</div>
+<div class="keyboard-keys">${keyBoardTemplate(data)}</div>
+`;
+
 const keyBoardTemplate = data => `
-    <div class="ivory keys">
-        ${mapRange(data.bottomNote, data.topNote, note => {
-            const octave = Math.floor(note / 12) - 1;
-            const noteInOctave = note % 12;
-            const addLabel = noteInOctave === 0;
-            const isEbony = [1, 3, 6, 8, 10].includes(noteInOctave);
-            return isEbony ? '' : `<div class="key ${addLabel ? 'with-label' : ''}" data-note="${note}">${addLabel ? octave : '0'}</div>`;
-        }).join('')}
-    </div>
-    <div class="ebony keys">
-        <div class="first spacer"> </div>
-        ${mapRange(data.bottomNote, data.topNote, note => {
-            const noteInOctave = note % 12;
-            const isEbony = [1, 3, 6, 8, 10].includes(noteInOctave);
-            return `${isEbony ? `<div class="key note-${noteInOctave}" data-note="${note}"> </div>` : `<div class="spacer"> </div>`}`;
-        }).join('')}
-        <div class="last spacer"> </div>
-    </div>
+<div class="ivory keys">
+    ${mapRange(data.bottomNote, data.topNote, note => {
+        const octave = Math.floor(note / 12) - 1;
+        const noteInOctave = note % 12;
+        const addLabel = noteInOctave === 0;
+        const isEbony = [1, 3, 6, 8, 10].includes(noteInOctave);
+        return isEbony ? '' : `<div class="key ${addLabel ? 'with-label' : ''} ${note === 60 ? 'middle-c' : ''}" data-note="${note}">${addLabel ? octave : '0'}</div>`;
+    }).join('')}
+</div>
+<div class="ebony keys">
+    <div class="first spacer"> </div>
+    ${mapRange(data.bottomNote, data.topNote, note => {
+        const noteInOctave = note % 12;
+        const isEbony = [1, 3, 6, 8, 10].includes(noteInOctave);
+        return `${isEbony ? `<div class="key note-${noteInOctave}" data-note="${note}"> </div>` : `<div class="spacer"> </div>`}`;
+    }).join('')}
+    <div class="last spacer"> </div>
+</div>
 `
 
 export default class SoftKeyboardModule extends AudioModule {
@@ -32,7 +48,7 @@ export default class SoftKeyboardModule extends AudioModule {
         this._downKeys = [];
         this._currentNote = undefined;
 
-        this._renderKeys();
+        this._render();
 
         this._isTouchDevice = (('ontouchstart' in window) ||
                 (navigator.maxTouchPoints > 0) ||
@@ -54,19 +70,35 @@ export default class SoftKeyboardModule extends AudioModule {
             button.addEventListener('click', evt => this._onKeyboardRangeClick(evt));
         })
 
-        this._eventBus.addEventListener(MidiEvent.type, evt => this._onMidiEvent(evt))
+        this._eventBus.addEventListener(MidiEvent.type, evt => this._onMidiEvent(evt));
+
+        const adjuster = document.getElementById('keyboard-adjuster');
+        adjuster.addEventListener('input', evt => {
+            this._state.set({
+                bottomNote: adjuster.bottomNote,
+                topNote: adjuster.topNote,
+            });
+            this._update();
+        });
     }
 
     get _initialState() {
         return {
             velocity: 70,
-            bottomNote: 33,
-            topNote: 72,
+            bottomNote: 45,
+            topNote: 84,
         }
     }
 
-    _renderKeys() {
+    _render() {
+        document.querySelector('.keyboard').innerHTML = template(this._state.attributes);
+    }
+
+    _update() {
         document.querySelector('.keyboard-keys').innerHTML = keyBoardTemplate(this._state.attributes);
+        const adjuster = document.getElementById('keyboard-adjuster');
+        adjuster.bottomNote = this._state.get('bottomNote');
+        adjuster.topNote = this._state.get('topNote');
     }
 
     _onKeyboardRangeClick(evt) {
@@ -109,8 +141,35 @@ export default class SoftKeyboardModule extends AudioModule {
                     });
                 }
                 break;
+            case '88':
+                this._state.set({
+                    topNote: 108,
+                    bottomNote: 21,
+                });
+                break;
+            case '76':
+                this._state.set({
+                    topNote: 103,
+                    bottomNote: 28,
+                });
+                break;
+            case '61':
+                this._state.set({
+                    topNote: 96,
+                    bottomNote: 36,
+                });
+                break;
+            case '49':
+                this._state.set({
+                    topNote: 84,
+                    bottomNote: 36,
+                });
+                break;
+            case 'default':
+                this._state.set(this._initialState);
+                break;
         }
-        this._renderKeys();
+        this._update();
     }
 
     _onMidiEvent(evt) {

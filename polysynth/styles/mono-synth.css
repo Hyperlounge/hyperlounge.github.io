@@ -227,6 +227,15 @@ html, body {
 .panel.keyboard .keyboard-controls {
   flex-basis: content;
   flex-grow: 0;
+  display: flex;
+  gap: 1em;
+}
+.panel.keyboard .keyboard-controls keyboard-adjuster {
+  display: inline-block;
+  flex-grow: 1;
+  border: 1px solid black;
+  border-radius: 0.5em;
+  background-color: #efefef;
 }
 .panel.keyboard .keyboard-keys {
   flex-grow: 1;
@@ -253,6 +262,9 @@ html, body {
 }
 .panel.keyboard .keys .key.with-label {
   color: #222222;
+}
+.panel.keyboard .keys .key.with-label.middle-c {
+  background-image: linear-gradient(to top, transparent, transparent 80%, yellow);
 }
 .panel.keyboard .keys .key.down {
   background: #DDDDDD;
@@ -292,13 +304,13 @@ html, body {
   transform: translateX(-35%);
 }
 .panel.keyboard .keys.ebony .key.note-6 {
-  transform: translateX(-65%);
+  transform: translateX(-75%);
 }
 .panel.keyboard .keys.ebony .key.note-8 {
   transform: translateX(-50%);
 }
 .panel.keyboard .keys.ebony .key.note-10 {
-  transform: translateX(-35%);
+  transform: translateX(-25%);
 }
 .panel.keyboard .keys.ebony .key.down {
   background: #444444;

@@ -261,6 +261,16 @@ html, body {
     .keyboard-controls {
       flex-basis: content;
       flex-grow: 0;
+      display: flex;
+      gap: 1em;
+
+      keyboard-adjuster {
+        display: inline-block;
+        flex-grow: 1;
+        border: 1px solid black;
+        border-radius: 0.5em;
+        background-color: rgb(239, 239, 239);
+      }
     }
     .keyboard-keys {
       flex-grow: 1;
@@ -287,6 +297,9 @@ html, body {
        color: transparent;
        &.with-label {
          color: #222222;
+         &.middle-c {
+           background-image: linear-gradient(to top, transparent, transparent 80%, yellow);
+         }
        }
 
 
@@ -333,13 +346,13 @@ html, body {
            transform: translateX(-35%);
          }
          &.note-6 {
-           transform: translateX(-65%);
+           transform: translateX(-75%);
          }
          &.note-8 {
            transform: translateX(-50%);
          }
          &.note-10 {
-           transform: translateX(-35%);
+           transform: translateX(-25%);
          }
 
          &.down {

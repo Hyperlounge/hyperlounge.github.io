@@ -42,7 +42,7 @@ export default class KeyboardAdjuster extends HTMLElement {
         height: 100%;
         background-image: url('data:image/svg+xml,${encodeURI(KEYBOARD_SVG)}');
         background-repeat: repeat-x;
-        background-size: ${100 / (7 + 1.5/7)}% 100%;
+        background-size: ${700 / (data.whiteNotes.length - 1.5)}% 100%;
         background-position-x: right;
     }
     

@@ -74,7 +74,6 @@ export default class RotarySwitch extends HTMLElement {
     connectedCallback() {
         this._root = this.attachShadow({mode: 'open'});
         this._props = PropTypes.attributesToProps(this);
-        this._title = this.innerHTML;
         this._minAngle = (this._props.labels === LABELS_RIGHT ? 1.2 : 0.2) * Math.PI;
         this._maxAngle = (this._props.labels === LABELS_LEFT ? 0.8 : 1.8) * Math.PI;
         this._selectedIndex = 0;

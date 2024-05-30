@@ -10,6 +10,8 @@ export default class RotaryKnob extends HTMLElement {
         scaleMin: PropTypes.number.default(0),
         scaleMax: PropTypes.number.default(10),
         scaleStep: PropTypes.number.default(1),
+        scaleMinLabel: PropTypes.string.default(''),
+        scaleMaxLabel: PropTypes.string.default(''),
         minimal: PropTypes.bool.default(false),
         value: PropTypes.number.default(0).observed,
         minValue: PropTypes.number.default(0),
@@ -132,9 +134,17 @@ export default class RotaryKnob extends HTMLElement {
             if (!this._props.minimal || rounded === 0) {
                 label.innerHTML = rounded;
             } else if (notch === scaleMin) {
-                label.innerHTML = String(rounded).replace(/-/, '&minus;');
+                if (this._props.scaleMinLabel) {
+                    label.innerHTML = this._props.scaleMinLabel;
+                } else {
+                    label.innerHTML = String(rounded).replace(/-/, '&minus;');
+                }
             } else if (notch === scaleMax) {
-                label.innerHTML = '+' + rounded;
+                if (this._props.scaleMaxLabel) {
+                    label.innerHTML = this._props.scaleMaxLabel;
+                } else {
+                    label.innerHTML = '+' + rounded;
+                }
             }
             rotaryKnob.append(label);
             label.style.position = 'absolute';

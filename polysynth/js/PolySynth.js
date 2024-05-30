@@ -5,6 +5,7 @@ import LibraryView from './LibraryView.js';
 import MidiEvent from './events/MidiEvent.js';
 import './components/RotaryKnob.js';
 import './components/RotarySwitch.js';
+import './components/CycleSwitch.js';
 import './components/ToggleSwitch.js';
 import './components/VerticalSlider.js';
 import './components/ModWheel.js';
@@ -52,15 +53,63 @@ const lfoWaveforms = [
     {label: `<img alt="noise" src="${SVG}/noise.svg"/>`, value: 'noise'},
 ];
 
-const filterTypes = [
-    {label: 'HI', value: 'highpass'},
-    {label: 'BA', value: 'bandpass'},
-    {label: 'LO', value: 'lowpass', default: true},
-];
-
 function renderOptions(optionsList) {
     return optionsList.map(item => `<option value="${item.value}"${!!item.default ? ' selected' : ''}>${item.label}</option>`).join('');
 }
+
+const template = () => `
+<div class="synth">
+    <div class="header">
+        <span id="preset-name"></span> <button id="save-patch">Save patch</button> <button id="share-patch">Share patch</button>
+        <!--span class="recorder"><button id="record"></button><button id="play"></button></span-->
+        <toggle-switch id="power" format="horizontal" cap-color="orangered">Power: </toggle-switch>
+    </div>
+    <div class="controls">
+        <div class="expression-controls">
+            <div class="panel">
+                <h2>&nbsp;</h2>
+                <div id="controllers">${controllersTemplate}</div>
+            </div>
+        </div>
+        <div class="settings">
+            <div class="panel">
+                <h2>LFO</h2>
+                <div id="lfo">${lfoTemplate}</div>
+            </div>
+            <div class="panel">
+                <h2>Oscillator 1</h2>
+                <div id="oscillator-1">${oscTemplate('oscillator-1')}</div>
+            </div>
+            <div class="panel">
+                <h2>Oscillator 2</h2>
+                <div id="oscillator-2">${oscTemplate('oscillator-2')}</div>
+            </div>
+            <div class="panel">
+                <h2>Amp Envelope</h2>
+                <div id="loudness-envelope">${ADSRTemplate('loudness-envelope')}</div>
+            </div>
+            <div class="panel">
+                <h2>Filter Envelope</h2>
+                <div id="filter-envelope">${ADSRTemplate('filter-envelope')}</div>
+            </div>
+            <div class="panel">
+                <h2>Filter</h2>
+                <div id="filter">${filterTemplate}</div>
+            </div>
+            <!--div class="panel">
+                <h2>Effects</h2>
+                <div id="effects">${effectsTemplate}</div>
+            </div-->
+            <div class="panel">
+                <h2>Global</h2>
+                <div id="global">${globalTemplate}</div>
+            </div>           
+        </div>
+    </div>
+    <div class="panel keyboard">
+    </div>
+</div>
+`;
 
 const oscTemplate = id => `
 <div class="control-group">
@@ -123,9 +172,15 @@ const lfoTemplate = `
 const filterTemplate = `
 <div class="control-group">
     <div class="vertical-group">
-    <rotary-switch id="filter-type" title="Pass" labels="right">
-        ${renderOptions(filterTypes)}    
-    </rotary-switch>
+    <cycle-switch id="filter-type" title="Pass">
+        <option value="lowpass" selected>LOW</option>
+        <option value="bandpass">BAND</option>
+        <option value="highpass">HIGH</option>
+    </cycle-switch>
+    <cycle-switch id="filter-rolloff" title="Rolloff/oct">
+        <option value="12" selected>12dB</option>
+        <option value="24">24dB</option>    
+    </cycle-switch>
     <rotary-knob id="filter-frequency" value="50" max-value="100">Cut-off</rotary-knob>
     </div>
     <div class="vertical-group">
@@ -150,8 +205,8 @@ const globalTemplate = `
             <option value="4">4</option>
             <option value="5">5</option>
             <option value="6">6</option>
-            <option value="7">7</option>
             <option value="8">8</option>
+            <option value="16">16</option>
         </rotary-switch>
         <rotary-knob id="glide-time" max-value="100">Glide</rotary-knob>
     </div>
@@ -161,6 +216,21 @@ const globalTemplate = `
         </rotary-switch>
         <toggle-switch id="envelope-stretch">Env. Stretch</toggle-switch>
         <toggle-switch id="reference-tone">C4 Tone</toggle-switch>
+    </div>
+</div>
+`
+
+const effectsTemplate = `
+<div class="control-group">
+    <div class="vertical-group compact">
+        <toggle-switch id="reverb-on">Reverb</toggle-switch>
+        <select id="reverb-type">
+            <option value="small" selected>Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+            <option value="huge">Huge</option>
+        </select>
+        <rotary-knob id="reverb-mix" minimal>Mix</rotary-knob>
     </div>
 </div>
 `
@@ -349,6 +419,7 @@ export default class PolySynth extends ModularSynth {
         bindADSR('filter-envelope', this._filterEnvelope);
 
         bindControl('filter-type', this._filter, 'type', a => a);
+        bindControl('filter-rolloff', this._filter, 'rolloff', a => Number(a), a => String(a));
         bindControl('filter-frequency', this._filter, 'frequency', linearToLogRange(100, 4.5, 5000), logRangeToLinear(4.5, 5000, 100));
         bindControl('filter-resonance', this._filter, 'resonance', a => Number(a)/5, a => String(a*5));
         bindControl('filter-envelope-amount', this._filter, 'envelopeAmount', a => Number(a)*100, a => String(a/100));
@@ -699,54 +770,6 @@ export default class PolySynth extends ModularSynth {
     }
 
     _render() {
-        this._root && (this._root.innerHTML = `
-            <div class="synth">
-                <div class="header">
-                    <span id="preset-name"></span> <button id="save-patch">Save patch</button> <button id="share-patch">Share patch</button>
-                    <!--span class="recorder"><button id="record"></button><button id="play"></button></span-->
-                    <toggle-switch id="power" format="horizontal" cap-color="orangered">Power: </toggle-switch>
-                </div>
-                <div class="controls">
-                    <div class="expression-controls">
-                        <div class="panel">
-                            <h2>&nbsp;</h2>
-                            <div id="controllers">${controllersTemplate}</div>
-                        </div>
-                    </div>
-                    <div class="settings">
-                        <div class="panel">
-                            <h2>LFO</h2>
-                            <div id="lfo">${lfoTemplate}</div>
-                        </div>
-                        <div class="panel">
-                            <h2>Oscillator 1</h2>
-                            <div id="oscillator-1">${oscTemplate('oscillator-1')}</div>
-                        </div>
-                        <div class="panel">
-                            <h2>Oscillator 2</h2>
-                            <div id="oscillator-2">${oscTemplate('oscillator-2')}</div>
-                        </div>
-                        <div class="panel">
-                            <h2>Amp Envelope</h2>
-                            <div id="loudness-envelope">${ADSRTemplate('loudness-envelope')}</div>
-                        </div>
-                        <div class="panel">
-                            <h2>Filter Envelope</h2>
-                            <div id="filter-envelope">${ADSRTemplate('filter-envelope')}</div>
-                        </div>
-                        <div class="panel">
-                            <h2>Filter</h2>
-                            <div id="filter">${filterTemplate}</div>
-                        </div>
-                        <div class="panel">
-                            <h2>Global</h2>
-                            <div id="global">${globalTemplate}</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel keyboard">
-                </div>
-            </div>
-        `);
+        this._root && (this._root.innerHTML = template());
     }
 }

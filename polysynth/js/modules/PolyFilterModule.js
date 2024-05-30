@@ -18,10 +18,17 @@ export default class PolyFilterModule extends AudioModule {
             Q: this._patch.get('resonance'),
             detune: 0,
         });
+        this._filterNode2 = new PolyBiquadFilter(context, {
+            type: this._patch.get('type'),
+            frequency: this._patch.get('frequency'),
+            Q: this._patch.get('resonance'),
+            detune: 0,
+        });
         this._modulation = new GainNode(context, {
             gain: this._patch.get('modAmount'),
         });
         this._filterNode.detune.fanOutConnectFrom(this._modulation);
+        this._filterNode2.detune.fanOutConnectFrom(this._modulation);
         this._keyboardFollow = new PolyGain(context, {
             gain: this._patch.get('keyboardFollowAmount'),
         });
@@ -30,11 +37,14 @@ export default class PolyFilterModule extends AudioModule {
             gain: this._patch.get('envelopeAmount'),
         });
         this._filterNode.detune.polyConnectFrom(this._envelope);
+        this._filterNode2.detune.polyConnectFrom(this._envelope);
+        this._filterNode.polyConnectTo(this._filterNode2);
     }
 
     get _initialPatch() {
         return {
-            type: 'lowpass',    // lowpass, highpass or notch
+            type: 'lowpass',    // lowpass, highpass or bandpass
+            rolloff: 12,        // 12 or 24 dB / octave
             frequency: C4,      // hertz
             resonance: 1,       //
             modAmount: 0,     // 0 = 100 cents
@@ -55,10 +65,16 @@ export default class PolyFilterModule extends AudioModule {
         this._modulation.gain.setTargetAtTime(this._patch.get('modAmount'), this._now, this._minimumTimeConstant);
         this._keyboardFollow.gain.setTargetAtTime(this._patch.get('keyboardFollowAmount'), this._now, this._minimumTimeConstant);
         this._envelope.gain.setTargetAtTime(this._patch.get('envelopeAmount'), this._now, this._minimumTimeConstant);
-    }
 
-    get offsetCentsIn() {
-        return this._filterNode.detune;
+        if (this._patch.get('rolloff') === 12) {
+            this._filterNode2.type = 'lowpass';
+            this._filterNode2.frequency.setTargetAtTime(24000, this._now, this._minimumTimeConstant);
+            this._filterNode2.Q.setTargetAtTime(0, this._now, this._minimumTimeConstant);
+        } else {
+            this._filterNode2.type = this._patch.get('type');
+            this._filterNode2.frequency.setTargetAtTime(this._patch.get('frequency'), this._now, this._minimumTimeConstant);
+            this._filterNode2.Q.setTargetAtTime(this._patch.get('resonance'), this._now, this._minimumTimeConstant);
+        }
     }
 
     get modulationIn() {
@@ -78,6 +94,6 @@ export default class PolyFilterModule extends AudioModule {
     }
 
     get audioOut() {
-        return this._filterNode;
+        return this._filterNode2;
     }
 }

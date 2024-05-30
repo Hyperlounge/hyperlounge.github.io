@@ -3,7 +3,7 @@ export default function addTwiddling(element) {
     let _startCallback = () => {};
     let _twiddleCallback = (deltaX, deltaY) => {};
     let _endCallback = () => {};
-    let _doubleTapCallback;
+    let _doubleTapCallback = () => {};
     let _firstTap = false;
 
     element.addEventListener('dblclick', evt => {

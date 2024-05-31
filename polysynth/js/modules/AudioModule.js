@@ -44,7 +44,7 @@ export default class AudioModule extends EventTarget {
     }
 
     get _minimumTimeConstant() {
-        return 0.0025;
+        return 0.005;
     }
 
     get _now() {

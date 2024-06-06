@@ -1,15 +1,15 @@
 
 import PropTypes from './helpers/PropTypes.js';
 import addTwiddling from './helpers/addTwiddling.js';
+import AbstractComponent from './AbstractComponent.js';
 
-export default class CycleSwitch extends HTMLElement {
+export default class CycleSwitch extends AbstractComponent {
     static propTypes = {
-        id: PropTypes.string,
-        class: PropTypes.string,
-        style: PropTypes.string,
+        ...AbstractComponent.propTypes,
         capColor: PropTypes.string.default('yellow').observed,
         title: PropTypes.string.default('Title').observed,
         format: PropTypes.string.lookup(['vertical', 'horizontal']).default('vertical'),
+        numeric: PropTypes.bool.default(false),
     }
 
     static template = data => `
@@ -60,8 +60,7 @@ export default class CycleSwitch extends HTMLElement {
     }
 
     connectedCallback() {
-        this._root = this.attachShadow({mode: 'open'});
-        this._props = PropTypes.attributesToProps(this);
+        super.connectedCallback();
         this._selectedIndex = 0;
 
         this._options = Array.from(this.querySelectorAll('option')).map((option, i) => {
@@ -70,7 +69,7 @@ export default class CycleSwitch extends HTMLElement {
             }
             return {
                 label: option.innerHTML,
-                value: option.value,
+                value: this._props.numeric ? Number(option.value) : option.value,
             };
         });
 
@@ -82,12 +81,6 @@ export default class CycleSwitch extends HTMLElement {
         this._root.innerHTML = CycleSwitch.template(data);
         this._updateView();
         this._addControlListeners();
-    }
-
-    attributeChangedCallback(name) {
-        if (this._root) {
-            this._props[name] = PropTypes.attributesToProps(this, name);
-        }
     }
 
     _updateView() {
@@ -106,13 +99,8 @@ export default class CycleSwitch extends HTMLElement {
                     this._selectedIndex++;
                 }
                 this._updateView();
-                this._dispatchChangeEvent();
+                this.dispatchChangeEvent();
             });
-    }
-
-    _dispatchChangeEvent() {
-        const evt = new CustomEvent('input');
-        this.dispatchEvent(evt);
     }
 
     get value() {

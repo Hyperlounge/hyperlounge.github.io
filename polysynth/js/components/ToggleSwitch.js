@@ -1,12 +1,11 @@
 
 import PropTypes from './helpers/PropTypes.js';
 import addTwiddling from './helpers/addTwiddling.js';
+import AbstractComponent from './AbstractComponent.js';
 
-export default class ToggleSwitch extends HTMLElement {
+export default class ToggleSwitch extends AbstractComponent {
     static propTypes = {
-        id: PropTypes.string,
-        class: PropTypes.string,
-        style: PropTypes.string,
+        ...AbstractComponent.propTypes,
         checked: PropTypes.bool.default(false).observed,
         capColor: PropTypes.string.default('yellow').observed,
         format: PropTypes.string.lookup(['vertical', 'horizontal']).default('vertical'),
@@ -68,12 +67,10 @@ export default class ToggleSwitch extends HTMLElement {
 
     constructor() {
         super();
-        this.type = 'checkbox';
     }
 
     connectedCallback() {
-        this._root = this.attachShadow({mode: 'open'});
-        this._props = PropTypes.attributesToProps(this);
+        super.connectedCallback();
         this._title = this.innerHTML;
 
         const data = {
@@ -84,12 +81,6 @@ export default class ToggleSwitch extends HTMLElement {
         this._root.innerHTML = ToggleSwitch.template(data);
         this._updateView();
         this._addControlListeners();
-    }
-
-    attributeChangedCallback(name) {
-        if (this._root) {
-            this._props[name] = PropTypes.attributesToProps(this, name);
-        }
     }
 
     _updateView() {
@@ -103,21 +94,16 @@ export default class ToggleSwitch extends HTMLElement {
 
         addTwiddling(theSwitch)
             .onStart(() => {
-                this.checked = !this.checked;
-                this._dispatchChangeEvent();
+                this.value = !this.value;
+                this.dispatchChangeEvent();
             });
     }
 
-    _dispatchChangeEvent() {
-        const evt = new CustomEvent('change');
-        this.dispatchEvent(evt);
-    }
-
-    get checked() {
+    get value() {
         return this._props.checked;
     }
 
-    set checked(newValue) {
+    set value(newValue) {
         this._props.checked = !!newValue;
         this._updateView();
     }

@@ -62,7 +62,6 @@ export default class LFOModule extends AudioModule {
         if (this._patch.get('waveform') === 'inverse-sawtooth') {
             offset = -offset;
         }
-        console.log(offset);
         this._modWheelNode.offset.setTargetAtTime(offset, this._now, this._minimumTimeConstant);
     }
 

@@ -1,5 +1,6 @@
 import AudioModule from './AudioModule.js';
 import MidiEvent from '../events/MidiEvent.js';
+import '../components/KeyboardAdjuster.js';
 
 function mapRange(a, b, func) {
     return Array.from(Array(b - a + 1)).map((item, index) => func(index + a));

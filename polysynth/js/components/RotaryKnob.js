@@ -1,12 +1,11 @@
 
 import PropTypes from './helpers/PropTypes.js';
 import addTwiddling from './helpers/addTwiddling.js';
+import AbstractComponent from './AbstractComponent.js';
 
-export default class RotaryKnob extends HTMLElement {
+export default class RotaryKnob extends AbstractComponent {
     static propTypes = {
-        id: PropTypes.string,
-        class: PropTypes.string,
-        style: PropTypes.string,
+        ...AbstractComponent.propTypes,
         scaleMin: PropTypes.number.default(0),
         scaleMax: PropTypes.number.default(10),
         scaleStep: PropTypes.number.default(1),
@@ -16,6 +15,7 @@ export default class RotaryKnob extends HTMLElement {
         value: PropTypes.number.default(0).observed,
         minValue: PropTypes.number.default(0),
         maxValue: PropTypes.number.default(1),
+        logarithmic: PropTypes.bool.default(false),
         units: PropTypes.string.default(''),
         capColor: PropTypes.string.default('yellow').observed,
     }
@@ -72,11 +72,25 @@ export default class RotaryKnob extends HTMLElement {
     }
 
     connectedCallback() {
-        this._root = this.attachShadow({mode: 'open'});
-        this._props = PropTypes.attributesToProps(this);
+        super.connectedCallback();
         this._title = this.innerHTML;
-        this._minAngle = 0.2 * Math.PI;
-        this._maxAngle = 1.8 * Math.PI;
+        this._minAngle = 1.2 * Math.PI;
+        this._maxAngle = 2.8 * Math.PI;
+        this._rotorAngle = this._minAngle;
+
+        const {minValue, maxValue, logarithmic} = this._props;
+        if (logarithmic) {
+            if (minValue === 0) {
+                this._toRatio = AbstractComponent.logToLinear(maxValue, 1);
+                this._fromRatio = AbstractComponent.linearToLog(1, maxValue);
+            } else {
+                this._toRatio = AbstractComponent.logRangeToLinear(minValue, maxValue, 1);
+                this._fromRatio = AbstractComponent.linearToLogRange(1, minValue, maxValue);
+            }
+        } else {
+            this._toRatio = a => (a-minValue)/(maxValue-minValue);
+            this._fromRatio = a => minValue + a*(maxValue-minValue);
+        }
 
         const data = {
             ...this._props,
@@ -90,16 +104,8 @@ export default class RotaryKnob extends HTMLElement {
         this._addControlListeners();
     }
 
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (this._root) {
-            this._props[name] = PropTypes.attributesToProps(this, name);
-        }
-    }
-
     _updateView() {
-        const {value, minValue, maxValue} = this._props;
         const rotor = this._root.querySelector('.rotor');
-        this._rotorAngle = -Math.PI + this._minAngle + (value-minValue)/(maxValue-minValue) * (this._maxAngle-this._minAngle);
         rotor.style.transform = `rotate(${this._rotorAngle}rad)`;
     }
 
@@ -114,7 +120,7 @@ export default class RotaryKnob extends HTMLElement {
         };
         const labelRadius = rotorRadius + 8;
         const angleStep = 1.6 * Math.PI * scaleStep / (scaleMax - scaleMin);
-        let angle = this._minAngle;
+        let angle = this._minAngle - Math.PI;
 
         const rotaryKnob = this._root.querySelector('.rotary-knob');
 
@@ -155,37 +161,34 @@ export default class RotaryKnob extends HTMLElement {
     }
 
     _addControlListeners() {
-        const {minValue, maxValue} = this._props;
-
         const rotor = this._root.querySelector('.rotor');
-        let startValue;
+        let startAngle;
 
         addTwiddling(rotor)
             .onStart(() => {
-                startValue = this._props.value;
+                startAngle = this._rotorAngle;
             })
             .onTwiddle((deltaX, deltaY) => {
-                let newValue = startValue + (deltaX - deltaY) * (maxValue - minValue) / 150;
-                this.value = Math.max(Math.min(newValue, maxValue), minValue);
-                this._dispatchChangeEvent();
+                this._rotorAngle = startAngle + (deltaX - deltaY) / 25;
+                this._rotorAngle = Math.max(Math.min(this._rotorAngle, this._maxAngle), this._minAngle);
+                this._updateView();
+                this.dispatchChangeEvent();
             })
             .onDoubleTap(() => {
                 this.value = this._initialValue;
-                this._dispatchChangeEvent();
+                this.dispatchChangeEvent();
             });
     }
 
-    _dispatchChangeEvent() {
-        const evt = new CustomEvent('input');
-        this.dispatchEvent(evt);
-    }
-
     get value() {
-        return this._props.value;
+        const ratio = (this._rotorAngle-this._minAngle)/(this._maxAngle-this._minAngle);
+        return this._fromRatio(ratio);
     }
 
     set value(newValue) {
-        this._props.value = Number(newValue);
+        const value = Number(newValue);
+        const ratio = this._toRatio(value);
+        this._rotorAngle = this._minAngle + ratio * (this._maxAngle-this._minAngle);
         this._updateView();
     }
 }

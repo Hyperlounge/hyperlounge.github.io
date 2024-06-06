@@ -31,6 +31,45 @@ export default class ModularSynth extends EventTarget {
             this._state = new Model(this._initialState);
             this._state.addEventListener('change', evt => this.dispatchEvent(new CustomEvent('state-change')));
         }
+        this._modulesPendingBindings = {global: this};
+        this._controlsPendingBindings = [];
+
+        document.addEventListener('register-control', this.registerControl);
+    }
+
+    registerControl = evt => {
+        const control = evt.target;
+        const moduleId = evt.detail.moduleId;
+        const module = this._modulesPendingBindings[moduleId];
+        const parameterName = evt.detail.parameterName;
+
+        if (module) {
+            setTimeout(() => this.bindControlToModule(control, module, parameterName), 0);
+        } else {
+            this._controlsPendingBindings.push({
+                control,
+                moduleId,
+                parameterName,
+            });
+        }
+    }
+
+    bindControlToModule(control, module, parameterName) {
+        const updateControl = () => {
+            control.value = module.getParam(parameterName);
+        }
+        updateControl();
+
+        const updateModule = () => {
+            module.setParam(parameterName, control.value);
+            if (location.search) {
+                history.replaceState({}, '', location.origin + location.pathname);
+            }
+        }
+        control.addEventListener('change', updateModule);
+        module.addEventListener('patch-change', () => {
+            if (module.paramChanged(parameterName)) updateControl();
+        });
     }
 
     get _initialState() {
@@ -47,7 +86,17 @@ export default class ModularSynth extends EventTarget {
     _moduleCreator(Type) {
         return (patchId, options) => {
             const module = new Type(this.audioContext, this.eventBus, this.globalPatch, this.options);
-            patchId && this._patch.set({[patchId]: module._patch});
+            if (patchId) {
+                this._patch.set({[patchId]: module._patch});
+                if (this._controlsPendingBindings.length > 0) {
+                    this._controlsPendingBindings.forEach(item => {
+                        if (item.moduleId === patchId) {
+                            this.bindControlToModule(item.control, module, item.parameterName);
+                        }
+                    });
+                    this._controlsPendingBindings = this._controlsPendingBindings.filter(item => item.moduleId !== patchId);
+                }
+            }
             return module;
         }
     }

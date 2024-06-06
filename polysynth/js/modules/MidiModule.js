@@ -10,7 +10,7 @@ export default class MidiModule extends AudioModule {
 
     _connectToMIDI() {
         const onMIDISuccess = (midiAccess) => {
-            console.log("MIDI ready!", midiAccess);
+            //console.log("MIDI ready!", midiAccess);
             for (const entry of midiAccess.inputs) {
                 const input = entry[1];
                 console.log(

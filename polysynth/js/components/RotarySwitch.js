@@ -1,20 +1,20 @@
 
 import PropTypes from './helpers/PropTypes.js';
 import addTwiddling from './helpers/addTwiddling.js';
+import AbstractComponent from './AbstractComponent.js';
 
 const LABELS_LEFT = 'left';
 const LABELS_RIGHT = 'right';
 const LABELS_AROUND = 'around';
 
 
-export default class RotarySwitch extends HTMLElement {
+export default class RotarySwitch extends AbstractComponent {
     static propTypes = {
-        id: PropTypes.string,
-        class: PropTypes.string,
-        style: PropTypes.string,
+        ...AbstractComponent.propTypes,
         capColor: PropTypes.string.default('yellow').observed,
         title: PropTypes.string.default('Title').observed,
         labels: PropTypes.string.lookup([LABELS_LEFT, LABELS_RIGHT, LABELS_AROUND]).default(LABELS_AROUND),
+        numeric: PropTypes.bool.default(false),
     }
 
     static template = data => `
@@ -72,8 +72,7 @@ export default class RotarySwitch extends HTMLElement {
     }
 
     connectedCallback() {
-        this._root = this.attachShadow({mode: 'open'});
-        this._props = PropTypes.attributesToProps(this);
+        super.connectedCallback();
         this._minAngle = (this._props.labels === LABELS_RIGHT ? 1.2 : 0.2) * Math.PI;
         this._maxAngle = (this._props.labels === LABELS_LEFT ? 0.8 : 1.8) * Math.PI;
         this._selectedIndex = 0;
@@ -84,7 +83,7 @@ export default class RotarySwitch extends HTMLElement {
             }
             return {
                 label: option.innerHTML,
-                value: option.value,
+                value: this._props.numeric ? Number(option.value) : option.value,
                 style: option.style,
             };
         });
@@ -98,12 +97,6 @@ export default class RotarySwitch extends HTMLElement {
         this._drawScale();
         this._updateView();
         this._addControlListeners();
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (this._root) {
-            this._props[name] = PropTypes.attributesToProps(this, name);
-        }
     }
 
     _updateView() {
@@ -171,19 +164,14 @@ export default class RotarySwitch extends HTMLElement {
                 if (newIndex !== this._selectedIndex) {
                     this._selectedIndex = newIndex;
                     this._updateView();
-                    this._dispatchChangeEvent();
+                    this.dispatchChangeEvent();
                 }
             })
             .onDoubleTap(() => {
                 this._selectedIndex = this._defaultIndex;
                 this._updateView();
-                this._dispatchChangeEvent();
+                this.dispatchChangeEvent();
             });
-    }
-
-    _dispatchChangeEvent() {
-        const evt = new CustomEvent('input');
-        this.dispatchEvent(evt);
     }
 
     get value() {

@@ -1,12 +1,11 @@
 
 import PropTypes from './helpers/PropTypes.js';
 import addTwiddling from './helpers/addTwiddling.js';
+import AbstractComponent from './AbstractComponent.js';
 
-export default class VerticalSlider extends HTMLElement {
+export default class VerticalSlider extends AbstractComponent {
     static propTypes = {
-        id: PropTypes.string,
-        class: PropTypes.string,
-        style: PropTypes.string,
+        ...AbstractComponent.propTypes,
         scaleMin: PropTypes.number.default(0),
         scaleMax: PropTypes.number.default(10),
         scaleStep: PropTypes.number.default(1),
@@ -14,6 +13,7 @@ export default class VerticalSlider extends HTMLElement {
         value: PropTypes.number.default(0).observed,
         minValue: PropTypes.number.default(0),
         maxValue: PropTypes.number.default(1),
+        logarithmic: PropTypes.bool.default(false),
         units: PropTypes.string.default(''),
         capColor: PropTypes.string.default('yellow').observed,
     }
@@ -97,9 +97,25 @@ export default class VerticalSlider extends HTMLElement {
     }
 
     connectedCallback() {
-        this._root = this.attachShadow({mode: 'open'});
-        this._props = PropTypes.attributesToProps(this);
+        super.connectedCallback();
         this._title = this.innerHTML;
+        this._minY = 20;
+        this._maxY = 150;
+        this._knobY = this._maxY;
+
+        const {minValue, maxValue, logarithmic} = this._props;
+        if (logarithmic) {
+            if (minValue === 0) {
+                this._toRatio = AbstractComponent.logToLinear(maxValue, 1);
+                this._fromRatio = AbstractComponent.linearToLog(1, maxValue);
+            } else {
+                this._toRatio = AbstractComponent.logRangeToLinear(minValue, maxValue, 1);
+                this._fromRatio = AbstractComponent.linearToLogRange(1, minValue, maxValue);
+            }
+        } else {
+            this._toRatio = a => (a-minValue)/(maxValue-minValue);
+            this._fromRatio = a => minValue + a*(maxValue-minValue);
+        }
 
         const data = {
             ...this._props,
@@ -108,23 +124,13 @@ export default class VerticalSlider extends HTMLElement {
 
         this._initialValue = data.value;
         this._root.innerHTML = VerticalSlider.template(data);
-        this._minY = 20;
-        this._maxY = 150;
         this._drawScale();
         this._updateView();
         this._addControlListeners();
     }
 
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (this._root) {
-            this._props[name] = PropTypes.attributesToProps(this, name);
-        }
-    }
-
     _updateView() {
-        const {value, minValue, maxValue} = this._props;
         const knob = this._root.querySelector('.knob');
-        this._knobY = this._maxY - (value-minValue)/(maxValue-minValue) * (this._maxY-this._minY);
         knob.style.top = `${this._knobY}px`;
     }
 
@@ -163,34 +169,33 @@ export default class VerticalSlider extends HTMLElement {
         const {minValue, maxValue} = this._props;
 
         const knob = this._root.querySelector('.knob');
-        let startValue;
+        let startY;
 
         addTwiddling(knob)
             .onStart(() => {
-                startValue = this._props.value;
+                startY = this._knobY;
             })
             .onTwiddle((deltaX, deltaY) => {
-                let newValue = startValue - deltaY * (maxValue - minValue) / (this._maxY - this._minY);
-                this.value = Math.max(Math.min(newValue, maxValue), minValue);
-                this._dispatchChangeEvent();
+                this._knobY = startY + deltaY;
+                this._knobY = Math.max(Math.min(this._knobY, this._maxY), this._minY);
+                this._updateView();
+                this.dispatchChangeEvent();
             })
             .onDoubleTap(() => {
                 this.value = this._initialValue;
-                this._dispatchChangeEvent();
+                this.dispatchChangeEvent();
             });
     }
 
-    _dispatchChangeEvent() {
-        const evt = new CustomEvent('input');
-        this.dispatchEvent(evt);
-    }
-
     get value() {
-        return this._props.value;
+        const ratio = (this._maxY-this._knobY)/(this._maxY-this._minY);
+        return this._fromRatio(ratio);
     }
 
     set value(newValue) {
-        this._props.value = Number(newValue);
+        const value = Number(newValue);
+        const ratio = this._toRatio(value);
+        this._knobY = this._maxY - ratio * (this._maxY-this._minY);
         this._updateView();
     }
 }

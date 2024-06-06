@@ -68,7 +68,7 @@ export default class PolyFilterModule extends AudioModule {
 
         if (this._patch.get('rolloff') === 12) {
             this._filterNode2.type = 'lowpass';
-            this._filterNode2.frequency.setTargetAtTime(24000, this._now, this._minimumTimeConstant);
+            this._filterNode2.frequency.setTargetAtTime(22050, this._now, this._minimumTimeConstant);
             this._filterNode2.Q.setTargetAtTime(0, this._now, this._minimumTimeConstant);
         } else {
             this._filterNode2.type = this._patch.get('type');

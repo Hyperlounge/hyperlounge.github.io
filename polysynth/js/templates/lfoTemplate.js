@@ -1,7 +1,7 @@
 import '../components/RotaryKnob.js';
 import '../components/RotarySwitch.js';
 import '../components/VerticalSlider.js';
-const SVG = '../media/svg'
+const SVG = './media/svg'
 
 const lfoTemplate = `
 <div class="control-group">

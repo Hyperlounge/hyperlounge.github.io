@@ -296,12 +296,17 @@ export default class PolySynth extends ModularSynth {
                 }
             });
         } else {
-            const patch = localStorage.getItem('PolySynth-current-patch') || initialPatch;
+            let patch = localStorage.getItem('PolySynth-current-patch');
+            if (patch) {
+                patch = JSON.parse(patch);
+            } else {
+                patch = initialPatch;
+            }
 
             try {
                 if (patch) {
                     this.patch = initialPatch;
-                    this.patch = JSON.parse(patch);
+                    this.patch = patch;
                 }
                 const preset = this._library.getPresetByNameAndBank(this.globalPatch.get('name'), this.globalPatch.get('bank'));
                 preset && (this._presetId = preset.id);

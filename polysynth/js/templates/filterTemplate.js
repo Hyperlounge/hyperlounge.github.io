@@ -21,7 +21,7 @@ const filterTemplate = `
     </div>
     <div class="vertical-group">
     <rotary-knob module-id="filter" parameter-name="modAmount" max-value="10000">Modulation</rotary-knob>
-    <rotary-knob module-id="filter" parameter-name="keyboardFollowAmount" max-value="10000">Follow Keys</rotary-knob>
+    <rotary-knob module-id="filter" parameter-name="keyboardFollowAmount">Follow Keys</rotary-knob>
     </div>
 </div>
 `;

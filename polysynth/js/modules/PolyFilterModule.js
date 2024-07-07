@@ -33,6 +33,7 @@ export default class PolyFilterModule extends AudioModule {
             gain: this._patch.get('keyboardFollowAmount'),
         });
         this._keyboardFollow.polyConnectTo(this._filterNode.detune);
+        this._keyboardFollow.polyConnectTo(this._filterNode2.detune);
         this._envelope = new PolyGain(context, {
             gain: this._patch.get('envelopeAmount'),
         });

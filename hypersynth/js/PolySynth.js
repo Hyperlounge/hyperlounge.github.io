@@ -20,63 +20,6 @@ const banks = [
     'Prototypes'
 ];
 
-function bindControl(controlId, module, parameterName, controlToParam = a => Number(a), paramToControl = a => String(a)) {
-    const control = document.getElementById(controlId);
-    if (!control) {
-        throw new Error(`control #${controlId} does not exist.`)
-    }
-    const updateControl = () => {
-        if (control.type === 'checkbox') {
-            control.checked = module.getParam(parameterName);
-        } else {
-            control.value = paramToControl(module.getParam(parameterName));
-        }
-    }
-    updateControl();
-    const updateModule = () => {
-        if (control.type === 'checkbox') {
-            module.setParam(parameterName, control.checked);
-        } else {
-            module.setParam(parameterName, controlToParam(control.value));
-        }
-        if (location.search) {
-            history.replaceState({}, '', location.origin + location.pathname);
-        }
-    }
-    control.addEventListener(control.type === 'checkbox' ? 'change' : 'input', updateModule);
-    module.addEventListener('patch-change', () => {
-        if (module.paramChanged(parameterName)) updateControl();
-    });
-}
-
-function linearToLog(linearMax, logMax) {
-    return linear => (Math.pow(2, 10*Number(linear)/linearMax) - 1) * logMax / 1023;
-}
-
-function logToLinear(logMax, linearMax) {
-    return log => Math.log2(1023 * Number(log)/logMax + 1) * linearMax/10;
-}
-
-function linearToLogRange(linearMax, logMin, logMax) {
-    const maxValue = Math.log2(logMax);
-    const minValue = Math.log2(logMin);
-
-    return linear => {
-        const value = minValue + (Number(linear)/linearMax)*(maxValue-minValue);
-        return Math.pow(2, value);
-    }
-}
-
-function logRangeToLinear(logMin, logMax, linearMax) {
-    const maxValue = Math.log2(logMax);
-    const minValue = Math.log2(logMin);
-
-    return log => {
-        const value = Math.log2(Number(log));
-        return linearMax * (value-minValue)/(maxValue-minValue);
-    }
-}
-
 export default class PolySynth extends ModularSynth {
     constructor(elementId) {
         super();

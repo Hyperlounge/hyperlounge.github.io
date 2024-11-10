@@ -191,9 +191,29 @@
       "fileName": "Pads- bendy pad.hspatch.json"
     },
     {
+      "name": "Carnival",
+      "bank": "Percussion",
+      "fileName": "Percussion- Carnival.hspatch.json"
+    },
+    {
+      "name": "Marimboid",
+      "bank": "Percussion",
+      "fileName": "Percussion- Marimboid.hspatch.json"
+    },
+    {
       "name": "The Bells!",
       "bank": "Percussion",
       "fileName": "Percussion- The Bells!.hspatch.json"
+    },
+    {
+      "name": "Vibra-prone",
+      "bank": "Percussion",
+      "fileName": "Percussion- Vibra-prone.hspatch.json"
+    },
+    {
+      "name": "Xylophobia",
+      "bank": "Percussion",
+      "fileName": "Percussion- Xylophobia.hspatch.json"
     },
     {
       "name": "Cello",

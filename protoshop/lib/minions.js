@@ -38,8 +38,7 @@
 				fakeWorker = {
 					context: context,
 					code: code,
-					sendMessage: function()
-
+					sendMessage: function() {},
 				}
 			}
 		}

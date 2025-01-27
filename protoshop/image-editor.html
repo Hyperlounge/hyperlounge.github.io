@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Protoshop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0;">
+    <script src="lib/jquery-1.7.1.js"></script>
+    <script src="lib/easeljs-0.6.1.min.js"></script>
+    <script src="lib/jsBezier-0.6.js"></script>
+    <script src="js/ui-controls.js"></script>
+    <script src="js/image-editor.js"></script>
+    <style>
+        body {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: moz-none;
+            -ms-user-select: none;
+            user-select: none;
+            font-family: Tahoma, arial, sans-serif;
+            letter-spacing: 0.05em;
+            color: rgb(150, 150, 150);
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        p {
+            font-size: 14px;
+        }
+        p.label {
+            margin-top: 0;
+            margin-bottom: 0;
+            width: 300px;
+            clear: both;
+        }
+
+        p.scale {
+            margin-top: 0;
+            margin-bottom: 0;
+            width: 300px;
+            text-align: center;
+            clear: both;
+        }
+
+        .leftScale {
+            width: 100px;
+            display: block;
+            float: left;
+            text-align: left;
+            margin-left: 17px;
+        }
+
+        .rightScale {
+            width: 100px;
+            display: block;
+            float: right;
+            text-align: right;
+            margin-right: 20px;
+        }
+
+        .adjustment-group {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: moz-none;
+            -ms-user-select: none;
+            user-select: none;
+            overflow: hidden;
+            padding-bottom: 5px;
+        }
+
+        .adjustment-group.animated {
+            transition: height 0.3s;
+            -webkit-transition: height 0.3s;
+        }
+
+        .adjustment-group h1 {
+            cursor: pointer;
+            color: rgb(200, 200, 200);
+            height: 24px;
+            clear: left;
+            font-size: 16px;
+            font-weight: normal;
+            margin: 0;
+            padding: 0 10px;
+            /***  CSS Gradient  ***/
+            /*  Chrome 1-9 and Safari 4-5.0  */
+            background-image: -webkit-gradient(linear, left top, left bottom,
+            color-stop( 0.0, rgb(69, 69, 69) ),
+            color-stop( 1.0, rgb(0, 0, 0) ));
+
+            /*  Chrome 10+ Safari 5.1+ Mobile Safari  */
+            background-image: -webkit-linear-gradient(top,
+            rgb(69, 69, 69),
+            rgb(0, 0, 0) );
+
+            /*  Firefox 3.6+  */
+            background-image: -moz-linear-gradient(top,
+            rgb(69, 69, 69),
+            rgb(0, 0, 0) );
+
+            /*  IE 10+  */
+            background-image: -ms-linear-gradient(top,
+            rgb(69, 69, 69),
+            rgb(0, 0, 0) );
+
+            /*  Opera 11.10+  */
+            background-image: -o-linear-gradient(top,
+            rgb(69, 69, 69),
+            rgb(0, 0, 0) );
+
+            /*  W3C  */
+            background-image: linear-gradient(top,
+            rgb(69, 69, 69),
+            rgb(0, 0, 0) );
+
+        }
+
+        p.slider, p.histogram {
+            padding: 0;
+            margin: 0;
+        }
+
+        .adjustment canvas {
+            margin-left: 10px;
+        }
+
+        .adjustment input {
+            font-family: Tahoma, arial, sans-serif;
+            color: rgb(150, 150, 150);
+            border: 1px solid rgb(150, 150, 150);
+            background-color: rgb(51, 51, 51);
+        }
+
+        .adjustment input[type=text] {
+            display: block;
+            float: right;
+            margin-right: 10px;
+            width: 30px;
+        }
+
+        .adjustment select {
+            display: block;
+            float: right;
+            margin-right: 10px;
+        }
+
+        #main {
+            position: absolute;
+            left: 0;
+            height: 100%;
+            background-color: rgb(51, 51, 51);
+        }
+        #aside {
+            position: absolute;
+            right: 0;
+            width: 320px;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(34, 34, 34);
+        }
+        #stage {
+            position: absolute;
+            margin: auto;
+        }
+        #tone-curve {
+            margin-left: 12px;
+        }
+    </style>
+    <script>
+        function init() {
+            resize();
+            scriptInit();
+        }
+        function resize() {
+            $("#main").width($("body").width() - $("#aside").width());
+            scriptResize();
+        }
+    </script>
+</head>
+<body onload="init()" onresize="resize()">
+    <div id="main">
+        <canvas id="stage" width="1500" height="1000" unselectable="on" onselectstart="return false;" ondragstart="return false;"></canvas>
+    </div>
+    <div id="aside">
+        <div class="adjustment-group">
+            <h1>Basic</h1>
+            <div class="adjustment" id="whiteBalance">
+                <p class="label"><input type="checkbox"/>white balance</p>
+                <div data-setting="by">
+                    <p class="scale"><span class="leftScale" style="color: blue">blue</span>0<span class="rightScale" style="color: yellow">yellow</span></p>
+                    <p class="slider"></p>
+                </div>
+                <div data-setting="gm">
+                    <p class="scale"><span class="leftScale" style="color: green">green</span>0<span class="rightScale" style="color: magenta">magenta</span></p>
+                    <p class="slider"></p>
+                </div>
+            </div>
+            <div class="adjustment" id="range">
+                <div data-setting="implicit">
+                    <p class="label"><input type="checkbox"/>range</p>
+                    <p class="histogram"></p>
+                    <p class="scale"><span class="leftScale">black point</span><span class="rightScale">white point</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="adjustment-group closed">
+            <h1>Levels</h1>
+            <div class="adjustment" id="brightness">
+                <div data-setting="value">
+                    <p class="label"><input type="checkbox"/>brightness<input type="text" maxlength="4"/></p>
+                    <p class="scale"><span class="leftScale">&minus;</span>0<span class="rightScale">+</span></p>
+                    <p class="slider"></p>
+                </div>
+            </div>
+            <div class="adjustment" id="contrast">
+                <div data-setting="value">
+                    <p class="label"><input type="checkbox"/>contrast<input type="text" maxlength="4"/></p>
+                    <p class="scale"><span class="leftScale">&minus;</span>0<span class="rightScale">+</span></p>
+                    <p class="slider"></p>
+                </div>
+            </div>
+            <div class="adjustment" id="highlights">
+                <div data-setting="value">
+                    <p class="label"><input type="checkbox"/>highlights<input type="text" maxlength="4"/></p>
+                    <p class="scale"><span class="leftScale">0</span><span class="rightScale">max</span></p>
+                    <p class="slider"></p>
+                </div>
+            </div>
+            <div class="adjustment" id="shadows">
+                <div data-setting="value">
+                    <p class="label"><input type="checkbox"/>shadows<input type="text" maxlength="4"/></p>
+                    <p class="scale"><span class="leftScale">0</span><span class="rightScale">max</span></p>
+                    <p class="slider"></p>
+                </div>
+            </div>
+        </div>
+        <div class="adjustment-group closed">
+            <h1>Colour</h1>
+            <div class="adjustment" id="saturation">
+                <div data-setting="value">
+                    <p class="label"><input type="checkbox"/>saturation<input type="text" maxlength="4"/></p>
+                    <p class="scale"><span class="leftScale">&minus;</span>0<span class="rightScale">+</span></p>
+                    <p class="slider"></p>
+                </div>
+            </div>
+            <div class="adjustment" id="hue">
+                <div data-setting="value">
+                    <p class="label"><input type="checkbox"/>hue<input type="text" maxlength="4"/></p>
+                    <p class="scale"><span class="leftScale">&minus;</span>0<span class="rightScale">+</span></p>
+                    <p class="slider"></p>
+                </div>
+            </div>
+            <div class="adjustment" id="colourEmphasis">
+                <div data-setting="value">
+                    <p class="label"><input type="checkbox"/>colour contrast<input type="text" maxlength="4"/></p>
+                    <p class="scale"><span class="leftScale">0</span><span class="rightScale">max</span></p>
+                    <p class="slider"></p>
+                </div>
+            </div>
+        </div>
+        <div class="adjustment-group closed">
+            <h1>Vignette</h1>
+            <div class="adjustment" id="vignette">
+                <div data-setting="amount">
+                    <p class="label"><input type="checkbox"/>amount<input type="text" maxlength="4"/></p>
+                    <p class="scale"><span class="leftScale">0</span><span class="rightScale">max</span></p>
+                    <p class="slider"></p>
+                </div>
+                <div data-setting="spread">
+                    <p class="scale"><span class="leftScale">wide</span><span class="rightScale">narrow</span></p>
+                    <p class="slider"></p>
+                </div>
+            </div>
+        </div>
+        <div class="adjustment-group closed">
+            <h1>Effects</h1>
+            <div class="adjustment" id="crossProcess">
+                <div data-setting="amount">
+                    <p class="label"><input type="checkbox"/>cross-process<input type="text" maxlength="4"/></p>
+                    <p class="scale"><span class="leftScale">0</span><span class="rightScale">max</span></p>
+                    <p class="slider"></p>
+                </div>
+             </div>
+        </div>
+    </div>
+</body>
+</html>

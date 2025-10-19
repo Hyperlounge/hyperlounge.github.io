@@ -12,7 +12,8 @@ html, body {
 
 * {
   box-sizing: border-box;
-  user-select: none !important;
+  -moz-user-select: none !important;
+       user-select: none !important;
   -webkit-user-select: none !important;
 }
 
@@ -147,7 +148,6 @@ html, body {
   .expression-controls .panel .control-group {
     flex-wrap: nowrap !important;
   }
-
   .settings {
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
@@ -235,7 +235,7 @@ html, body {
   flex-grow: 1;
   border: 1px solid black;
   border-radius: 0.5em;
-  background-color: #efefef;
+  background-color: rgb(239, 239, 239);
 }
 .panel.keyboard .keyboard-keys {
   flex-grow: 1;
@@ -316,4 +316,40 @@ html, body {
   background: #444444;
 }
 
-/*# sourceMappingURL=mono-synth.css.map */
+.overlay {
+  position: absolute;
+  z-index: 9999;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  flex-basis: content;
+  display: flex;
+  flex-direction: column;
+  margin: 2px;
+  background: black;
+  padding: 6px;
+  border-radius: 16px;
+  flex-grow: 1;
+  box-shadow: 0px 10px 30px;
+  visibility: hidden;
+}
+.overlay.show {
+  visibility: visible;
+}
+.overlay .effect-group {
+  display: flex;
+  flex-direction: row;
+  background: silver;
+  border-radius: 10px;
+  margin: 2px;
+  padding: 0 10px;
+  align-items: center;
+}
+.overlay .effect-group .vertical-group:first-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid gray;
+  width: 80px;
+  height: 100px;
+}/*# sourceMappingURL=mono-synth.css.map */

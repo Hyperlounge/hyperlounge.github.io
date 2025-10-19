@@ -6,11 +6,16 @@ import lfoTemplate from './lfoTemplate.js';
 import filterTemplate from './filterTemplate.js';
 import globalTemplate from './globalTemplate.js';
 import ADSRTemplate from './ADSRTemplate.js';
+import phaserTemplate from './phaserTemplate.js';
+import delayTemplate from './delayTemplate.js';
+import reverbTemplate from './reverbTemplate.js';
+import levelsTemplate from './levelsTemplate.js';
 
 const template = () => `
 <div class="synth">
     <div class="header">
         <span id="preset-name"></span> <button id="save-patch">Save patch</button> <button id="share-patch">Share patch</button>
+        <toggle-switch id="show-effects" format="horizontal" on-text="EFFECTS" off-text="EFFECTS"></toggle-switch>
         <toggle-switch id="reference-tone" format="horizontal">C4 Tone</toggle-switch>
         <toggle-switch id="power" format="horizontal" cap-color="orangered" checked>Power: </toggle-switch>
     </div>
@@ -53,6 +58,12 @@ const template = () => `
         </div>
     </div>
     <div class="panel keyboard">
+    </div>
+    <div class="overlay effects-rack">
+        <!--${phaserTemplate}-->
+        ${delayTemplate}
+        ${reverbTemplate}
+        ${levelsTemplate}
     </div>
 </div>
 `;

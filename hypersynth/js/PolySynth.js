@@ -59,6 +59,9 @@ export default class PolySynth extends ModularSynth {
         this._filterEnvelope = this.createPolyEnvelopeModule('filterEnvelope');
         this._lfo = this.createLFOModule('lfo');
         this._noise = this.createNoiseModule('noise');
+        this._delayEffect = this.createDelayEffectModule('delay');
+        this._reverbEffect = this.createReverbEffectModule('reverb');
+        this._levelsEffect = this.createLevelsEffectModule('levels');
     }
 
     connectModules() {
@@ -78,10 +81,13 @@ export default class PolySynth extends ModularSynth {
         this._lfo.lfoOut.connect(this._osc1.modulationIn);
         this._lfo.lfoOut.connect(this._osc2.modulationIn);
         this._lfo.lfoOut.connect(this._filter.modulationIn);
-        this._filter.audioOut.fanInConnectTo(this.audioContext.destination);
+        this._filter.audioOut.fanInConnectTo(this._delayEffect.audioIn);
         this._amplifier.audioIn.polyConnectFrom(this._noiseLevel1.audioOut);
         this._noiseLevel1.audioIn.fanOutConnectFrom(this._noise.noiseOut);
         this._noise.noiseOut.connect(this._lfo.noiseIn);
+        this._delayEffect.audioOut.connect(this._reverbEffect.audioIn);
+        this._reverbEffect.audioOut.connect(this._levelsEffect.audioIn);
+        this._levelsEffect.audioOut.connect(this.audioContext.destination);
     }
 
     addEventListeners() {
@@ -94,6 +100,7 @@ export default class PolySynth extends ModularSynth {
         document.getElementById('mod-wheel').addEventListener('input', evt => {
             this._controllerHelper._onModWheel(evt.target.value);
         });
+        document.getElementById('show-effects').addEventListener('change', this.onShowEffectsChange)
         document.getElementById('reference-tone').addEventListener('change', this.onReferenceToneChange);
         document.getElementById('power').addEventListener('change', this.onPowerSwitchChange);
         this._root.addEventListener('drop', evt => this.dropHandler(evt));
@@ -110,6 +117,10 @@ export default class PolySynth extends ModularSynth {
         this.eventBus.addEventListener('pitchbend', evt => {
             document.getElementById('pitch-bend').value = evt.detail.midiValue - 64;
         });
+    }
+
+    onShowEffectsChange = evt => {
+        document.querySelector('.effects-rack').classList.toggle('show', evt.target.value);
     }
 
     onPowerSwitchChange = evt => {

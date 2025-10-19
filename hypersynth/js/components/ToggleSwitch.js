@@ -9,6 +9,9 @@ export default class ToggleSwitch extends AbstractComponent {
         checked: PropTypes.bool.default(false).observed,
         capColor: PropTypes.string.default('yellow').observed,
         format: PropTypes.string.lookup(['vertical', 'horizontal']).default('vertical'),
+        onText: PropTypes.string.default('ON'),
+        offText: PropTypes.string.default('OFF'),
+        minWidth: PropTypes.string.default('40px'),
     }
 
     static template = data => `
@@ -31,7 +34,7 @@ export default class ToggleSwitch extends AbstractComponent {
     .switch {
         position: relative;
         box-sizing: border-box;
-        width: 40px;
+        min-width: ${data.minWidth};
         text-align: center;
         border: 4px solid black;
         border-radius: 4px;
@@ -49,13 +52,13 @@ export default class ToggleSwitch extends AbstractComponent {
     }
     
     .switch::before {
-        content: 'OFF';
+        content: '${data.offText}';
     }
     .switch.checked {
         background: ${data.capColor};
     }
     .switch.checked::before {
-        content: 'ON';
+        content: '${data.onText}';
     }
     
 </style>

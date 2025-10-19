@@ -1,9 +1,3 @@
-import ControllerModule from './ControllerModule.js';
-import OscillatorModule from './OscillatorModule.js';
-import AmpModule from './AmpModule.js';
-import LevelModule from './LevelModule.js';
-import FilterModule from './FilterModule.js';
-import EnvelopeModule from './EnvelopeModule.js';
 import Model from '../misc/Model.js';
 import LFOModule from './LFOModule.js';
 import VoiceAllocatorModule from './VoiceAllocatorModule.js';
@@ -105,12 +99,6 @@ export default class ModularSynth extends EventTarget {
     createControllerHelperModule = this._moduleCreator(ControllerHelperModule);
     createSoftKeyboardModule = this._moduleCreator(SoftKeyboardModule);
     createVoiceAllocatorModule = this._moduleCreator(VoiceAllocatorModule);
-    createControllerModule = this._moduleCreator(ControllerModule);
-    createOscillatorModule = this._moduleCreator(OscillatorModule);
-    createAmpModule = this._moduleCreator(AmpModule);
-    createEnvelopeModule = this._moduleCreator(EnvelopeModule);
-    createLevelModule = this._moduleCreator(LevelModule);
-    createFilterModule = this._moduleCreator(FilterModule);
     createPolyOscillatorModule = this._moduleCreator(PolyOscillatorModule);
     createPolyAmpModule = this._moduleCreator(PolyAmpModule);
     createPolyEnvelopeModule = this._moduleCreator(PolyEnvelopeModule);

@@ -46,7 +46,7 @@ html, body {
   align-items: center;
   gap: 0.5em;
 }
-.header #power {
+.header #reference-tone {
   margin-left: auto;
 }
 .header #preset-name {

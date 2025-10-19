@@ -11,6 +11,7 @@ const template = () => `
 <div class="synth">
     <div class="header">
         <span id="preset-name"></span> <button id="save-patch">Save patch</button> <button id="share-patch">Share patch</button>
+        <toggle-switch id="reference-tone" format="horizontal">C4 Tone</toggle-switch>
         <toggle-switch id="power" format="horizontal" cap-color="orangered" checked>Power: </toggle-switch>
     </div>
     <div class="controls">

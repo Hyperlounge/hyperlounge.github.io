@@ -50,9 +50,9 @@ export default class VoiceAllocatorModule extends AudioModule {
 
     _onKeyDown(note, velocity) {
         this._downNotes.unshift(note);
-        let voiceNumber, oldNote;
+        let voiceNumber, oldNote, playedLegato = false;
         if (this._freeVoices.length) {
-            // see if there's a free voice that's played this not last
+            // see if there's a free voice that's played this note last
             const lastUsedVoiceForThisNote = this._freeVoices.find(item => item.note === note);
             if (lastUsedVoiceForThisNote) {
                 voiceNumber = lastUsedVoiceForThisNote.voiceNumber;
@@ -69,9 +69,10 @@ export default class VoiceAllocatorModule extends AudioModule {
             // If the voice has been stolen, it's a change of note
             oldNote = stolenVoice.note;
             this._usedVoices.push({voiceNumber, note});
+            playedLegato = true;
         }
         this._eventBus.dispatchEvent(new NoteChangeEvent(note, oldNote, voiceNumber, velocity));
-        this._setPitch(voiceNumber, note);
+        this._setPitch(voiceNumber, note, playedLegato);
     }
 
     _onKeyUp(note, velocity) {
@@ -90,13 +91,15 @@ export default class VoiceAllocatorModule extends AudioModule {
                 this._freeVoices.push({voiceNumber, note});
             }
             this._eventBus.dispatchEvent(new NoteChangeEvent(newNote, note, voiceNumber, velocity));
-            newNote && this._setPitch(voiceNumber, newNote);
+            newNote && this._setPitch(voiceNumber, newNote, true);
         }
     }
 
-    _setPitch(voiceNumber, note) {
+    _setPitch(voiceNumber, note, playedLegato = false) {
         const middleCOffset = (note - 60) * 100;
-        this._pitches.nodes[voiceNumber].offset.setTargetAtTime(middleCOffset, this._now, this._patch.get('glideTime'));
+        const glideType = this._patch.get('glideType');
+        const glideTime = (glideType === 'always' || (glideType === 'legato' && playedLegato)) ? this._patch.get('glideTime') : 0;
+        this._pitches.nodes[voiceNumber].offset.setTargetAtTime(middleCOffset, this._now, glideTime);
     }
 
     get C4Offset() {

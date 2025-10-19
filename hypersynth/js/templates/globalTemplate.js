@@ -16,7 +16,7 @@ const globalTemplate = `
             <option value="8">8</option>
             <option value="16">16</option>
         </rotary-switch>
-        <rotary-knob module-id="voiceAllocator" parameter-name="glideTime" logarithmic max-value="10">Glide</rotary-knob>
+        <rotary-knob module-id="voiceAllocator" parameter-name="glideTime" logarithmic max-value="10">Glide Time</rotary-knob>
     </div>
     <div class="vertical-group">
         <rotary-switch module-id="noise" parameter-name="type" title="Noise" labels="right">
@@ -24,8 +24,12 @@ const globalTemplate = `
             <option value="pink">PINK</option>
             <option value="brown">BROWN</option>
         </rotary-switch>
+        <cycle-switch module-id="voiceAllocator" parameter-name="glideType" title="Glide Type">
+            <option value="off" selected>OFF</option>
+            <option value="always">ALL</option>
+            <option value="legato">LEGATO</option>
+        </cycle-switch>
         <toggle-switch module-id="global" parameter-name="envelopeStretch">Env. Stretch</toggle-switch>
-        <toggle-switch id="reference-tone">C4 Tone</toggle-switch>
     </div>
 </div>
 `

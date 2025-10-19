@@ -26,9 +26,9 @@
       "fileName": "Basses- Funky Bass.hspatch.json"
     },
     {
-      "name": "Ice Crawl 2",
+      "name": "Ice Crawl",
       "bank": "Basses",
-      "fileName": "Basses- Ice Crawl 2.hspatch.json"
+      "fileName": "Basses- Ice Crawl.hspatch.json"
     },
     {
       "name": "Stab Bass",
@@ -129,6 +129,11 @@
       "name": "Wurly",
       "bank": "Keys",
       "fileName": "Keys- Wurly.hspatch.json"
+    },
+    {
+      "name": "Bendy Bell",
+      "bank": "Leads",
+      "fileName": "Leads- Bendy Bell.hspatch.json"
     },
     {
       "name": "Cat- Fight",

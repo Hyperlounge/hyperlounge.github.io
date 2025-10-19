@@ -11,6 +11,8 @@ export default function addTwiddling(element) {
     });
 
     element.addEventListener('mousedown', evt => {
+        evt.preventDefault();
+        
         const startX = evt.pageX;
         const startY = evt.pageY;
         const targetRect = element.getBoundingClientRect();

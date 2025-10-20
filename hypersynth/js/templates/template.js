@@ -60,7 +60,7 @@ const template = () => `
     <div class="panel keyboard">
     </div>
     <div class="overlay effects-rack">
-        <!--${phaserTemplate}-->
+        ${phaserTemplate}
         ${delayTemplate}
         ${reverbTemplate}
         ${levelsTemplate}

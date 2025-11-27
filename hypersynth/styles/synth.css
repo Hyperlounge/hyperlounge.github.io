@@ -1,48 +1,380 @@
+@charset "UTF-8";
 html, body {
+  --theme-bright-color: rgb(255, 229, 115);
+  --theme-normal-color: rgb(255, 208, 0);
+  --theme-dark-color: rgb(196, 160, 0);
+  --theme-bg-color: #333333;
+  --theme-panel-bg-color: #444444;
+  --theme-panel-text-color: #cccccc;
+  --theme-effects-bg-color: #777777;
+  --theme-effects-panel-bg-color: #aaaaaa;
+  --theme-effects-panel-text-color: black;
+  --theme-help-bg-color: lightgreen;
+  --theme-help-text-color: black;
+  --theme-help-outline-color: lime;
   width: 100%;
   height: 100%;
   padding: 0;
   margin: 0;
-  font: 12px Tahoma, sans-serif;
+  font: 12px Trebuchet, sans-serif;
   background: black;
+  overflow: hidden;
+  --spacing: 10px;
+}
+
+* {
+  box-sizing: border-box;
+  -moz-user-select: none !important;
+       user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+.help-active {
+  outline: 3px solid lime;
+}
+
+.modal {
+  z-index: 999999;
+}
+
+#synth {
+  height: 100%;
+}
+#synth.disable-pointer-events {
+  pointer-events: none;
 }
 
 .synth {
   display: flex;
+  height: 100%;
   flex-direction: column;
-  background: black;
+  justify-items: start;
+  background: var(--theme-bg-color);
+}
+.synth button, .synth select {
+  border: 3px solid black;
+  border-radius: 4px;
+  padding: 0.2em 1em;
+  background-color: black;
+  background-image: linear-gradient(#666666, black);
+  font-weight: bold;
+  color: #cccccc;
 }
 
 .header {
+  background: var(--theme-panel-bg-color);
+  text-align: left;
+  padding: 3px 10px 4px;
+  display: flex;
+  gap: 0.5em;
+  margin-bottom: 2px;
+  box-shadow: inset 0 -1px rgba(0, 0, 0, 0.7);
+}
+.header #power {
+  margin-left: auto;
+}
+.header #preset-name {
+  display: inline-block;
+  border: 1px solid black;
+  border-radius: 4px;
+  width: 250px;
+  padding: 0 0.5em;
+  font-size: 130%;
+  line-height: 23px;
+  height: 25px;
+  background-color: white;
+  box-shadow: inset rgba(0, 0, 0, 0.8) 0 2px 5px;
+}
+.header #preset-name::after {
+  float: right;
+  content: "⌄";
+  font-size: 150%;
+  transform: translateY(-25%);
+}
+.header #preset-name:empty::before {
+  content: "Preset name";
+}
+
+.library-root {
+  display: none;
+  position: absolute;
   background: silver;
+  padding: 10px;
+  border: 0;
+  box-shadow: black 0 3px 10px;
+  border-radius: 0 10px 10px 10px;
+  font-size: 150%;
+  z-index: 1000;
+}
+.library-root.show {
+  display: block;
+}
+.library-root .library {
+  display: flex;
+  flex-direction: row;
+}
+.library-root .library .banks {
+  display: flex;
+  flex-direction: column;
+}
+.library-root .library .banks div {
+  padding: 3px 6px;
+  border-radius: 5px 0 0 5px;
+}
+.library-root .library .banks div.selected {
+  background: white;
+}
+.library-root .library .presets {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  background: white;
+  border-radius: 0 5px 5px 0;
+}
+.library-root .library .presets div {
+  padding: 3px 6px;
+}
+.library-root .library .presets div::before {
+  color: transparent;
+  content: "• ";
+}
+.library-root .library .presets div.selected::before {
+  color: dodgerblue;
 }
 
 .controls {
   display: flex;
+  flex-basis: content;
+  flex-grow: 0;
+  flex-shrink: 0;
   flex-direction: row;
+  flex-wrap: nowrap;
+}
+.controls .expression-controls {
+  display: flex;
+  flex-grow: 0;
+}
+.controls .expression-controls .panel .control-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.controls .settings {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 1;
   flex-wrap: wrap;
 }
 
+@media (max-height: 600px) {
+  .expression-controls .panel .control-group {
+    flex-wrap: nowrap !important;
+  }
+  .settings {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+  }
+}
 .panel {
   flex-basis: content;
-  margin: 5px;
-  background: silver;
-  border: 1px solid gray;
-  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+  margin: 2px;
+  background: var(--theme-panel-bg-color);
+  color: var(--theme-panel-text-color);
+  border: 0;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.3), inset 0 -1px rgba(0, 0, 0, 0.7);
+  padding: 1px;
   border-radius: 10px;
+  flex-grow: 1;
 }
 .panel h2 {
   text-align: center;
-  font: 12px Verdana;
+  font-size: 12px;
   margin-top: 0;
+  margin-bottom: 0;
   text-transform: uppercase;
 }
-
-label {
+.panel div.control-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.panel span.control {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  vertical-align: top;
+}
+.panel span.control label {
+  width: 50px;
+  display: inline-block;
   white-space: nowrap;
+  padding-bottom: 2px;
+  padding-top: 5px;
+  text-align: center;
+}
+.panel span.control div.control-body {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 5px;
+}
+.panel span.control .labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 167px;
+  padding: 0;
+  margin: 0;
+}
+.panel span.control .labels .label {
+  font-size: 9px;
+  padding: 0;
+}
+.panel div.vertical-group {
+  display: flex;
+  flex-direction: column;
+}
+.panel div.vertical-group input[type=range][orient=vertical] {
+  height: 70px;
+}
+.panel div.vertical-group .labels {
+  height: 65px;
+}
+.panel.keyboard {
+  flex-grow: 1;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.panel.keyboard .keyboard-controls {
+  flex-basis: content;
+  flex-grow: 0;
+  display: flex;
+  gap: 1em;
+}
+.panel.keyboard .keyboard-controls keyboard-adjuster {
+  display: inline-block;
+  flex-grow: 1;
+  border: 1px solid black;
+  border-radius: 0.5em;
+  background-color: rgb(239, 239, 239);
+}
+.panel.keyboard .keyboard-keys {
+  flex-grow: 1;
+  margin-top: 10px;
+  position: relative;
+}
+.panel.keyboard .keys {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+.panel.keyboard .keys .key {
+  box-sizing: border-box;
+  flex-grow: 2;
+  height: 100%;
+  background: white;
+  border: 1px solid black;
+  border-radius: 0 0 3px 3px;
+  cursor: pointer;
+  text-align: left;
+  padding: 2px;
+  color: transparent;
+}
+.panel.keyboard .keys .key.with-label {
+  color: #222222;
+}
+.panel.keyboard .keys .key.with-label.middle-c {
+  background-image: linear-gradient(to top, transparent, transparent 80%, var(--theme-normal-color));
+}
+.panel.keyboard .keys .key.down {
+  background: #DDDDDD;
+}
+.panel.keyboard .keys.ebony {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.panel.keyboard .keys.ebony .spacer {
+  flex-grow: 2;
+}
+.panel.keyboard .keys.ebony .spacer + .spacer {
+  flex-grow: 5;
+}
+.panel.keyboard .keys.ebony .spacer.first {
+  flex-grow: 0;
+}
+.panel.keyboard .keys.ebony .spacer.last {
+  flex-grow: 0;
+}
+.panel.keyboard .keys.ebony .key {
+  pointer-events: all;
+  flex-grow: 3;
+  background: #222222;
+  padding: 0;
+  border: 0;
+}
+.panel.keyboard .keys.ebony .key.note-1 {
+  transform: translateX(-65%);
+}
+.panel.keyboard .keys.ebony .key.note-3 {
+  transform: translateX(-35%);
+}
+.panel.keyboard .keys.ebony .key.note-6 {
+  transform: translateX(-75%);
+}
+.panel.keyboard .keys.ebony .key.note-8 {
+  transform: translateX(-50%);
+}
+.panel.keyboard .keys.ebony .key.note-10 {
+  transform: translateX(-25%);
+}
+.panel.keyboard .keys.ebony .key.down {
+  background: #444444;
 }
 
-label span {
-  display: inline-block;
-  width: 90px;
+.overlay {
+  position: absolute;
+  z-index: 9999;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  flex-basis: content;
+  display: flex;
+  flex-direction: column;
+  margin: 2px;
+  background: var(--theme-effects-bg-color);
+  color: var(--theme-effects-panel-text-color);
+  padding: 6px;
+  border-radius: 16px;
+  flex-grow: 1;
+  box-shadow: 0px 10px 30px, inset 0 1px rgba(255, 255, 255, 0.3), inset 0 -1px rgba(0, 0, 0, 0.7);
+  visibility: hidden;
+}
+.overlay.show {
+  visibility: visible;
+}
+.overlay .effect-group {
+  display: flex;
+  flex-direction: row;
+  background: var(--theme-effects-panel-bg-color);
+  border-radius: 10px;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.3), inset 0 -1px rgba(0, 0, 0, 0.7);
+  margin: 2px;
+  padding: 0 10px;
+  align-items: center;
+}
+.overlay .effect-group .vertical-group:first-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 80px;
+  height: 100px;
 }/*# sourceMappingURL=synth.css.map */

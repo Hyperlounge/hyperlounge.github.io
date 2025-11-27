@@ -4,68 +4,222 @@
     <meta charset="UTF-8">
     <title>HyperSynth</title>
     <link rel="manifest" href="manifest.json"/>
-    <link rel="stylesheet" href="styles/mono-synth.css"/>
+    <link rel="stylesheet" href="styles/synth.css"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=1180">
     <script type="module" src="js/synth-options.mjs"></script>
     <style>
-        body .intro {
-            font-family: "Roboto Mono", monospace;
-            color: #DDDDDD;
+        html, body {
+            padding: 0;
+            margin: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
+        }
+        .intro {
+            font-size: larger;
+            color: black;
+            background-color: white;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         header {
-            font-size: larger;
             text-align: center;
             padding: 2em;
+            background-color: var(--theme-panel-bg-color);
+            color: var(--theme-panel-text-color);
         }
         header button {
             margin: 0.5em;
             padding: 1em;
-            background: #ff5050;
+            background: var(--theme-normal-color);
             color: black;
-            font-family: "Roboto Mono", monospace;
             font-size: 30px;
             font-weight: bold;
             border: 0;
             border-radius: 1em;
         }
-        article {
+        main {
             display: flex;
-            justify-content: center;
-            padding: 3em;
-            gap: 3em;
+            flex-direction: row;
+            gap: 0;
+            overflow: hidden;
         }
-        article section {
-            max-width: 400px;
+        article {
+            margin: auto;
+            padding: 2em;
+            overflow: auto;
+            height: 100%;
+            width: 100%;
+            flex-grow: 4;
+        }
+        article>div {
+            max-width: 800px;
+        }
+        nav {
+            padding: 2em;
+            overflow-x: hidden;
+            overflow-y: auto;
+            height: 100%;
+            flex-basis: content;
+            flex-grow: 1;
+        }
+        nav p {
+            margin-top: 0.5em;
+            margin-bottom: 0;
+        }
+        nav p[data-level='H3'] {
+            margin-left: 1em;
+        }
+        nav a {
+            white-space: nowrap;
+            margin-right: 2em;
+        }
+        @media (max-width: 600px) {
+            nav {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
 <div class="intro">
-<header>
-    <h1>Welcome to HyperSynth</h1>
-    <p>A fully functional polyphonic synthesiser<br/>written entirely in HTML and JavaScript!</p>
-    <button id="launch-button">Launch HyperSynth</button>
-</header>
-<article>
-    <section>
-        <h2>Touch devices</h2>
-        <p>
-            If you're using a tablet or phone, you can use the software multi-touch keyboard, it's even touch sensitive! You can adjust the size and range of the keyboard for playing comfort.
-        </p>
-    </section>
-    <section>
-        <h2>Desktop computers</h2>
-        <p>
-            If you have a MIDI keyboard, you can plug it in now and HyperSynth will automatically recognise it. Keyboard velocity, pitch bend, mod wheel and sustain pedal all work normally.
-        </p>
-    </section>
-</article>
+    <header>
+        <button id="launch-button">Launch HyperSynth</button>
+    </header>
+    <main>
+        <nav>
+
+        </nav>
+        <article>
+            <div id="content">
+<h2 id="about-hypersynth">About HyperSynth</h2>
+
+<p>HyperSynth is a fully functional polyphonic synthesiser, developed entirely in javascript and running in the browser. </p>
+
+<h3 id="what-is-it-for">What is it for?</h3>
+
+<p>I guarantee you’ll have fun with this just playing it as an instrument, whether you’re a musician or just interested in electronic music. It’s also an educational tool for learning the principles of sound synthesis. </p>
+
+<p>I offer it for your pleasure, and hope you’ll enjoy exploring the preset patches. I urge you to tinker with the settings to create and <a href="#saving-patches">save your own patches</a>. The controls may look very technical and daunting, but there is a help mode which you can use to get info on any control or section.</p>
+
+<h3 id="why-did-i-make-it">Why did I make it?</h3>
+
+<p>Initially to learn about the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API">Web Audio API</a>, and to see what it is capable of. I deliberately avoided using any javascript libraries, a I believe “roll-your-own” is the best way to learn stuff. As it turned out the API could be pushed a lot further than I expected, and I ended up with a very playable and capable instrument.</p>
+
+<h3 id="privacy">Privacy</h3>
+
+<p>No data about you is asked for or retained on any servers, the only thing that’s saved locally in your browser is the current state of the instrument, so you can pick up where you left off when you re-visit the site.</p>
+
+<h2 id="getting-started">Getting started</h2>
+
+<h3 id="system-requirements">System requirements</h3>
+
+<p>Any modern device and browser will run it fine, although phones and tablets with limited memory may struggle with some of the more complex polyphonic patches (<strong>hint</strong>: reduce the number of voices or switch off effects if you hear drop-outs).</p>
+
+<h3 id="touch-devices">Touch devices</h3>
+
+<p>The on-screen keyboard can be used on all platforms, but touch devices give the best experience with full polyphony and touch sensitivity, please use the device in landscape mode for best results. The touch sensitivity is calibrated when you touch the button above to launch the instrument, so please don’t press it too hard, a normal to light touch is ideal. </p>
+
+<p>If your device is iOS 26 or above, you may want to turn multitasking off to avoid keyboard interaction being interpreted as multitasking gestures - go to Settings: Multitasking &amp; Gestures and select the Full-Screen Apps option. You should have a control centre shortcut for this too.</p>
+
+<p>If your device is Android, you also may be able to use an external MIDI keyboard...</p>
+
+<h3 id="external-midi-keyboards">External MIDI keyboards</h3>
+
+<p>For desktop devices without touch screens, the best experience can be had if you have an external MIDI keyboard connected to your device. Connect the keyboard before launching HyperSynth, and the MIDI input device will be detected automatically (<strong>note</strong>: this doesn’t work in Safari on MacOS, or on any iOS devices as they don’t implement the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API">Web MIDI API</a>).</p>
+
+<p>When using an external keyboard, touch sensitivity, sustain pedal, pitch bend and modulation controls all work as they should.</p>
+
+<h3 id="saving-patches">Saving patches</h3>
+
+<p>When the “Save Patch” button is clicked, the current settings are saved as a file in your downloads folder, with a “.hspatch.json” extension. From here you can move them to where-ever you like, ready to be loaded again at any time. In the save dialog, you can choose a bank from a list, and give the patch a new name. All of the settings required to recreate your carefully crafted sound are saved, but the keyboard settings, modulation wheel position and master volume are not.</p>
+
+<h3 id="loading-patches">Loading patches</h3>
+
+<p>You can load your saved patches back in to HyperSynth in two ways:</p>
+
+<ul>
+<li>Click the “Load Patch” button to bring up a file dialog to browse to the patch file you want to load. If you saved it as “My Cool Sound” in the “Misc” bank, the file name will be <nobr>“Misc- My Cool Sound.hspatch.json”</nobr>.</li>
+<li>If you are in an environment that allows multitasking windows, i.e. a laptop or an iPad with multitasking, you can drag and drop your patch file onto the browser window to load the patch.</li>
+</ul>
+
+<h3 id="sharing-patches">Sharing patches</h3>
+
+<p>You can create a link containing all of the current settings for you to send to a friend, just click “Share Patch” and click “Copy to Clipboard”. You can then go to your app of choice and paste the link into a message. </p>
+
+<h2 id="basic-principles">Basic principles</h2>
+
+<h3 id="oscillators">Oscillators</h3>
+
+<p>These are the basic building blocks of the sound, HyperSynth has two oscillators for note generation, and one LFO (Low Frequency Oscillator) for modulation, to be explained later.</p>
+
+<p>The two main oscillators generate waveforms that create musical notes in response to the keyboard. The different types of waveform available create different timbres, from the soft pure tone of the sine wave to the harsh sawtooth, and the two oscillators can be combined in various ways to create more different characters of sound, by varying the frequency gap between them.</p>
+
+<h3 id="filter">Filter</h3>
+
+<p>The filter alters the tone of the sound produced by the oscillators. It allows some frequencies to pass and other frequencies are cut depending on the cut-off point. Adding resonance to the filter produces a boost at the cut-off point. There are three types:</p>
+
+<ul>
+<li><strong>Low pass</strong>, where the high frequencies are cut above the cut-off point.</li>
+<li><strong>High pass</strong>, where the low frequencies are cut below the cut-off point.</li>
+<li><strong>Band pass</strong>, where only frequencies at the cut-off point are passed.</li>
+</ul>
+
+<p>The cut-off point can be changed over time using the filter envelope, and also using the LFO. This can create classic wah or sweep effects.</p>
+
+<h3 id="envelopes">Envelopes</h3>
+
+<p>An envelope is a controlling signal that varies over time, it has four phases:</p>
+
+<ul>
+<li><strong>Attack</strong>, the signal rises linearly to a maximum level when a key is pressed.</li>
+<li><strong>Decay</strong>, the signal falls exponentially to the sustain level.</li>
+<li><strong>Sustain</strong>, the signal remains at this level until the key is released.</li>
+<li><strong>Release</strong>, when the key is released, the signal falls exponentially to zero.</li>
+</ul>
+
+<p>HyperSynth has two envelopes, the Amp Envelope controls the amplitude of the sound, i.e. the higher the envelope signal the higher the volume, and the Filter Envelope controls the cut-off of the filter, i.e. the higher the envelope signal the higher the frequency of the cut-off.</p>
+
+<p>Both envelopes can be made to respond to the velocity of the key press, i.e. the faster the key press the higher the values throughout the entire envelope profile. Using this, notes are louder and/or brighter when the key is pressed harder.</p>
+
+<h3 id="modulation">Modulation</h3>
+
+<p>Modulation describes the process of altering the sound over time, by varying the pitch and/or timbre using a control signal created by the LFO (Low Frequency Oscillator). The control signal is usually a slow, regularly fluctuating waveform. This is used to create vibrato and wah effects amongst other special effects, and the strength of the control signal can be linked to a control on the synth called the Mod Wheel. The more you turn it up, the more effect you get.</p>
+
+<h3 id="noise">Noise</h3>
+
+<p>HyperSynth, like many synthesisers, has a noise generator, the output of which can be mixed with the sound, or used as a modulation source. This can create breathy or glitchy effects.</p>
+
+<h3 id="monophony-vs-polyphony">Monophony VS Polyphony</h3>
+
+<p>Although HyperSynth is a polyphonic instrument, i.e. many different notes can be played at the same time, it can also be used in monophonic mode by turning the number of voices down to one. This is useful if you want to create a solo lead type of sound, and no chords are needed. You can set a Glide Time so that when you change note, the pitch glides smoothly to the next note rather than jumping instantly to it.</p>            </div>
+        </article>
+    </main>
 </div>
+<script>
+    function createNav() {
+        const article = document.querySelector('article');
+        const nav = document.querySelector('nav');
+        Array.from(article.querySelectorAll('h2, h3')).forEach(headingElem => {
+            const headingId = headingElem.id;
+            const p = document.createElement('p');
+            p.setAttribute('data-level', headingElem.tagName);
+            const a = document.createElement('a');
+            a.setAttribute('href', `#${headingId}`);
+            a.innerHTML = headingElem.innerHTML;
+            p.append(a);
+            nav.append(p);
+        });
+    }
+
+    createNav();
+</script>
 </body>
 </html>
